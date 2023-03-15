@@ -133,3 +133,57 @@ outline: none;
 }
 
 .input-group{
+.custom-modal > p {
+align-items: center;
+justify-content: center;
+margin: 10px 0px;
+}
+
+/* Buttons for custom modal */
+.deny,
+.accept {
+width: 30%;
+border-radius: 10px;
+border: none;
+margin: 5px;
+padding: 10px;
+background-color: #f17d3a;
+color: white;
+cursor: pointer;
+}
+
+.accept:hover {
+background-color: #ff5e00;
+}
+
+.deny {
+background-color: rgb(190, 23, 23);
+}
+
+.deny:hover {
+background-color: rgb(231, 3, 3);
+}
+
+.button {
+display: flex;
+flex-direction: row-reverse;
+}
+
+/* Custom Navbar */
+#custom-nav,
+#custom-nav p,
+.iconic,
+.down-uplo{
+display: flex;
+align-items: center;
+justify-content: space-between;
+}
+
+.recipent{
+display: flex;
+flex: 1;
+}
+
+.whole-body{
+border-radius: 10px;
+}
