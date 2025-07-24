@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Sebit Lan Share</title>
-   <link rel="icon" type="image/png" href="favicon.png">
+  <link rel="icon" type="image/gif" href="https://i.imgur.com/JdKIb97.gif">
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
     body, html {
@@ -12,14 +12,19 @@
       font-family: 'Press Start 2P', monospace; color: #fff;
       image-rendering: pixelated; /* Force pixelated rendering */
     }
+    /* 2. Added animated ocean background */
     body {
-      background: url('https://i.imgur.com/YourOceanGif.gif') repeat-x; /* 8-bit sprite strip */
-      background-size: 256px auto;
+      /* Uses a sprite strip image with 4 frames */
+      background: url('https://i.imgur.com/C53mO1X.png') repeat-x; 
+      /* Set the size to one frame's width */
+      background-size: 128px auto; 
+      /* Apply the keyframe animation */
       animation: ocean 1s steps(4) infinite;
     }
+    /* Keyframes to slide the background, revealing new frames */
     @keyframes ocean {
       0% { background-position: 0 0; }
-      100% { background-position: -1024px 0; }
+      100% { background-position: -512px 0; } /* 4 frames * 128px = 512px */
     }
     .title {
       position: absolute; top: 20px; width: 100%; text-align: center;
@@ -59,6 +64,9 @@
     let ws;
 
     async function startWebSocket() {
+      // Use wss:// for secure connections if deploying to a live server with HTTPS
+      // For local development (localhost), ws:// is fine.
+      // Example: ws = new WebSocket(`wss://${location.host}`);
       ws = new WebSocket('ws://' + location.hostname + ':3000');
       ws.onopen = () => ws.send(JSON.stringify({ type: 'join', peerId }));
       ws.onmessage = async (m) => {
@@ -102,7 +110,10 @@
         const blob = new Blob([e.data]);
         const a = document.createElement('a');
         a.href = URL.createObjectURL(blob);
-        a.download = 'received_file'; a.click();
+        // We need a way to get the filename. For simplicity, we'll keep it generic.
+        a.download = 'received_file'; 
+        a.click();
+        URL.revokeObjectURL(a.href);
       };
     }
 
