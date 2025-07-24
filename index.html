@@ -11,27 +11,29 @@
       margin: 0; padding: 0; overflow: hidden;
       font-family: 'Press Start 2P', monospace; color: #fff;
       image-rendering: pixelated; /* Force pixelated rendering */
+      height: 100%; /* Ensure body takes full height for background */
     }
-    /* 2. Added animated ocean background */
     body {
       /* Uses a sprite strip image with 4 frames */
-      background: url('sebit background.gif'); 
-      /* Set the size to one frame's width */
-      background-size: 1150px auto; 
-    
+      background: url('sebit background.gif');
+      /* Set the size to one frame's width (assuming your gif is 1150px wide for one frame) */
+      background-size: 1150px auto;
+      background-repeat: repeat-x; /* Allow it to repeat horizontally */
+      animation: ocean 8s linear infinite; /* Apply the animation directly here */
     }
-    /* Keyframes to slide the background, revealing new frames */
     @keyframes ocean {
       0% { background-position: 0 0; }
-      100% { background-position: -512px 0; } /* 4 frames * 128px = 512px */
+      100% { background-position: -1150px 0; } /* Animate full width of your sprite */
     }
     .title {
       position: absolute; top: 20px; width: 100%; text-align: center;
       font-size: 18px; color: #ff77ff; text-shadow: 2px 2px #77ffff;
+      z-index: 10;
     }
     .welcome {
       position: absolute; top: 60px; width: 100%; text-align: center;
       font-size: 12px; color: #77ffff; text-shadow: 1px 1px #ff77ff;
+      z-index: 10;
     }
     .bubble {
       position: absolute; width: 32px; height: 32px;
@@ -39,100 +41,328 @@
       image-rendering: pixelated;
       animation: floatUp 8s linear infinite;
       cursor: pointer;
+      z-index: 5; /* Bubbles should be behind UI, but above background */
     }
     @keyframes floatUp {
-      0% { transform: translateY(100vh) scale(1); }
-      100% { transform: translateY(-20vh) scale(1.2); }
+      0% { transform: translateY(100vh) scale(1); opacity: 0.8; }
+      100% { transform: translateY(-20vh) scale(1.2); opacity: 0.6; }
     }
     .footer {
       position: absolute; bottom: 10px; width: 100%; text-align: center;
       font-size: 10px; color: #ccc; text-shadow: 0 0 4px #000;
+      z-index: 10;
     }
     #fileInput { display: none; }
+
+    /* New UI for room codes */
+    .overlay {
+      position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0, 0, 0, 0.7);
+      display: flex; justify-content: center; align-items: center;
+      flex-direction: column;
+      z-index: 20; /* On top of everything */
+    }
+    .code-input, .message {
+      background: #333; border: 2px solid #77ffff;
+      padding: 10px; margin: 10px;
+      font-family: 'Press Start 2P', monospace; color: #ff77ff;
+      font-size: 16px; text-align: center;
+      box-shadow: 0 0 10px rgba(119, 255, 255, 0.5);
+      outline: none;
+      width: 200px;
+      max-width: 80%;
+    }
+    .btn {
+      background: #007bff; border: 2px solid #0056b3;
+      padding: 10px 20px; margin: 5px;
+      font-family: 'Press Start 2P', monospace; color: #fff;
+      font-size: 14px; cursor: pointer;
+      box-shadow: 2px 2px #0056b3;
+      transition: all 0.1s ease;
+      text-decoration: none; /* For link-like button */
+    }
+    .btn:hover {
+      background: #0056b3;
+      box-shadow: 1px 1px #007bff;
+      transform: translateY(1px) translateX(1px);
+    }
+    .status-message {
+        position: absolute; top: 100px; width: 100%; text-align: center;
+        font-size: 10px; color: #0f0; text-shadow: 1px 1px #000;
+        z-index: 15; /* Above other elements */
+    }
   </style>
 </head>
 <body>
   <div class="title">🌊 Sebit Lan Share 🌊</div>
   <div class="welcome">Welcome to Seb P2P LAN sharer!</div>
+  <div class="status-message" id="statusMessage">Connecting to signaling server...</div>
+
+  <div class="overlay" id="roomOverlay">
+    <div class="message">
+        <p>Your unique ID: <span id="myPeerId"></span></p>
+        <p>Share this ID for others to connect, or enter an ID below to connect to someone else.</p>
+    </div>
+    <input type="text" id="roomCodeInput" class="code-input" placeholder="Enter peer ID to connect" maxlength="5">
+    <button id="connectBtn" class="btn">Connect</button>
+    <button id="newIdBtn" class="btn">Generate New ID</button>
+  </div>
+
   <div class="footer">Created by Rawxia - Privacy in mind</div>
   <input type="file" id="fileInput" />
+
+  <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
+
   <script>
-    const peerId = Math.random().toString(36).substr(2, 5);
-    const peerConnections = {};
-    const dataChannels = {};
-    let ws;
+    let peer; // Our PeerJS object
+    const peerConnections = {}; // Stores DataConnection objects (PeerJS handles RTCPeerConnection internally)
+    let currentRoomId = ''; // To store the ID the user enters or creates
 
-    async function startWebSocket() {
-      // Use wss:// for secure connections if deploying to a live server with HTTPS
-      // For local development (localhost), ws:// is fine.
-      // Example: ws = new WebSocket(`wss://${location.host}`);
-      ws = new WebSocket('ws://' + location.hostname + ':3000');
-      ws.onopen = () => ws.send(JSON.stringify({ type: 'join', peerId }));
-      ws.onmessage = async (m) => {
-        const data = JSON.parse(m.data);
-        if (data.peerId === peerId) return;
-        if (data.type === 'offer') {
-          const pc = createPeerConnection(data.peerId);
-          await pc.setRemoteDescription(data.offer);
-          const ans = await pc.createAnswer(); await pc.setLocalDescription(ans);
-          ws.send(JSON.stringify({ type: 'answer', peerId, target: data.peerId, answer: ans }));
-        }
-        if (data.type === 'answer') await peerConnections[data.peerId].setRemoteDescription(data.answer);
-        if (data.type === 'candidate') {
-          await peerConnections[data.peerId].addIceCandidate(new RTCIceCandidate(data.candidate));
-        }
-        if (data.type === 'new-peer') {
-          const pc = createPeerConnection(data.peerId);
-          const dc = pc.createDataChannel("file");
-          setupChannel(dc, data.peerId);
-          const offer = await pc.createOffer();
-          await pc.setLocalDescription(offer);
-          ws.send(JSON.stringify({ type: 'offer', peerId, target: data.peerId, offer }));
-        }
-      };
+    const myPeerIdSpan = document.getElementById('myPeerId');
+    const roomCodeInput = document.getElementById('roomCodeInput');
+    const connectBtn = document.getElementById('connectBtn');
+    const newIdBtn = document.getElementById('newIdBtn');
+    const roomOverlay = document.getElementById('roomOverlay');
+    const statusMessage = document.getElementById('statusMessage');
+
+    // --- Utility Functions ---
+
+    function updateStatus(message, color = '#0f0') {
+        statusMessage.textContent = message;
+        statusMessage.style.color = color;
     }
 
-    function createPeerConnection(remoteId) {
-      const pc = new RTCPeerConnection({ iceServers: [{ urls: 'stun:stun.l.google.com:19302' }] });
-      peerConnections[remoteId] = pc;
-      pc.onicecandidate = e => e.candidate && ws.send(JSON.stringify({
-        type: 'candidate', peerId, target: remoteId, candidate: e.candidate
-      }));
-      pc.ondatachannel = e => setupChannel(e.channel, remoteId);
-      addBubble(remoteId);
-      return pc;
+    // --- PeerJS Setup ---
+
+    function initializePeer(id = null) {
+      updateStatus("Connecting to signaling server...");
+      // For free cloud PeerJS server, omit host/port or use '0.peerjs.com' if 'peerjs.com' has issues.
+      // You can also add 'debug: 3' for more console output during development.
+      peer = new Peer(id, {
+          // host: '0.peerjs.com', // Optional: specify PeerJS server
+          // port: 443, // Optional: specify PeerJS server port
+          // secure: true, // Optional: use WSS for secure connections
+          config: {
+              iceServers: [{ urls: 'stun:stun.l.google.com:19302' }]
+          }
+      });
+
+      peer.on('open', (id) => {
+        currentRoomId = id;
+        myPeerIdSpan.textContent = id;
+        roomOverlay.style.display = 'flex'; // Show the room input overlay
+        updateStatus(`Connected! Your ID: ${id}. Waiting for connection...`);
+        console.log('My peer ID is: ' + id);
+      });
+
+      peer.on('connection', (conn) => {
+        console.log(`Incoming connection from: ${conn.peer}`);
+        setupDataChannel(conn, conn.peer); // Setup for incoming connection
+        addBubble(conn.peer); // Add a bubble for the new peer
+        updateStatus(`Connected to ${conn.peer}!`, '#ffdd00');
+        roomOverlay.style.display = 'none'; // Hide overlay once connected
+      });
+
+      peer.on('error', (err) => {
+        console.error('PeerJS error:', err);
+        updateStatus(`Error: ${err.message}. Please refresh or try a new ID.`, '#f00');
+        // If an error occurs, destroy current peer and allow re-initialization
+        if (peer && !peer.destroyed) {
+            peer.destroy();
+        }
+        initializePeer(); // Attempt to re-initialize or let user try new ID
+      });
+
+      peer.on('disconnected', () => {
+          console.log('PeerJS disconnected from signaling server.');
+          updateStatus('Disconnected. Trying to reconnect...', '#f90');
+          // Automatically try to reconnect
+          if (!peer.destroyed) {
+              peer.reconnect();
+          }
+      });
     }
 
-    function setupChannel(channel, remoteId) {
-      dataChannels[remoteId] = channel;
-      channel.onmessage = e => {
-        const blob = new Blob([e.data]);
-        const a = document.createElement('a');
-        a.href = URL.createObjectURL(blob);
-        // We need a way to get the filename. For simplicity, we'll keep it generic.
-        a.download = 'received_file'; 
-        a.click();
-        URL.revokeObjectURL(a.href);
-      };
+    function connectToPeer(remoteId) {
+        if (!peer || !peer.open) {
+            updateStatus('PeerJS not ready. Please wait or refresh.', '#f00');
+            return;
+        }
+        if (remoteId === currentRoomId) {
+            updateStatus('Cannot connect to yourself!', '#f00');
+            return;
+        }
+
+        updateStatus(`Attempting to connect to ${remoteId}...`);
+        console.log(`Attempting to connect to peer: ${remoteId}`);
+        const conn = peer.connect(remoteId); // Initiate connection
+        peerConnections[remoteId] = conn;
+
+        conn.on('open', () => {
+            console.log(`DataChannel opened with ${remoteId}`);
+            setupDataChannel(conn, remoteId); // Setup for outgoing connection
+            addBubble(remoteId); // Add a bubble for the new peer
+            updateStatus(`Connected to ${remoteId}!`, '#ffdd00');
+            roomOverlay.style.display = 'none'; // Hide overlay once connected
+        });
+
+        conn.on('error', (err) => {
+            console.error(`Connection error with ${remoteId}:`, err);
+            updateStatus(`Failed to connect to ${remoteId}: ${err.message}`, '#f00');
+            delete peerConnections[remoteId];
+            removeBubble(remoteId); // Remove bubble if connection fails
+        });
+
+        conn.on('close', () => {
+            console.log(`Connection to ${remoteId} closed.`);
+            updateStatus(`Disconnected from ${remoteId}.`, '#f90');
+            delete peerConnections[remoteId];
+            removeBubble(remoteId); // Remove bubble when connection closes
+        });
     }
+
+    // --- Data Channel and File Transfer ---
+
+    function setupDataChannel(conn, remoteId) {
+      peerConnections[remoteId] = conn; // Store the connection object
+
+      let receivedFileBuffer = [];
+      let expectedFileName = 'received_file';
+      let expectedFileSize = 0;
+      let receivedSize = 0;
+
+      conn.on('data', (data) => {
+        if (typeof data === 'string') {
+          // It's a metadata message
+          try {
+            const msg = JSON.parse(data);
+            if (msg.type === 'file-metadata') {
+              expectedFileName = msg.filename;
+              expectedFileSize = msg.fileSize;
+              receivedFileBuffer = []; // Reset buffer for new file
+              receivedSize = 0;
+              updateStatus(`Receiving '${expectedFileName}' from ${remoteId}...`);
+              console.log(`Receiving file: ${expectedFileName} (${expectedFileSize} bytes)`);
+            }
+          } catch (e) {
+            console.warn("Received non-JSON string or malformed JSON:", data);
+            // Could be a simple text message if you wanted to add chat
+          }
+        } else {
+          // It's a file data chunk (ArrayBuffer or Blob)
+          receivedFileBuffer.push(data);
+          receivedSize += data.byteLength || data.size; // Add bytes received
+
+          updateStatus(`Receiving '${expectedFileName}' from ${remoteId}: ${((receivedSize / expectedFileSize) * 100).toFixed(0)}%`);
+
+          if (receivedSize >= expectedFileSize && expectedFileSize > 0) {
+            const blob = new Blob(receivedFileBuffer);
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = expectedFileName;
+            a.click();
+            URL.revokeObjectURL(a.href);
+            updateStatus(`📁 Received '${expectedFileName}' from ${remoteId}!`);
+            console.log(`Successfully received and downloaded ${expectedFileName}`);
+
+            // Reset for next file
+            receivedFileBuffer = [];
+            expectedFileName = 'received_file';
+            expectedFileSize = 0;
+            receivedSize = 0;
+          }
+        }
+      });
+      conn.on('close', () => {
+        console.log('Connection closed for:', remoteId);
+        updateStatus(`Connection to ${remoteId} closed.`, '#f90');
+        removeBubble(remoteId); // Remove the bubble when connection closes
+      });
+      conn.on('error', (err) => {
+        console.error('Data channel error for', remoteId, err);
+        updateStatus(`Error with ${remoteId}'s connection.`, '#f00');
+      });
+    }
+
+    // --- UI (Bubbles) ---
+
+    const activeBubbles = {}; // To keep track of bubble elements by peerId
 
     function addBubble(id) {
+      if (activeBubbles[id]) return; // Don't add if already exists
+
       const b = document.createElement('div');
-      b.className = 'bubble'; b.style.left = `${Math.random()*90+5}%`;
+      b.className = 'bubble';
+      b.id = `bubble-${id}`; // Assign a unique ID to the bubble element
+      b.style.left = `${Math.random() * 80 + 10}%`; // More centered random position
+      b.style.animationDelay = `${Math.random() * 3}s`; // Stagger animation start
+      b.style.animationDuration = `${5 + Math.random() * 5}s`; // Vary animation speed
+
+      const idText = document.createElement('span');
+      idText.textContent = id;
+      idText.style.position = 'absolute';
+      idText.style.top = '100%';
+      idText.style.left = '50%';
+      idText.style.transform = 'translateX(-50%)';
+      idText.style.fontSize = '8px';
+      idText.style.color = '#fff';
+      idText.style.textShadow = '1px 1px #000';
+      idText.style.whiteSpace = 'nowrap';
+      b.appendChild(idText);
+
       b.onclick = () => {
-        const inp = document.getElementById('fileInput');
-        inp.onchange = () => {
-          if (inp.files.length && dataChannels[id]?.readyState==='open') {
-            dataChannels[id].send(inp.files[0]);
-            alert(`📁 Sent '${inp.files[0].name}' to ${id}`);
-          }
-        };
-        inp.click();
+        const conn = peerConnections[id];
+        if (conn && conn.open) {
+          const inp = document.getElementById('fileInput');
+          inp.onchange = () => {
+            if (inp.files.length) {
+              const file = inp.files[0];
+              // 1. Send filename (as a JSON message)
+              conn.send(JSON.stringify({ type: 'file-metadata', filename: file.name, fileSize: file.size }));
+
+              // 2. Send the file itself
+              // PeerJS data channels automatically handle chunking for Blobs/Files
+              conn.send(file);
+              updateStatus(`📁 Sent '${file.name}' to ${id}`);
+            }
+          };
+          inp.click(); // Trigger file input click
+        } else {
+          updateStatus(`Connection to ${id} is not open!`, '#f00');
+          console.error(`Attempted to send file to ${id}, but connection is not open.`);
+        }
       };
       document.body.appendChild(b);
+      activeBubbles[id] = b; // Store reference
     }
 
-    startWebSocket();
+    function removeBubble(id) {
+        if (activeBubbles[id]) {
+            activeBubbles[id].remove();
+            delete activeBubbles[id];
+        }
+    }
+
+    // --- Event Listeners for Room Code UI ---
+
+    connectBtn.addEventListener('click', () => {
+      const remoteId = roomCodeInput.value.trim();
+      if (remoteId) {
+        connectToPeer(remoteId);
+      } else {
+        updateStatus('Please enter a peer ID.', '#f00');
+      }
+    });
+
+    newIdBtn.addEventListener('click', () => {
+        if (peer && !peer.destroyed) {
+            peer.destroy(); // Destroy existing peer to get a new ID
+        }
+        initializePeer(); // Initialize with a new random ID
+    });
+
+    // --- Initial Setup ---
+    initializePeer();
   </script>
 </body>
 </html>
