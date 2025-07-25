@@ -5,9 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Sebit Lan Share</title>
   <link rel="icon" type="image/gif" href="favicon.gif">
-  <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet"> <style>
+  <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet"> <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet"> <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700&display=swap" rel="stylesheet"> <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&display=swap" rel="stylesheet"> <style>
     /* Base Styles - Default (Vaporwave-inspired) */
-    @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
     body, html {
       margin: 0; padding: 0; overflow: hidden;
       font-family: 'Press Start 2P', monospace; color: #fff;
@@ -44,7 +43,7 @@
     }
     .bubble {
       position: absolute; width: 32px; height: 32px;
-      background: url('minecraft-bubble.png') no-repeat center/contain; /* Changed to self-hosted for consistency */
+      background: url('minecraft-bubble.png') no-repeat center/contain;
       image-rendering: pixelated;
       animation: floatUp 8s linear infinite;
       cursor: pointer;
@@ -565,9 +564,9 @@
 
     /* Theme: Computer Guy (Matrix) */
     .theme-computer-guy body {
-      background: #000;
+      background: #000; /* Solid black background */
       animation: none; /* Disable ocean animation */
-      font-family: 'VT323', monospace; /* Apply to body for full site */
+      font-family: 'VT323', monospace;
     }
     .theme-computer-guy #splashScreen {
       background: #000;
@@ -576,38 +575,39 @@
     }
     .theme-computer-guy .splash-text,
     .theme-computer-guy .splash-subtext {
-      color: #0f0; /* Green text */
-      text-shadow: 0 0 5px rgba(0, 255, 0, 0.7), 0 0 10px rgba(0, 255, 0, 0.5);
-      border-color: #0f0;
-      box-shadow: 0 0 15px rgba(0, 255, 0, 0.7);
+      color: #0a0; /* Darker green text */
+      text-shadow: 0 0 3px rgba(0, 170, 0, 0.7), 0 0 8px rgba(0, 170, 0, 0.5);
+      border-color: #080;
+      box-shadow: 0 0 10px rgba(0, 170, 0, 0.7);
     }
     .theme-computer-guy .how-to-use {
       background: rgba(0, 0, 0, 0.9);
-      border: 2px solid #0f0;
-      color: #0f0;
-      text-shadow: 0 0 5px rgba(0, 255, 0, 0.5);
-      box-shadow: 0 0 20px rgba(0, 255, 0, 0.5);
+      border: 2px solid #0a0;
+      color: #0a0;
+      text-shadow: 0 0 3px rgba(0, 170, 0, 0.5);
+      box-shadow: 0 0 15px rgba(0, 170, 0, 0.5);
     }
     .theme-computer-guy .how-to-use h3 {
       color: #0f0;
       text-shadow: 0 0 5px rgba(0, 255, 0, 0.7);
     }
     .theme-computer-guy .how-to-use li::before {
-      color: #0f0;
+      color: #0a0;
     }
     .theme-computer-guy #readyButton,
     .theme-computer-guy #themeSelect,
     .theme-computer-guy .theme-selector-container label {
-      background: #050;
-      border: 2px solid #0f0;
+      background: #020;
+      border: 2px solid #080;
       color: #0f0;
       text-shadow: 0 0 5px rgba(0, 255, 0, 0.7);
-      box-shadow: 0 0 10px rgba(0, 255, 0, 0.7);
+      box-shadow: 0 0 8px rgba(0, 255, 0, 0.7);
     }
     .theme-computer-guy #readyButton:hover,
     .theme-computer-guy #themeSelect:hover {
       background: #0f0;
       color: #000;
+      box-shadow: 0 0 12px rgba(0, 255, 0, 0.8);
     }
     /* Apply to main UI elements */
     .theme-computer-guy .title, .theme-computer-guy .welcome, .theme-computer-guy .footer {
@@ -624,21 +624,21 @@
     }
     .theme-computer-guy .overlay {
         background: rgba(0, 0, 0, 0.9);
-        border: 2px solid #0f0;
-        box-shadow: 0 0 15px rgba(0, 255, 0, 0.7);
+        border: 2px solid #0a0;
+        box-shadow: 0 0 15px rgba(0, 170, 0, 0.7);
     }
     .theme-computer-guy .code-input, .theme-computer-guy #myPeerId, .theme-computer-guy #shibaText,
     .theme-computer-guy #textInput, .theme-computer-guy #receivedTextDisplay {
         background: #010;
-        border: 2px solid #0f0;
+        border: 2px solid #0a0;
         color: #0f0;
-        box-shadow: 0 0 8px rgba(0, 255, 0, 0.5);
+        box-shadow: 0 0 8px rgba(0, 170, 0, 0.5);
         font-family: 'VT323', monospace;
     }
     .theme-computer-guy .btn, .theme-computer-guy #copyIdBtn, .theme-computer-guy #pasteIdBtn, .theme-computer-guy #sendTextBtn,
     .theme-computer-guy #paperclipButton {
-        background: #030;
-        border: 2px solid #0f0;
+        background: #020;
+        border: 2px solid #080;
         color: #0f0;
         box-shadow: 0 0 8px rgba(0, 255, 0, 0.5);
         font-family: 'VT323', monospace;
@@ -650,36 +650,41 @@
         box-shadow: 0 0 12px rgba(0, 255, 0, 0.8);
     }
     .theme-computer-guy #progressBarContainer {
-        border-color: #0f0;
-        box-shadow: 0 0 10px rgba(0, 255, 0, 0.5);
+        border-color: #0a0;
+        box-shadow: 0 0 10px rgba(0, 170, 0, 0.5);
     }
     .theme-computer-guy #progressBar {
-        background: linear-gradient(90deg, #0a0, #0f0);
+        background: linear-gradient(90deg, #070, #0a0);
+        color: #000;
+        text-shadow: 1px 1px #0f0;
     }
     .theme-computer-guy #shibaText {
-        border-color: #0f0;
-        text-shadow: 0 0 5px rgba(0, 255, 0, 0.7);
+        border-color: #0a0;
+        text-shadow: 0 0 5px rgba(0, 170, 0, 0.7);
+        background: rgba(0, 0, 0, 0.8);
     }
     .theme-computer-guy #paperclipText {
         color: #0f0;
         text-shadow: 0 0 5px rgba(0, 255, 0, 0.7);
-        border-color: #0f0;
+        border-color: #0a0;
         background: rgba(0, 0, 0, 0.7);
     }
     .theme-computer-guy #dropZoneOverlay {
-        border-color: #0f0;
-        background: rgba(0, 100, 0, 0.5);
+        border-color: #0a0;
+        background: rgba(0, 50, 0, 0.5);
+        color: #0f0;
+        text-shadow: 1px 1px #000;
     }
-    /* Add Matrix rain effect */
-    .theme-computer-guy #splashScreen::after,
-    .theme-computer-guy body::after { /* Apply rain to full body */
+    /* Matrix rain effect */
+    .theme-computer-guy body::after,
+    .theme-computer-guy #splashScreen::after {
         content: "";
         position: absolute;
         top: 0; left: 0; right: 0; bottom: 0;
-        background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100"><text x="0" y="15" font-family="monospace" font-size="16" fill="%230f0" opacity="0.8">010101</text><text x="0" y="35" font-family="monospace" font-size="16" fill="%230f0" opacity="0.8">101010</text><text x="0" y="55" font-family="monospace" font-size="16" fill="%230f0" opacity="0.8">001100</text><text x="0" y="75" font-family="monospace" font-size="16" fill="%230f0" opacity="0.8">110011</text><text x="0" y="95" font-family="monospace" font-size="16" fill="%230f0" opacity="0.8">010101</text></svg>') repeat;
+        background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100"><text x="0" y="15" font-family="monospace" font-size="16" fill="%230a0" opacity="0.8">010101</text><text x="0" y="35" font-family="monospace" font-size="16" fill="%230a0" opacity="0.8">101010</text><text x="0" y="55" font-family="monospace" font-size="16" fill="%230a0" opacity="0.8">001100</text><text x="0" y="75" font-family="monospace" font-size="16" fill="%230a0" opacity="0.8">110011</text><text x="0" y="95" font-family="monospace" font-size="16" fill="%230a0" opacity="0.8">010101</text></svg>') repeat;
         animation: matrix-rain 5s linear infinite;
         pointer-events: none;
-        z-index: -1; /* Keep it in the background */
+        z-index: -1;
     }
     @keyframes matrix-rain {
         from { background-position: 0 0; }
@@ -1325,6 +1330,381 @@
         text-shadow: 0 0 5px rgba(146, 255, 31, 0.7);
     }
 
+    /* Theme: The Young Scrolls (Oblivion-inspired) */
+    .theme-the-young-scrolls body {
+      background-color: #d1c3a6; /* Parchment background */
+      animation: none;
+      font-family: 'Palatino Linotype', 'Book Antiqua', Palatino, serif;
+      color: #4e342e; /* Deep brown text */
+    }
+    .theme-the-young-scrolls .title, .theme-the-young-scrolls .welcome {
+        color: #8b0000; /* Dark red */
+        text-shadow: 1px 1px #a0875a; /* Muted gold shadow */
+        font-family: 'Merriweather', serif; /* A more "scroll-like" font */
+        font-weight: 700;
+    }
+    .theme-the-young-scrolls .footer {
+        color: #4e342e;
+        background-color: #c0b299; /* Darker parchment */
+        padding: 5px;
+        border-top: 1px solid #a0875a;
+        text-shadow: none;
+        font-family: Arial, sans-serif; /* Simpler font for footer */
+    }
+    .theme-the-young-scrolls .social-links a {
+        color: #8b0000;
+        text-shadow: 1px 1px #a0875a;
+    }
+    .theme-the-young-scrolls .social-links a:hover {
+        color: #a0875a;
+        text-shadow: 1px 1px #8b0000;
+    }
+    .theme-the-young-scrolls #splashScreen {
+      background: #c0b299; /* Darker parchment */
+      border: 5px double #a0875a; /* Muted gold double border */
+      box-shadow: inset 0 0 20px rgba(0,0,0,0.5), 0 0 30px rgba(0,0,0,0.3);
+    }
+    .theme-the-young-scrolls .splash-text {
+      color: #8b0000;
+      text-shadow: 2px 2px #a0875a, 3px 3px #6f4e37; /* Gold and brown shadow */
+      border-color: #a0875a;
+      box-shadow: 0 0 15px rgba(160, 135, 90, 0.7);
+      animation: none;
+      font-family: 'Merriweather', serif;
+      font-size: 24px;
+      line-height: 1.2;
+    }
+    .theme-the-young-scrolls .splash-subtext {
+      color: #4e342e;
+      text-shadow: none;
+      animation: none;
+      font-family: Arial, sans-serif;
+      font-size: 14px;
+      font-style: italic;
+    }
+    .theme-the-young-scrolls .how-to-use {
+      background: #fdfae6; /* Lighter parchment */
+      border: 1px solid #6f4e37; /* Dark brown border */
+      color: #4e342e;
+      text-shadow: none;
+      box-shadow: 5px 5px 10px rgba(0,0,0,0.2);
+    }
+    .theme-the-young-scrolls .how-to-use h3 {
+      color: #8b0000;
+      text-shadow: 1px 1px #a0875a;
+      font-family: 'Merriweather', serif;
+    }
+    .theme-the-young-scrolls .how-to-use li::before {
+      color: #8b0000;
+    }
+    .theme-the-young-scrolls #readyButton {
+      background: linear-gradient(to bottom, #a0875a 0%, #6f4e37 100%); /* Gold to brown gradient */
+      border: 2px outset #4e342e;
+      color: #fff;
+      text-shadow: 1px 1px #000;
+      box-shadow: 3px 3px 5px rgba(0,0,0,0.3);
+      font-family: 'Merriweather', serif;
+    }
+    .theme-the-young-scrolls #readyButton:hover {
+      background: linear-gradient(to bottom, #6f4e37 0%, #a0875a 100%);
+    }
+    .theme-the-young-scrolls #themeSelect {
+      background: #fdfae6;
+      border: 1px solid #6f4e37;
+      color: #4e342e;
+      box-shadow: inset 1px 1px 3px rgba(0,0,0,0.2);
+      font-family: Arial, sans-serif;
+    }
+    .theme-the-young-scrolls .theme-selector-container label {
+      color: #8b0000;
+      text-shadow: 1px 1px #a0875a;
+      font-family: Arial, sans-serif;
+    }
+    /* Apply to main UI elements */
+    .theme-the-young-scrolls .status-message {
+        color: #8b0000;
+        text-shadow: 1px 1px #a0875a;
+        background: rgba(209, 195, 166, 0.8);
+        border-bottom: 1px solid #a0875a;
+        padding: 5px 0;
+        font-family: Arial, sans-serif;
+    }
+    .theme-the-young-scrolls .overlay {
+        background: rgba(209, 195, 166, 0.9);
+        border: 2px solid #a0875a;
+        box-shadow: 0 0 20px rgba(0,0,0,0.5);
+    }
+    .theme-the-young-scrolls .code-input, .theme-the-young-scrolls #myPeerId, .theme-the-young-scrolls #shibaText,
+    .theme-the-young-scrolls #textInput, .theme-the-young-scrolls #receivedTextDisplay {
+        background: #fdfae6;
+        border: 1px solid #6f4e37;
+        color: #4e342e;
+        box-shadow: inset 1px 1px 3px rgba(0,0,0,0.2);
+        font-family: Arial, sans-serif;
+    }
+    .theme-the-young-scrolls .btn, .theme-the-young-scrolls #copyIdBtn, .theme-the-young-scrolls #pasteIdBtn,
+    .theme-the-young-scrolls #sendTextBtn, .theme-the-young-scrolls #paperclipButton {
+        background: linear-gradient(to bottom, #a0875a 0%, #6f4e37 100%);
+        border: 2px outset #4e342e;
+        color: #fff;
+        text-shadow: 1px 1px #000;
+        box-shadow: 2px 2px 5px rgba(0,0,0,0.3);
+        font-family: Arial, sans-serif;
+    }
+    .theme-the-young-scrolls .btn:hover, .theme-the-young-scrolls #copyIdBtn:hover, .theme-the-young-scrolls #pasteIdBtn:hover,
+    .theme-the-young-scrolls #sendTextBtn:hover, .theme-the-young-scrolls #paperclipButton:hover {
+        background: linear-gradient(to bottom, #6f4e37 0%, #a0875a 100%);
+        box-shadow: 1px 1px 3px rgba(0,0,0,0.2);
+        transform: translateY(1px) translateX(1px);
+    }
+    .theme-the-young-scrolls #progressBarContainer {
+        border-color: #a0875a;
+        box-shadow: 0 0 10px rgba(0,0,0,0.3);
+    }
+    .theme-the-young-scrolls #progressBar {
+        background: linear-gradient(90deg, #8b0000, #a0875a); /* Red to gold progress bar */
+        color: #fff;
+        text-shadow: 1px 1px #000;
+    }
+    .theme-the-young-scrolls #shibaText {
+        border-color: #6f4e37;
+        color: #4e342e;
+        text-shadow: none;
+        background: #fdfae6;
+    }
+    .theme-the-young-scrolls #paperclipText {
+        color: #4e342e;
+        text-shadow: none;
+        border-color: #6f4e37;
+        background: #fdfae6;
+    }
+    .theme-the-young-scrolls #dropZoneOverlay {
+        border-color: #a0875a;
+        background: rgba(209, 195, 166, 0.7);
+        color: #4e342e;
+        text-shadow: 1px 1px #a0875a;
+    }
+
+    /* Theme: Apples (macOS-inspired) */
+    .theme-apples body {
+        background: linear-gradient(to bottom, #f0f2f5, #e0e2e5); /* Light, subtle gradient */
+        animation: none;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
+        color: #333; /* Soft dark grey */
+    }
+    .theme-apples .title, .theme-apples .welcome {
+        color: #007aff; /* Apple blue */
+        text-shadow: 0 1px 2px rgba(0,0,0,0.1);
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        font-weight: 500;
+    }
+    .theme-apples .footer {
+        color: #666;
+        background: rgba(255, 255, 255, 0.8);
+        padding: 10px;
+        border-top: 1px solid rgba(0,0,0,0.05);
+        box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
+        text-shadow: none;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    }
+    .theme-apples .social-links a {
+        color: #007aff;
+        text-shadow: none;
+        font-weight: 400;
+    }
+    .theme-apples .social-links a:hover {
+        color: #005bb5;
+        text-shadow: none;
+    }
+    .theme-apples #splashScreen {
+        background: linear-gradient(to bottom, #f8f8f8, #e8e8e8);
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1), inset 0 0 20px rgba(255,255,255,0.8);
+        border: none;
+    }
+    .theme-apples .splash-text {
+        color: #333;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        font-weight: 700;
+        font-size: 24px;
+        text-shadow: none;
+        border: none;
+        box-shadow: none;
+        animation: none;
+        padding: 0;
+    }
+    .theme-apples .splash-subtext {
+        color: #666;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        font-size: 14px;
+        text-shadow: none;
+        animation: none;
+    }
+    .theme-apples .how-to-use {
+        background: rgba(255, 255, 255, 0.9);
+        border: 1px solid rgba(0,0,0,0.1);
+        color: #333;
+        text-shadow: none;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        border-radius: 12px;
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+    }
+    .theme-apples .how-to-use h3 {
+        color: #007aff;
+        text-shadow: none;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    }
+    .theme-apples .how-to-use li::before {
+        color: #007aff;
+    }
+    .theme-apples #readyButton {
+        background: linear-gradient(to bottom, #007aff 0%, #005bb5 100%);
+        border: none;
+        border-radius: 8px;
+        color: #fff;
+        text-shadow: 0 1px 2px rgba(0,0,0,0.1);
+        box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        font-weight: 500;
+    }
+    .theme-apples #readyButton:hover {
+        background: linear-gradient(to bottom, #005bb5 0%, #007aff 100%);
+        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        transform: translateY(1px);
+    }
+    .theme-apples #themeSelect {
+        background: #fff;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        color: #333;
+        box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        padding: 6px 10px;
+    }
+    .theme-apples .theme-selector-container label {
+        color: #333;
+        text-shadow: none;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    }
+    /* Apply to main UI elements */
+    .theme-apples .status-message {
+        color: #007aff;
+        text-shadow: none;
+        background: rgba(255, 255, 255, 0.8);
+        border-bottom: 1px solid rgba(0,0,0,0.1);
+        padding: 5px 0;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    }
+    .theme-apples .overlay {
+        background: rgba(255, 255, 255, 0.9);
+        border: none;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        backdrop-filter: blur(15px);
+        -webkit-backdrop-filter: blur(15px);
+        border-radius: 15px;
+    }
+    .theme-apples .code-input, .theme-apples #myPeerId, .theme-apples #shibaText,
+    .theme-apples #textInput, .theme-apples #receivedTextDisplay {
+        background: #fff;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        color: #333;
+        box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        padding: 8px 10px;
+    }
+    .theme-apples .btn, .theme-apples #copyIdBtn, .theme-apples #pasteIdBtn,
+    .theme-apples #sendTextBtn, .theme-apples #paperclipButton {
+        background: linear-gradient(to bottom, #007aff 0%, #005bb5 100%);
+        border: none;
+        border-radius: 8px;
+        color: #fff;
+        text-shadow: 0 1px 2px rgba(0,0,0,0.1);
+        box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        font-weight: 500;
+    }
+    .theme-apples .btn:hover, .theme-apples #copyIdBtn:hover, .theme-apples #pasteIdBtn:hover,
+    .theme-apples #sendTextBtn:hover, .theme-apples #paperclipButton:hover {
+        background: linear-gradient(to bottom, #005bb5 0%, #007aff 100%);
+        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        transform: translateY(1px);
+    }
+    .theme-apples #copyIdBtn {
+        background: #e0e0e0;
+        border: 1px solid #ccc;
+        color: #333;
+        text-shadow: none;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        font-weight: 400;
+    }
+    .theme-apples #copyIdBtn:hover {
+        background: #d0d0d0;
+    }
+    .theme-apples #pasteIdBtn {
+        background: #e0e0e0;
+        border: 1px solid #ccc;
+        color: #333;
+        text-shadow: none;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        font-weight: 400;
+    }
+    .theme-apples #pasteIdBtn:hover {
+        background: #d0d0d0;
+    }
+    .theme-apples #progressBarContainer {
+        border: 1px solid rgba(0,0,0,0.1);
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        border-radius: 5px;
+        background: #fff;
+    }
+    .theme-apples #progressBar {
+        background: linear-gradient(90deg, #32cd32, #008000); /* Standard green for progress */
+        color: #fff;
+        text-shadow: 0 1px 1px rgba(0,0,0,0.2);
+        border-radius: 5px;
+    }
+    .theme-apples #shibaText {
+        border-color: #ccc;
+        color: #333;
+        text-shadow: none;
+        background: rgba(255, 255, 255, 0.8);
+        border-radius: 8px;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    .theme-apples #shibaImage {
+        filter: none; /* Remove pixel filter for cleaner look */
+    }
+    .theme-apples #paperclipButton {
+        background: #e0e0e0;
+        border: 1px solid #ccc;
+        border-radius: 50%; /* Make it round */
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        color: #333;
+        font-size: 40px; /* Slightly smaller emoji */
+        width: 60px; /* Make it round */
+        height: 60px; /* Make it round */
+    }
+    .theme-apples #paperclipButton:hover {
+        background: #d0d0d0;
+        transform: scale(1.05); /* Gentle scale */
+        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+    .theme-apples #paperclipText {
+        color: #666;
+        text-shadow: none;
+        border: none;
+        background: none;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    }
+    .theme-apples #dropZoneOverlay {
+        border: 4px dashed #007aff;
+        background: rgba(255, 255, 255, 0.7);
+        color: #007aff;
+        text-shadow: 0 1px 2px rgba(0,0,0,0.1);
+        border-radius: 20px;
+    }
+
 
     /* Media queries for responsiveness */
     @media (max-width: 768px) {
@@ -1350,6 +1730,11 @@
         padding: 8px;
         width: 52px; /* Adjusted for smaller screens */
         height: 52px; /* Adjusted for smaller screens */
+      }
+      .theme-apples #paperclipButton {
+          width: 50px;
+          height: 50px;
+          font-size: 30px;
       }
       #paperclipText {
         font-size: 8px;
@@ -1407,10 +1792,14 @@
       <select id="themeSelect">
         <option value="vaporwave" selected>Vaporwave (Default)</option>
         <option value="computer-guy">Computer Guy (Matrix)</option>
-        <option value="gas">Gas</option> <option value="neon">Neon (Black/Orange)</option>
+        <option value="gas">Gas</option>
+        <option value="neon">Neon (Black/Orange)</option>
         <option value="nostalgia-xp">Nostalgia (Windows XP)</option>
         <option value="nostalgia-vista">Nostalgia (Windows Vista)</option>
-        <option value="a-box-720">A Box 720 (Xbox 360)</option> </select>
+        <option value="a-box-720">A Box 720 (Xbox 360)</option>
+        <option value="the-young-scrolls">The Young Scrolls (Oblivion)</option>
+        <option value="apples">Apples (macOS)</option>
+      </select>
     </div>
 
     <button id="readyButton">Ready!</button>
@@ -1432,7 +1821,8 @@
     <input type="text" id="roomCodeInput" class="code-input" placeholder="Enter peer ID to connect" maxlength="36">
     <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 10px;">
         <button id="connectBtn" class="btn">Connect</button>
-        <button id="pasteIdBtn" class="btn">Paste ID</button> <button id="newIdBtn" class="btn">Generate New ID</button>
+        <button id="pasteIdBtn" class="btn">Paste ID</button>
+        <button id="newIdBtn" class="btn">Generate New ID</button>
     </div>
   </div>
 
@@ -1513,8 +1903,7 @@
     // New theme elements
     const themeSelect = document.getElementById('themeSelect');
     const body = document.body;
-    // Updated THEMES array to include 'a-box-720' and adjusted 'gas' name
-    const THEMES = ['vaporwave', 'computer-guy', 'gas', 'neon', 'nostalgia-xp', 'nostalgia-vista', 'a-box-720'];
+    const THEMES = ['vaporwave', 'computer-guy', 'gas', 'neon', 'nostalgia-xp', 'nostalgia-vista', 'a-box-720', 'the-young-scrolls', 'apples'];
 
     roomCodeInput.setAttribute('maxlength', PEER_ID_EXPECTED_LENGTH);
 
