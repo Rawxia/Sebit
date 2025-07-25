@@ -495,11 +495,11 @@
     <div class="how-to-use">
         <h3>Quick How-To:</h3>
         <ul>
-            <li>1. Open on **two devices** to begin.</li>
-            <li>2. One person **shares their Unique ID**.</li>
-            <li>3. The other person **enters that ID** and clicks "Connect".</li>
-            <li>4. Once connected, **drag & drop** files or folders anywhere on the page to send.</li>
-            <li>5. Or, **click the 📎 icon** to browse and attach files!</li>
+            <li>1. Open on two devices to begin.</li>
+            <li>2. One person shares their Unique ID.</li>
+            <li>3. The other person enters that ID and clicks "Connect".</li>
+            <li>4. Once connected, drag & drop files or folders anywhere on the page to send.</li>
+            <li>5. Or, click the 📎 icon to browse and attach files!</li>
         </ul>
         <p>(Connection status will be displayed below.)</p>
     </div>
@@ -658,11 +658,12 @@
             updateStatus('PeerJS not ready. Please wait or refresh.', '#f00');
             return;
         }
-        if (remoteId === currentRoomId) {
+        // Special condition for "testtestseb" to allow self-connection
+        if (remoteId === currentRoomId && remoteId !== "testtestseb") {
             updateStatus('Cannot connect to yourself!', '#f00');
             return;
         }
-        if (remoteId.length !== PEER_ID_EXPECTED_LENGTH) {
+        if (remoteId.length !== PEER_ID_EXPECTED_LENGTH && remoteId !== "testtestseb") {
             updateStatus(`Please enter a valid Peer ID of ${PEER_ID_EXPECTED_LENGTH} characters.`, '#f00');
             return;
         }
