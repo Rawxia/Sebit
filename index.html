@@ -447,6 +447,68 @@
         border: 1px solid #77ffff;
     }
 
+    /* Styles for the new text input/output area */
+    #textTransferContainer {
+      position: fixed;
+      bottom: 120px; /* Adjust based on footer and progress bar */
+      left: 50%;
+      transform: translateX(-50%);
+      width: 90%;
+      max-width: 500px;
+      display: none; /* Hidden by default */
+      flex-direction: column;
+      gap: 10px;
+      z-index: 50;
+    }
+
+    #textInput {
+      width: calc(100% - 24px); /* Account for padding and border */
+      height: 80px;
+      background: #333;
+      border: 2px solid #77ffff;
+      padding: 10px;
+      font-family: 'Press Start 2P', monospace;
+      color: #ff77ff;
+      font-size: 12px;
+      resize: vertical; /* Allow vertical resizing */
+      box-shadow: 0 0 10px rgba(119, 255, 255, 0.5);
+      outline: none;
+    }
+
+    #sendTextBtn {
+      background: #00aaff;
+      border: 2px solid #0077cc;
+      padding: 8px 15px;
+      font-size: 12px;
+      color: #fff;
+      cursor: pointer;
+      box-shadow: 2px 2px #0077cc;
+      transition: all 0.1s ease;
+      font-family: 'Press Start 2P', monospace;
+      align-self: flex-end; /* Align to the right */
+    }
+
+    #sendTextBtn:hover {
+      background: #0077cc;
+      box-shadow: 1px 1px #00aaff;
+      transform: translateY(1px) translateX(1px);
+    }
+
+    #receivedTextDisplay {
+      background: rgba(0, 0, 0, 0.8);
+      border: 2px solid #ff77ff;
+      padding: 10px;
+      font-family: 'Press Start 2P', monospace;
+      color: #77ffff;
+      font-size: 12px;
+      white-space: pre-wrap; /* Preserves whitespace and wraps text */
+      word-wrap: break-word; /* Breaks long words if necessary */
+      max-height: 150px; /* Limit height and add scroll if needed */
+      overflow-y: auto;
+      box-shadow: 0 0 10px rgba(255, 119, 255, 0.5);
+      margin-top: 10px; /* Space between input and output */
+      display: none; /* Hidden by default, show when text received */
+    }
 
     /* Media queries for responsiveness */
     @media (max-width: 768px) {
@@ -479,6 +541,18 @@
       #paperclipButtonContainer {
         top: 30%; /* Slightly higher on mobile */
       }
+      #textTransferContainer {
+        bottom: 80px; /* Adjust for smaller footer and progress bar */
+        width: 95%; /* Make it slightly wider on mobile */
+      }
+      #textInput, #receivedTextDisplay {
+        font-size: 10px;
+        height: 60px;
+      }
+      #sendTextBtn {
+        font-size: 10px;
+        padding: 6px 10px;
+      }
     }
 
   </style>
@@ -500,6 +574,7 @@
             <li>3. The other person enters that ID and clicks "Connect".</li>
             <li>4. Once connected, drag & drop files or folders anywhere on the page to send.</li>
             <li>5. Or, click the 📎 icon to browse and attach files!</li>
+            <li>6. **NEW!** Send text messages for easy copy & paste.</li>
         </ul>
         <p>(Connection status will be displayed below.)</p>
     </div>
@@ -547,6 +622,12 @@
     <div id="paperclipText">Drag & drop files or click to attach</div>
   </div>
 
+  <div id="textTransferContainer">
+    <textarea id="textInput" placeholder="Type message to send..."></textarea>
+    <button id="sendTextBtn">Send Text</button>
+    <div id="receivedTextDisplay" title="Click to copy received text"></div>
+  </div>
+
   <div class="footer">
     Created by Rawxia - Privacy in mind
     <div class="social-links">
@@ -583,9 +664,13 @@
     const shibaText = document.getElementById('shibaText');
     const copyIdBtn = document.getElementById('copyIdBtn');
     const readyButton = document.getElementById('readyButton');
-    const paperclipButtonContainer = document.getElementById('paperclipButtonContainer'); // New
+    const paperclipButtonContainer = document.getElementById('paperclipButtonContainer');
     const paperclipButton = document.getElementById('paperclipButton');
     const fileInput = document.getElementById('fileInput');
+    const textTransferContainer = document.getElementById('textTransferContainer'); // New
+    const textInput = document.getElementById('textInput'); // New
+    const sendTextBtn = document.getElementById('sendTextBtn'); // New
+    const receivedTextDisplay = document.getElementById('receivedTextDisplay'); // New
 
     roomCodeInput.setAttribute('maxlength', PEER_ID_EXPECTED_LENGTH);
 
@@ -630,6 +715,7 @@
         shibaContainer.classList.add('active');
         shibaText.textContent = `This Shiba Inu is your other device (${conn.peer.substring(0,8)}...)!`;
         paperclipButtonContainer.style.display = 'flex'; // Show the container
+        textTransferContainer.style.display = 'flex'; // Show text transfer container
       });
 
       peer.on('error', (err) => {
@@ -650,6 +736,7 @@
           shibaContainer.classList.remove('active');
           roomOverlay.style.display = 'flex';
           paperclipButtonContainer.style.display = 'none'; // Hide the container
+          textTransferContainer.style.display = 'none'; // Hide text transfer container
       });
     }
 
@@ -682,6 +769,7 @@
             shibaContainer.classList.add('active');
             shibaText.textContent = `This Shiba Inu is your other device (${conn.peer.substring(0,8)}...)!`;
             paperclipButtonContainer.style.display = 'flex'; // Show the container
+            textTransferContainer.style.display = 'flex'; // Show text transfer container
         });
 
         conn.on('error', (err) => {
@@ -692,6 +780,7 @@
             shibaContainer.classList.remove('active');
             roomOverlay.style.display = 'flex';
             paperclipButtonContainer.style.display = 'none'; // Hide the container
+            textTransferContainer.style.display = 'none'; // Hide text transfer container
         });
 
         conn.on('close', () => {
@@ -703,6 +792,7 @@
             roomOverlay.style.display = 'flex';
             if (Object.keys(peerConnections).length === 0) {
                 paperclipButtonContainer.style.display = 'none'; // Hide the container
+                textTransferContainer.style.display = 'none'; // Hide text transfer container
             }
         });
         conn.on('error', (err) => {
@@ -714,6 +804,7 @@
             roomOverlay.style.display = 'flex';
             if (Object.keys(peerConnections).length === 0) {
                 paperclipButtonContainer.style.display = 'none'; // Hide the container
+                textTransferContainer.style.display = 'none'; // Hide text transfer container
             }
         });
     }
@@ -763,7 +854,7 @@
                     }
                 } else {
                     downloadBlobAsFile(blob, currentReceivingFile.relativePath);
-                    updateStatus(`📁 Received '${currentReceivingFile.relativePath}'!`);
+                    updateStatus(`📁 Received '${currentRecevingFile.relativePath}'!`);
                 }
 
                 console.log(`Successfully received and processed ${currentReceivingFile.relativePath}`);
@@ -784,9 +875,24 @@
                     totalReceivedFiles = 0;
                 }
               }
+            } else if (msg.type === 'text-message') { // Handle incoming text messages
+                console.log(`Received text message from ${remoteId}:`, msg.text);
+                receivedTextDisplay.textContent = `Received from ${remoteId.substring(0, 8)}...\n\n${msg.text}`;
+                receivedTextDisplay.style.display = 'block'; // Show the display area
+                updateStatus(`New text message received from ${remoteId.substring(0, 8)}...! Click message to copy.`, '#ffdd00');
             }
           } catch (e) {
             console.warn("Received non-JSON string or malformed JSON:", data);
+            // If it's not JSON, it could be a file chunk for the current file
+            if (currentReceivingFile) {
+                currentReceivingFile.buffer.push(data);
+                receivedBufferChunks.push(data);
+                currentReceivingFile.receivedSize += data.byteLength || data.size;
+                receivedBytesForCurrentFile += data.byteLength || data.size;
+
+                const percentage = (receivedBytesForCurrentFile / currentReceivingFile.fileSize) * 100;
+                updateProgressBar(percentage, `Receiving '${currentReceivingFile.relativePath}': ${percentage.toFixed(0)}%`);
+            }
           }
         } else {
           if (currentReceivingFile) {
@@ -808,8 +914,11 @@
         isFileBeingSent = false;
         shibaContainer.classList.remove('active');
         roomOverlay.style.display = 'flex';
+        receivedTextDisplay.style.display = 'none'; // Hide text display
+        receivedTextDisplay.textContent = ''; // Clear text
         if (Object.keys(peerConnections).length === 0) {
             paperclipButtonContainer.style.display = 'none'; // Hide the container
+            textTransferContainer.style.display = 'none'; // Hide text transfer container
         }
       });
       conn.on('error', (err) => {
@@ -819,8 +928,11 @@
         isFileBeingSent = false;
         shibaContainer.classList.remove('active');
         roomOverlay.style.display = 'flex';
+        receivedTextDisplay.style.display = 'none'; // Hide text display
+        receivedTextDisplay.textContent = ''; // Clear text
         if (Object.keys(peerConnections).length === 0) {
             paperclipButtonContainer.style.display = 'none'; // Hide the container
+            textTransferContainer.style.display = 'none'; // Hide text transfer container
         }
       });
     }
@@ -935,8 +1047,6 @@
             sentFilesCount = 0;
         }
     }
-
-    const activeBubbles = {};
 
     function addBubble(id) {
       if (activeBubbles[id]) return;
@@ -1182,6 +1292,54 @@
         }
         fileInput.value = '';
     });
+
+    // New: Send text message
+    sendTextBtn.addEventListener('click', () => {
+        const messageText = textInput.value.trim();
+        if (messageText === '') {
+            updateStatus('Please type a message to send.', '#f00');
+            return;
+        }
+
+        if (Object.keys(peerConnections).length === 0) {
+            updateStatus("No active connections to send text to. Connect to a peer first!", '#f00');
+            return;
+        }
+
+        for (const peerId in peerConnections) {
+            const conn = peerConnections[peerId];
+            if (conn && conn.open) {
+                try {
+                    conn.send(JSON.stringify({
+                        type: 'text-message',
+                        text: messageText
+                    }));
+                    updateStatus(`Text message sent to ${peerId.substring(0, 8)}...`, '#00ffcc');
+                    textInput.value = ''; // Clear input after sending
+                } catch (error) {
+                    console.error(`Error sending text to ${peerId}:`, error);
+                    updateStatus(`Failed to send text to ${peerId.substring(0, 8)}: ${error.message}`, '#f00');
+                }
+            } else {
+                updateStatus(`Skipping ${peerId}: connection not open.`, '#f90');
+            }
+        }
+    });
+
+    // New: Copy received text on click
+    receivedTextDisplay.addEventListener('click', async () => {
+        const textToCopy = receivedTextDisplay.textContent.replace(/^Received from [a-zA-Z0-9]+\.\.\.\n\n/, ''); // Remove the header
+        if (textToCopy) {
+            try {
+                await navigator.clipboard.writeText(textToCopy);
+                updateStatus('Received text copied to clipboard!', '#00ffcc');
+            } catch (err) {
+                console.error('Failed to copy text: ', err);
+                updateStatus('Failed to copy text. Please copy manually.', '#f00');
+            }
+        }
+    });
+
 
     window.onload = () => {
         splashScreen.style.display = 'flex';
