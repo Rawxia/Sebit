@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Sebit Lan Share</title>
   <link rel="icon" type="image/gif" href="favicon.gif">
-  <style>
+  <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet"> <style>
     /* Base Styles - Default (Vaporwave-inspired) */
     @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
     body, html {
@@ -44,7 +44,7 @@
     }
     .bubble {
       position: absolute; width: 32px; height: 32px;
-      background: url('https://i.imgur.com/minecraft-bubble.png') no-repeat center/contain;
+      background: url('minecraft-bubble.png') no-repeat center/contain; /* Changed to self-hosted for consistency */
       image-rendering: pixelated;
       animation: floatUp 8s linear infinite;
       cursor: pointer;
@@ -83,6 +83,7 @@
     /* Keep fileInput hidden */
     #fileInput { display: none; }
 
+    /* Main UI elements default styles */
     .overlay {
       position: absolute; top: 0; left: 0; width: 100%; height: 100%;
       background: rgba(0, 0, 0, 0.7);
@@ -566,6 +567,7 @@
     .theme-computer-guy body {
       background: #000;
       animation: none; /* Disable ocean animation */
+      font-family: 'VT323', monospace; /* Apply to body for full site */
     }
     .theme-computer-guy #splashScreen {
       background: #000;
@@ -574,7 +576,6 @@
     }
     .theme-computer-guy .splash-text,
     .theme-computer-guy .splash-subtext {
-      font-family: 'VT323', monospace; /* A more "Matrix" font */
       color: #0f0; /* Green text */
       text-shadow: 0 0 5px rgba(0, 255, 0, 0.7), 0 0 10px rgba(0, 255, 0, 0.5);
       border-color: #0f0;
@@ -608,15 +609,77 @@
       background: #0f0;
       color: #000;
     }
+    /* Apply to main UI elements */
+    .theme-computer-guy .title, .theme-computer-guy .welcome, .theme-computer-guy .footer {
+        color: #0f0;
+        text-shadow: 0 0 5px rgba(0, 255, 0, 0.7);
+        font-family: 'VT323', monospace;
+    }
+    .theme-computer-guy .status-message {
+        color: #0f0;
+        text-shadow: 0 0 5px rgba(0, 255, 0, 0.7);
+        background: rgba(0, 0, 0, 0.8);
+        border-bottom: 1px solid #0f0;
+        padding: 5px 0;
+    }
+    .theme-computer-guy .overlay {
+        background: rgba(0, 0, 0, 0.9);
+        border: 2px solid #0f0;
+        box-shadow: 0 0 15px rgba(0, 255, 0, 0.7);
+    }
+    .theme-computer-guy .code-input, .theme-computer-guy #myPeerId, .theme-computer-guy #shibaText,
+    .theme-computer-guy #textInput, .theme-computer-guy #receivedTextDisplay {
+        background: #010;
+        border: 2px solid #0f0;
+        color: #0f0;
+        box-shadow: 0 0 8px rgba(0, 255, 0, 0.5);
+        font-family: 'VT323', monospace;
+    }
+    .theme-computer-guy .btn, .theme-computer-guy #copyIdBtn, .theme-computer-guy #pasteIdBtn, .theme-computer-guy #sendTextBtn,
+    .theme-computer-guy #paperclipButton {
+        background: #030;
+        border: 2px solid #0f0;
+        color: #0f0;
+        box-shadow: 0 0 8px rgba(0, 255, 0, 0.5);
+        font-family: 'VT323', monospace;
+    }
+    .theme-computer-guy .btn:hover, .theme-computer-guy #copyIdBtn:hover, .theme-computer-guy #pasteIdBtn:hover,
+    .theme-computer-guy #sendTextBtn:hover, .theme-computer-guy #paperclipButton:hover {
+        background: #0f0;
+        color: #000;
+        box-shadow: 0 0 12px rgba(0, 255, 0, 0.8);
+    }
+    .theme-computer-guy #progressBarContainer {
+        border-color: #0f0;
+        box-shadow: 0 0 10px rgba(0, 255, 0, 0.5);
+    }
+    .theme-computer-guy #progressBar {
+        background: linear-gradient(90deg, #0a0, #0f0);
+    }
+    .theme-computer-guy #shibaText {
+        border-color: #0f0;
+        text-shadow: 0 0 5px rgba(0, 255, 0, 0.7);
+    }
+    .theme-computer-guy #paperclipText {
+        color: #0f0;
+        text-shadow: 0 0 5px rgba(0, 255, 0, 0.7);
+        border-color: #0f0;
+        background: rgba(0, 0, 0, 0.7);
+    }
+    .theme-computer-guy #dropZoneOverlay {
+        border-color: #0f0;
+        background: rgba(0, 100, 0, 0.5);
+    }
     /* Add Matrix rain effect */
-    .theme-computer-guy #splashScreen::after {
+    .theme-computer-guy #splashScreen::after,
+    .theme-computer-guy body::after { /* Apply rain to full body */
         content: "";
         position: absolute;
         top: 0; left: 0; right: 0; bottom: 0;
         background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100"><text x="0" y="15" font-family="monospace" font-size="16" fill="%230f0" opacity="0.8">010101</text><text x="0" y="35" font-family="monospace" font-size="16" fill="%230f0" opacity="0.8">101010</text><text x="0" y="55" font-family="monospace" font-size="16" fill="%230f0" opacity="0.8">001100</text><text x="0" y="75" font-family="monospace" font-size="16" fill="%230f0" opacity="0.8">110011</text><text x="0" y="95" font-family="monospace" font-size="16" fill="%230f0" opacity="0.8">010101</text></svg>') repeat;
         animation: matrix-rain 5s linear infinite;
         pointer-events: none;
-        z-index: 2; /* Below splash screen content but above background */
+        z-index: -1; /* Keep it in the background */
     }
     @keyframes matrix-rain {
         from { background-position: 0 0; }
@@ -624,10 +687,16 @@
     }
 
 
-    /* Theme: Gas (Steam Green 2004) */
+    /* Theme: Gas (Steam Green) */
     .theme-gas body {
       background-color: #171d25; /* Dark bluish-grey */
       animation: none;
+      font-family: Arial, sans-serif; /* A more traditional font */
+    }
+    .theme-gas .title, .theme-gas .welcome, .theme-gas .footer {
+        color: #66c0f4;
+        text-shadow: 1px 1px #000;
+        font-family: Arial, sans-serif;
     }
     .theme-gas #splashScreen {
       background-color: #1a202c;
@@ -665,6 +734,7 @@
       color: #fff;
       box-shadow: 0 0 10px rgba(0,0,0,0.5);
       text-shadow: 1px 1px #000;
+      font-family: Arial, sans-serif;
     }
     .theme-gas #readyButton:hover,
     .theme-gas #themeSelect:hover {
@@ -674,12 +744,71 @@
       color: #d1d1d1;
       text-shadow: 1px 1px #000;
     }
+    /* Apply to main UI elements */
+    .theme-gas .overlay {
+        background: rgba(26, 32, 44, 0.9);
+        border: 2px solid #4a6c8d;
+        box-shadow: 0 0 15px rgba(0, 0, 0, 0.7);
+    }
+    .theme-gas .code-input, .theme-gas #myPeerId, .theme-gas #shibaText,
+    .theme-gas #textInput, .theme-gas #receivedTextDisplay {
+        background: #2a313c;
+        border: 2px solid #4a6c8d;
+        color: #d1d1d1;
+        box-shadow: inset 0 0 5px rgba(0,0,0,0.3);
+        font-family: Arial, sans-serif;
+    }
+    .theme-gas .btn, .theme-gas #copyIdBtn, .theme-gas #pasteIdBtn, .theme-gas #sendTextBtn,
+    .theme-gas #paperclipButton {
+        background: linear-gradient(to bottom, #417a9b 5%, #2b556c 100%);
+        border: 2px solid #2a475e;
+        color: #fff;
+        box-shadow: 2px 2px #000;
+        text-shadow: 1px 1px #000;
+        font-family: Arial, sans-serif;
+    }
+    .theme-gas .btn:hover, .theme-gas #copyIdBtn:hover, .theme-gas #pasteIdBtn:hover,
+    .theme-gas #sendTextBtn:hover, .theme-gas #paperclipButton:hover {
+        background: linear-gradient(to bottom, #2b556c 5%, #417a9b 100%);
+        box-shadow: 1px 1px #000;
+        transform: translateY(1px) translateX(1px);
+    }
+    .theme-gas #progressBarContainer {
+        border-color: #4a6c8d;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    }
+    .theme-gas #progressBar {
+        background: linear-gradient(90deg, #5185a8, #66c0f4);
+        color: #1a202c;
+        text-shadow: none;
+    }
+    .theme-gas #shibaText {
+        border-color: #4a6c8d;
+        color: #d1d1d1;
+        text-shadow: 1px 1px #000;
+    }
+    .theme-gas #paperclipText {
+        color: #d1d1d1;
+        text-shadow: 1px 1px #000;
+        border-color: #4a6c8d;
+        background: rgba(26, 32, 44, 0.6);
+    }
+    .theme-gas #dropZoneOverlay {
+        border-color: #66c0f4;
+        background: rgba(26, 32, 44, 0.7);
+        color: #66c0f4;
+        text-shadow: 1px 1px #000;
+    }
 
 
     /* Theme: Neon (Black and Orange) */
     .theme-neon body {
       background-color: #000;
       animation: none;
+    }
+    .theme-neon .title, .theme-neon .welcome, .theme-neon .footer {
+        color: #ff6600;
+        text-shadow: 0 0 5px #ff6600, 0 0 15px #ff6600;
     }
     .theme-neon #splashScreen {
       background-color: #000;
@@ -727,12 +856,75 @@
       from { text-shadow: 0 0 5px #ff6600, 0 0 15px #ff6600, 0 0 25px #ff6600; }
       to { text-shadow: 0 0 10px #ff6600, 0 0 20px #ff6600, 0 0 30px #ff6600; }
     }
-
+    /* Apply to main UI elements */
+    .theme-neon .status-message {
+        color: #ff6600;
+        text-shadow: 0 0 5px #ff6600;
+        background: rgba(0, 0, 0, 0.8);
+        border-bottom: 1px solid #ff6600;
+        padding: 5px 0;
+    }
+    .theme-neon .overlay {
+        background: rgba(0, 0, 0, 0.9);
+        border: 2px solid #ff6600;
+        box-shadow: 0 0 15px rgba(255, 100, 0, 0.7);
+    }
+    .theme-neon .code-input, .theme-neon #myPeerId, .theme-neon #shibaText,
+    .theme-neon #textInput, .theme-neon #receivedTextDisplay {
+        background: #1a0000;
+        border: 2px solid #ff6600;
+        color: #ff6600;
+        box-shadow: 0 0 8px rgba(255, 100, 0, 0.5);
+    }
+    .theme-neon .btn, .theme-neon #copyIdBtn, .theme-neon #pasteIdBtn, .theme-neon #sendTextBtn,
+    .theme-neon #paperclipButton {
+        background: #331a00;
+        border: 2px solid #ff6600;
+        color: #ff6600;
+        box-shadow: 0 0 8px rgba(255, 100, 0, 0.5);
+    }
+    .theme-neon .btn:hover, .theme-neon #copyIdBtn:hover, .theme-neon #pasteIdBtn:hover,
+    .theme-neon #sendTextBtn:hover, .theme-neon #paperclipButton:hover {
+        background: #ff6600;
+        color: #000;
+        box-shadow: 0 0 12px rgba(255, 100, 0, 0.8);
+    }
+    .theme-neon #progressBarContainer {
+        border-color: #ff6600;
+        box-shadow: 0 0 10px rgba(255, 100, 0, 0.5);
+    }
+    .theme-neon #progressBar {
+        background: linear-gradient(90deg, #ff9900, #ff6600);
+        color: #000;
+        text-shadow: none;
+    }
+    .theme-neon #shibaText {
+        border-color: #ff6600;
+        text-shadow: 0 0 5px #ff6600;
+    }
+    .theme-neon #paperclipText {
+        color: #ff6600;
+        text-shadow: 0 0 5px #ff6600;
+        border-color: #ff6600;
+        background: rgba(0, 0, 0, 0.7);
+    }
+    .theme-neon #dropZoneOverlay {
+        border-color: #ff6600;
+        background: rgba(255, 100, 0, 0.5);
+        color: #ff6600;
+        text-shadow: 1px 1px #000;
+    }
 
     /* Theme: Nostalgia (Windows XP) */
     .theme-nostalgia-xp body {
       background: #3a6ea5; /* XP Blue */
       animation: none;
+      font-family: 'Segoe UI', Arial, sans-serif; /* Cleaner font for XP feel */
+    }
+    .theme-nostalgia-xp .title, .theme-nostalgia-xp .welcome, .theme-nostalgia-xp .footer {
+        color: #fff;
+        text-shadow: 1px 1px #000;
+        font-family: 'Segoe UI', Arial, sans-serif;
     }
     .theme-nostalgia-xp #splashScreen {
       background: linear-gradient(to bottom, #0a246a 0%, #1e5799 100%); /* XP Gradient */
@@ -742,7 +934,7 @@
     }
     .theme-nostalgia-xp .splash-text {
       color: #fff;
-      font-family: sans-serif; /* Cleaner font for XP feel */
+      font-family: 'Segoe UI', sans-serif; /* Cleaner font for XP feel */
       text-shadow: 1px 1px #000;
       border-color: #9ac2ff;
       box-shadow: inset 0 0 5px rgba(255,255,255,0.3), 0 0 10px rgba(0, 51, 102, 0.5);
@@ -756,10 +948,9 @@
     .theme-nostalgia-xp .how-to-use {
       background: #e9e9e9; /* Light grey dialog */
       border: 1px solid #7f9db9; /* Grey border */
-      color: #333; /* Dark text */
+      color: #000; /* Dark text */
       text-shadow: none;
       box-shadow: 3px 3px 8px rgba(0,0,0,0.3);
-      color: #000; /* Darker text */
     }
     .theme-nostalgia-xp .how-to-use h3 {
       color: #0a246a; /* XP Dark Blue */
@@ -773,7 +964,7 @@
       border: 1px solid #5a87b7;
       color: #000;
       box-shadow: 1px 1px 3px rgba(0,0,0,0.3);
-      font-family: sans-serif;
+      font-family: 'Segoe UI', sans-serif;
     }
     .theme-nostalgia-xp #readyButton:hover {
       background: linear-gradient(to bottom, #a4c9e3 0%, #d6e8f8 100%);
@@ -783,18 +974,87 @@
       border: 1px solid #7f9db9;
       color: #000;
       box-shadow: inset 1px 1px 2px rgba(0,0,0,0.2);
-      font-family: sans-serif;
+      font-family: 'Segoe UI', sans-serif;
     }
     .theme-nostalgia-xp .theme-selector-container label {
       color: #fff;
       text-shadow: 1px 1px #000;
-      font-family: sans-serif;
+      font-family: 'Segoe UI', sans-serif;
     }
+    /* Apply to main UI elements */
+    .theme-nostalgia-xp .status-message {
+        color: #fff;
+        text-shadow: 1px 1px #000;
+        background: rgba(0, 51, 102, 0.8);
+        border-bottom: 1px solid #fff;
+        padding: 5px 0;
+    }
+    .theme-nostalgia-xp .overlay {
+        background: linear-gradient(to bottom, #0a246a 0%, #1e5799 100%);
+        border: 1px solid #003366;
+        box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.5);
+    }
+    .theme-nostalgia-xp .code-input, .theme-nostalgia-xp #myPeerId, .theme-nostalgia-xp #shibaText,
+    .theme-nostalgia-xp #textInput, .theme-nostalgia-xp #receivedTextDisplay {
+        background: #e0e0e0;
+        border: 1px solid #7f9db9;
+        color: #000;
+        box-shadow: inset 1px 1px 2px rgba(0,0,0,0.2);
+        font-family: 'Segoe UI', sans-serif;
+    }
+    .theme-nostalgia-xp .btn, .theme-nostalgia-xp #copyIdBtn, .theme-nostalgia-xp #pasteIdBtn,
+    .theme-nostalgia-xp #sendTextBtn, .theme-nostalgia-xp #paperclipButton {
+        background: linear-gradient(to bottom, #d6e8f8 0%, #a4c9e3 100%);
+        border: 1px solid #5a87b7;
+        color: #000;
+        box-shadow: 1px 1px 3px rgba(0,0,0,0.3);
+        font-family: 'Segoe UI', sans-serif;
+    }
+    .theme-nostalgia-xp .btn:hover, .theme-nostalgia-xp #copyIdBtn:hover, .theme-nostalgia-xp #pasteIdBtn:hover,
+    .theme-nostalgia-xp #sendTextBtn:hover, .theme-nostalgia-xp #paperclipButton:hover {
+        background: linear-gradient(to bottom, #a4c9e3 0%, #d6e8f8 100%);
+        box-shadow: 0 0 2px rgba(0,0,0,0.2);
+        transform: translateY(1px) translateX(1px);
+    }
+    .theme-nostalgia-xp #progressBarContainer {
+        border-color: #5a87b7;
+        box-shadow: 0 0 8px rgba(0,0,0,0.3);
+    }
+    .theme-nostalgia-xp #progressBar {
+        background: linear-gradient(90deg, #5cb85c, #449d44); /* Green XP progress bar */
+        color: #fff;
+        text-shadow: 1px 1px #000;
+    }
+    .theme-nostalgia-xp #shibaText {
+        border-color: #5a87b7;
+        color: #000;
+        text-shadow: none;
+        background: #e0e0e0;
+    }
+    .theme-nostalgia-xp #paperclipText {
+        color: #000;
+        text-shadow: none;
+        border-color: #5a87b7;
+        background: #e0e0e0;
+    }
+    .theme-nostalgia-xp #dropZoneOverlay {
+        border-color: #5a87b7;
+        background: rgba(58, 110, 165, 0.7);
+        color: #fff;
+        text-shadow: 1px 1px #000;
+    }
+
 
     /* Theme: Nostalgia (Windows Vista) */
     .theme-nostalgia-vista body {
       background: linear-gradient(to bottom, #0e2b4d 0%, #081a2f 100%); /* Vista background gradient */
       animation: none;
+      font-family: 'Segoe UI', Arial, sans-serif; /* Vista font */
+    }
+    .theme-nostalgia-vista .title, .theme-nostalgia-vista .welcome, .theme-nostalgia-vista .footer {
+        color: #c0e0ff;
+        text-shadow: 0 0 5px rgba(192, 224, 255, 0.5);
+        font-family: 'Segoe UI', Arial, sans-serif;
     }
     .theme-nostalgia-vista #splashScreen {
       background: radial-gradient(circle at center, rgba(30,39,52,0.9) 0%, rgba(10,13,17,0.95) 100%);
@@ -856,6 +1116,213 @@
       color: #c0e0ff;
       text-shadow: 0 0 5px rgba(192, 224, 255, 0.5);
       font-family: 'Segoe UI', sans-serif;
+    }
+    /* Apply to main UI elements */
+    .theme-nostalgia-vista .status-message {
+        color: #c0e0ff;
+        text-shadow: 0 0 5px rgba(192, 224, 255, 0.5);
+        background: rgba(14, 43, 77, 0.8);
+        border-bottom: 1px solid rgba(192, 224, 255, 0.2);
+        padding: 5px 0;
+    }
+    .theme-nostalgia-vista .overlay {
+        background: radial-gradient(circle at center, rgba(30,39,52,0.9) 0%, rgba(10,13,17,0.95) 100%);
+        border: 1px solid rgba(255,255,255,0.1);
+        box-shadow: 0 0 30px rgba(0,0,0,0.7);
+        backdrop-filter: blur(5px);
+        -webkit-backdrop-filter: blur(5px);
+    }
+    .theme-nostalgia-vista .code-input, .theme-nostalgia-vista #myPeerId, .theme-nostalgia-vista #shibaText,
+    .theme-nostalgia-vista #textInput, .theme-nostalgia-vista #receivedTextDisplay {
+        background: rgba(30, 39, 52, 0.7);
+        border: 1px solid rgba(192, 224, 255, 0.2);
+        color: #c0e0ff;
+        box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
+        font-family: 'Segoe UI', sans-serif;
+        backdrop-filter: blur(5px);
+        -webkit-backdrop-filter: blur(5px);
+    }
+    .theme-nostalgia-vista .btn, .theme-nostalgia-vista #copyIdBtn, .theme-nostalgia-vista #pasteIdBtn,
+    .theme-nostalgia-vista #sendTextBtn, .theme-nostalgia-vista #paperclipButton {
+        background: linear-gradient(to bottom, #729fcf 0%, #4a75a7 100%);
+        border: 1px solid #36577e;
+        color: #fff;
+        box-shadow: 0 0 10px rgba(0,0,0,0.5);
+        font-family: 'Segoe UI', sans-serif;
+        text-shadow: 1px 1px #000;
+    }
+    .theme-nostalgia-vista .btn:hover, .theme-nostalgia-vista #copyIdBtn:hover, .theme-nostalgia-vista #pasteIdBtn:hover,
+    .theme-nostalgia-vista #sendTextBtn:hover, .theme-nostalgia-vista #paperclipButton:hover {
+        background: linear-gradient(to bottom, #4a75a7 0%, #729fcf 100%);
+        box-shadow: 0 0 5px rgba(0,0,0,0.5);
+        transform: translateY(1px) translateX(1px);
+    }
+    .theme-nostalgia-vista #progressBarContainer {
+        border-color: rgba(192, 224, 255, 0.2);
+        box-shadow: 0 0 10px rgba(0,0,0,0.5);
+    }
+    .theme-nostalgia-vista #progressBar {
+        background: linear-gradient(90deg, #32cd32, #008000); /* Green Vista progress bar */
+        color: #fff;
+        text-shadow: 1px 1px #000;
+    }
+    .theme-nostalgia-vista #shibaText {
+        border-color: rgba(192, 224, 255, 0.2);
+        color: #c0e0ff;
+        text-shadow: 0 0 5px rgba(192, 224, 255, 0.5);
+        background: rgba(30, 39, 52, 0.7);
+        backdrop-filter: blur(5px);
+        -webkit-backdrop-filter: blur(5px);
+    }
+    .theme-nostalgia-vista #paperclipText {
+        color: #c0e0ff;
+        text-shadow: 0 0 5px rgba(192, 224, 255, 0.5);
+        border-color: rgba(192, 224, 255, 0.2);
+        background: rgba(30, 39, 52, 0.7);
+        backdrop-filter: blur(5px);
+        -webkit-backdrop-filter: blur(5px);
+    }
+    .theme-nostalgia-vista #dropZoneOverlay {
+        border-color: rgba(192, 224, 255, 0.2);
+        background: rgba(14, 43, 77, 0.7);
+        color: #c0e0ff;
+        text-shadow: 0 0 5px rgba(192, 224, 255, 0.5);
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+    }
+
+    /* Theme: A Box 720 (Xbox 360) */
+    .theme-a-box-720 body {
+      background: radial-gradient(circle at center, #1C4600 0%, #080D00 100%); /* Dark green to black */
+      animation: none;
+      font-family: 'Segoe UI', Arial, sans-serif;
+      color: #FFF;
+    }
+    .theme-a-box-720 .title, .theme-a-box-720 .welcome, .theme-a-box-720 .footer {
+        color: #92FF1F; /* Xbox green */
+        text-shadow: 0 0 5px rgba(146, 255, 31, 0.7);
+        font-family: 'Segoe UI', Arial, sans-serif;
+    }
+    .theme-a-box-720 #splashScreen {
+      background: radial-gradient(circle at center, #1C4600 0%, #080D00 100%);
+      border: 2px solid #92FF1F; /* Xbox green border */
+      box-shadow: 0 0 25px rgba(146, 255, 31, 0.7);
+    }
+    .theme-a-box-720 .splash-text {
+      color: #92FF1F; /* Xbox green */
+      text-shadow: 0 0 8px rgba(146, 255, 31, 0.7), 0 0 15px rgba(146, 255, 31, 0.5);
+      border-color: #92FF1F;
+      box-shadow: 0 0 20px rgba(146, 255, 31, 0.7);
+      animation: xbox-glow 2s infinite alternate;
+    }
+    .theme-a-box-720 .splash-subtext {
+      color: #DDEECC;
+      text-shadow: 0 0 5px rgba(221, 238, 204, 0.5);
+      animation: none;
+    }
+    .theme-a-box-720 .how-to-use {
+      background: rgba(0, 0, 0, 0.8);
+      border: 2px solid #92FF1F;
+      color: #DDEECC;
+      text-shadow: none;
+      box-shadow: 0 0 20px rgba(146, 255, 31, 0.5);
+    }
+    .theme-a-box-720 .how-to-use h3 {
+      color: #92FF1F;
+      text-shadow: 0 0 5px rgba(146, 255, 31, 0.7);
+    }
+    .theme-a-box-720 .how-to-use li::before {
+      color: #92FF1F;
+    }
+    .theme-a-box-720 #readyButton {
+      background: linear-gradient(to bottom, #92FF1F 0%, #6BAA1C 100%); /* Green button */
+      border: 2px solid #588716;
+      color: #000;
+      box-shadow: 3px 3px 8px rgba(0,0,0,0.5);
+      font-family: 'Segoe UI', sans-serif;
+      text-shadow: 1px 1px #FFF;
+    }
+    .theme-a-box-720 #readyButton:hover {
+      background: linear-gradient(to bottom, #6BAA1C 0%, #92FF1F 100%);
+    }
+    .theme-a-box-720 #themeSelect {
+      background: #080D00;
+      border: 2px solid #92FF1F;
+      color: #92FF1F;
+      box-shadow: inset 0 0 5px rgba(146, 255, 31, 0.5);
+      font-family: 'Segoe UI', sans-serif;
+    }
+    .theme-a-box-720 .theme-selector-container label {
+      color: #92FF1F;
+      text-shadow: 0 0 5px rgba(146, 255, 31, 0.7);
+      font-family: 'Segoe UI', sans-serif;
+    }
+    @keyframes xbox-glow {
+      from { text-shadow: 0 0 8px rgba(146, 255, 31, 0.7), 0 0 15px rgba(146, 255, 31, 0.5); }
+      to { text-shadow: 0 0 12px rgba(146, 255, 31, 0.8), 0 0 20px rgba(146, 255, 31, 0.6); }
+    }
+    /* Apply to main UI elements */
+    .theme-a-box-720 .status-message {
+        color: #92FF1F;
+        text-shadow: 0 0 5px rgba(146, 255, 31, 0.7);
+        background: rgba(0, 0, 0, 0.8);
+        border-bottom: 1px solid #92FF1F;
+        padding: 5px 0;
+    }
+    .theme-a-box-720 .overlay {
+        background: radial-gradient(circle at center, #1C4600 0%, #080D00 100%);
+        border: 2px solid #92FF1F;
+        box-shadow: 0 0 25px rgba(146, 255, 31, 0.7);
+    }
+    .theme-a-box-720 .code-input, .theme-a-box-720 #myPeerId, .theme-a-box-720 #shibaText,
+    .theme-a-box-720 #textInput, .theme-a-box-720 #receivedTextDisplay {
+        background: #0D1400;
+        border: 2px solid #92FF1F;
+        color: #92FF1F;
+        box-shadow: inset 0 0 5px rgba(146, 255, 31, 0.5);
+        font-family: 'Segoe UI', sans-serif;
+    }
+    .theme-a-box-720 .btn, .theme-a-box-720 #copyIdBtn, .theme-a-box-720 #pasteIdBtn,
+    .theme-a-box-720 #sendTextBtn, .theme-a-box-720 #paperclipButton {
+        background: linear-gradient(to bottom, #92FF1F 0%, #6BAA1C 100%);
+        border: 2px solid #588716;
+        color: #000;
+        box-shadow: 2px 2px #000;
+        text-shadow: 1px 1px #FFF;
+        font-family: 'Segoe UI', sans-serif;
+    }
+    .theme-a-box-720 .btn:hover, .theme-a-box-720 #copyIdBtn:hover, .theme-a-box-720 #pasteIdBtn:hover,
+    .theme-a-box-720 #sendTextBtn:hover, .theme-a-box-720 #paperclipButton:hover {
+        background: linear-gradient(to bottom, #6BAA1C 0%, #92FF1F 100%);
+        box-shadow: 1px 1px #000;
+        transform: translateY(1px) translateX(1px);
+    }
+    .theme-a-box-720 #progressBarContainer {
+        border-color: #92FF1F;
+        box-shadow: 0 0 10px rgba(146, 255, 31, 0.7);
+    }
+    .theme-a-box-720 #progressBar {
+        background: linear-gradient(90deg, #6BAA1C, #92FF1F);
+        color: #000;
+        text-shadow: 1px 1px #FFF;
+    }
+    .theme-a-box-720 #shibaText {
+        border-color: #92FF1F;
+        color: #92FF1F;
+        text-shadow: 0 0 5px rgba(146, 255, 31, 0.7);
+        background: #0D1400;
+    }
+    .theme-a-box-720 #paperclipText {
+        color: #92FF1F;
+        text-shadow: 0 0 5px rgba(146, 255, 31, 0.7);
+        border-color: #92FF1F;
+        background: rgba(0, 0, 0, 0.8);
+    }
+    .theme-a-box-720 #dropZoneOverlay {
+        border-color: #92FF1F;
+        background: rgba(28, 70, 0, 0.7);
+        color: #92FF1F;
+        text-shadow: 0 0 5px rgba(146, 255, 31, 0.7);
     }
 
 
@@ -940,11 +1407,10 @@
       <select id="themeSelect">
         <option value="vaporwave" selected>Vaporwave (Default)</option>
         <option value="computer-guy">Computer Guy (Matrix)</option>
-        <option value="gas">Gas (Steam 2004)</option>
-        <option value="neon">Neon (Black/Orange)</option>
+        <option value="gas">Gas</option> <option value="neon">Neon (Black/Orange)</option>
         <option value="nostalgia-xp">Nostalgia (Windows XP)</option>
         <option value="nostalgia-vista">Nostalgia (Windows Vista)</option>
-      </select>
+        <option value="a-box-720">A Box 720 (Xbox 360)</option> </select>
     </div>
 
     <button id="readyButton">Ready!</button>
@@ -1047,7 +1513,8 @@
     // New theme elements
     const themeSelect = document.getElementById('themeSelect');
     const body = document.body;
-    const THEMES = ['vaporwave', 'computer-guy', 'gas', 'neon', 'nostalgia-xp', 'nostalgia-vista']; // Ordered as in dropdown
+    // Updated THEMES array to include 'a-box-720' and adjusted 'gas' name
+    const THEMES = ['vaporwave', 'computer-guy', 'gas', 'neon', 'nostalgia-xp', 'nostalgia-vista', 'a-box-720'];
 
     roomCodeInput.setAttribute('maxlength', PEER_ID_EXPECTED_LENGTH);
 
@@ -1499,8 +1966,8 @@
       idText.style.left = '50%';
       idText.style.transform = 'translateX(-50%)';
       idText.style.fontSize = '8px';
-      idText.style.color = '#fff';
-      idText.style.textShadow = '1px 1px #000';
+      idText.style.color = 'inherit'; /* Inherit color from theme */
+      idText.style.textShadow = 'inherit'; /* Inherit text-shadow from theme */
       idText.style.whiteSpace = 'nowrap';
       b.appendChild(idText);
 
