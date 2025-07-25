@@ -5,7 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Sebit Lan Share</title>
   <link rel="icon" type="image/gif" href="favicon.gif">
-  <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet"> <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet"> <style>
+  <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+  <style>
     /* Base Styles - Default (Vaporwave-inspired) */
     body, html {
       margin: 0; padding: 0; overflow: hidden;
@@ -1579,7 +1581,8 @@
   <input type="file" id="fileInput" multiple webkitdirectory directory />
 
   <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
-  <script src="https://unpkg.com/qrious@4.0.2/dist/qrious.min.js"></script> <script>
+  <script src="https://unpkg.com/qrious@4.0.2/dist/qrious.min.js"></script>
+  <script>
     const PEER_ID_EXPECTED_LENGTH = 36;
     const CHUNK_SIZE = 16 * 1024;
 
@@ -1658,25 +1661,29 @@
     }
 
     // Function to generate and display the QR code
-    function generateQrCode(text) {
+    function generateQrCode(id) { // Renamed parameter to 'id' for clarity
         // Clear previous QR code if any
         qrCodeCanvas.getContext('2d').clearRect(0, 0, qrCodeCanvas.width, qrCodeCanvas.height);
+
+        // Construct the URL with the peer ID as a query parameter
+        const shareableUrl = `https://rawxia.github.io/Sebit/?peerId=${id}`;
 
         // Create a new QRious instance
         new QRious({
             element: qrCodeCanvas,
-            value: text,
+            value: shareableUrl, // Encode the URL, not just the ID
             size: 150, // Size of the QR code in pixels (e.g., 150x150)
             padding: 10, // Padding around the QR code
             background: 'white', // Background color of the QR code
             foreground: 'black' // Foreground color of the QR code
         });
+        document.getElementById('qrCodeText').textContent = 'Scan to auto-connect!'; // Update text
     }
 
 
     // Function to initialize PeerJS connection
     function initializePeer(id = null) {
-      updateStatus("Connecting to signaling server...");
+      updateStatus("Connecting to signaling server... If stuck for a while, try refreshing and generating a new ID.");
       // Destroy existing peer if it exists and is not already destroyed
       if (peer && !peer.destroyed) {
           peer.destroy();
@@ -1698,9 +1705,6 @@
         console.log('My peer ID is: ' + id);
 
         // Generate QR code for the current ID
-        // It's a good idea to embed a URL that could potentially connect directly or pre-fill the ID
-        // For example: `https://your-app.com/connect?id=${id}`
-        // For simplicity, we'll just encode the ID itself. The user can then paste it.
         generateQrCode(id);
 
       });
@@ -1788,7 +1792,7 @@
         // Event: Connection error
         conn.on('error', (err) => {
             console.error(`Connection error with ${remoteId}:`, err);
-            updateStatus(`Failed to connect to ${remoteId}: ${err.message}`, '#f00');
+            updateStatus(`Failed to connect to ${remoteId}: ${err.message}. Please check ID and try again.`, '#f00');
             delete peerConnections[remoteId]; // Remove connection from our list
             removeBubble(remoteId); // Remove the visual bubble
             // Restore UI for entering ID
@@ -1902,7 +1906,7 @@
                 currentReceivingFile.receivedSize += data.byteLength || data.size;
                 receivedBytesForCurrentFile += data.byteLength || data.size;
 
-                const percentage = (receivedBytesForCurrentFile / currentRecetainingFile.fileSize) * 100;
+                const percentage = (receivedBytesForCurrentFile / currentReceivingFile.fileSize) * 100;
                 updateProgressBar(percentage, `Receiving '${currentReceivingFile.relativePath}': ${percentage.toFixed(0)}%`);
             }
           }
@@ -2305,39 +2309,15 @@
         }
     });
 
-    readyButton.addEventListener('click', () => {
-        hideSplashScreen();
-        setTimeout(() => {
-            initializePeer(); // Initialize PeerJS only after splash screen hides
-        }, 500);
-    });
+    // Function to get query parameters from the URL
+    function getQueryParam(name) {
+        const urlParams = new URLSearchParams(window.location.search);
+        return urlParams.get(name);
+    }
 
-    paperclipButton.addEventListener('click', () => {
-        if (Object.keys(peerConnections).length > 0) {
-            isMobileUploadActive = true; // Set flag for mobile upload flow
-            fileInput.click(); // Trigger hidden file input click
-        } else {
-            updateStatus("Connect to a peer first to send files!", '#f00');
-        }
-    });
-
-    fileInput.addEventListener('change', async (e) => {
-        isMobileUploadActive = false; // Reset flag
-        const selectedFiles = Array.from(e.target.files);
-
-        if (selectedFiles.length > 0) {
-            for (const peerId in peerConnections) {
-                const conn = peerConnections[peerId];
-                if (conn && conn.open) {
-                    await sendFilesToPeer(selectedFiles, conn);
-                } else {
-                    updateStatus(`Skipping ${peerId}: connection not open.`, '#f90');
-                }
-            }
-        } else {
-            updateStatus("No files selected.", '#f00');
-        }
-        fileInput.value = ''; // Clear file input so same file can be selected again
+    // Theme selection change listener
+    themeSelect.addEventListener('change', (event) => {
+        applyTheme(event.target.value);
     });
 
     // Send text message event listener
@@ -2388,15 +2368,60 @@
         }
     });
 
-    // Theme selection change listener
-    themeSelect.addEventListener('change', (event) => {
-        applyTheme(event.target.value);
+
+    paperclipButton.addEventListener('click', () => {
+        if (Object.keys(peerConnections).length > 0) {
+            isMobileUploadActive = true; // Set flag for mobile upload flow
+            fileInput.click(); // Trigger hidden file input click
+        } else {
+            updateStatus("Connect to a peer first to send files!", '#f00');
+        }
     });
+
+    fileInput.addEventListener('change', async (e) => {
+        isMobileUploadActive = false; // Reset flag
+        const selectedFiles = Array.from(e.target.files);
+
+        if (selectedFiles.length > 0) {
+            for (const peerId in peerConnections) {
+                const conn = peerConnections[peerId];
+                if (conn && conn.open) {
+                    await sendFilesToPeer(selectedFiles, conn);
+                } else {
+                    updateStatus(`Skipping ${peerId}: connection not open.`, '#f90');
+                }
+            }
+        } else {
+            updateStatus("No files selected.", '#f00');
+        }
+        fileInput.value = ''; // Clear file input so same file can be selected again
+    });
+
 
     // Initial load handler
     window.onload = () => {
         loadTheme(); // Load saved theme first
         splashScreen.style.display = 'flex';
+
+        // Check for peerId in URL after a short delay to ensure PeerJS is ready
+        setTimeout(() => {
+            const peerIdFromUrl = getQueryParam('peerId');
+            if (peerIdFromUrl) {
+                // If an ID is found in the URL, hide splash screen and connect automatically
+                hideSplashScreen();
+                updateStatus(`Found ID in URL: ${peerIdFromUrl}. Attempting to connect...`);
+                roomCodeInput.value = peerIdFromUrl; // Pre-fill the input
+                connectToPeer(peerIdFromUrl); // Attempt to connect directly
+            } else {
+                // If no ID in URL, add the ready button listener for manual initialization
+                readyButton.addEventListener('click', () => {
+                    hideSplashScreen();
+                    setTimeout(() => {
+                        initializePeer();
+                    }, 500);
+                }, { once: true }); // Ensure this listener only runs once
+            }
+        }, 100); // Small delay to allow initial DOM rendering and splash screen setup
     };
   </script>
 </body>
