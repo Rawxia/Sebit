@@ -189,6 +189,13 @@
       margin: 0; padding: 0;
     }
 
+    /* Specific style for the smaller text in drop zone */
+    #dropZoneOverlay .message .small-text {
+        font-size: 14px; /* Slightly larger than general small-text, but smaller than main drop message */
+        margin-top: 10px;
+    }
+
+
     /* --- Progress Bar Styles --- */
     #progressBarContainer {
       position: absolute;
@@ -281,16 +288,6 @@
       75% { transform: translate(10vw, -55%); }
       100% { transform: translate(0, -50%); }
     }
-    /* You can add more complex shiba floating if desired, like horizontal movement across screen */
-    /* For instance, to make it float across the screen: */
-    /*
-    @keyframes shiba-float {
-        0% { transform: translate(-10%, -50%); }
-        100% { transform: translate(110%, -50%); }
-    }
-    and then use 'linear' and remove 'alternate' for continuous movement.
-    */
-
   </style>
 </head>
 <body>
@@ -320,8 +317,8 @@
 
   <div id="dropZoneOverlay">
       <div class="message">
-          <p>Drop file(s) or folder(s) anywhere to send</p>
-          <p class="small-text">(To active peer connection)</p>
+          <p>Drag and drop your files or folders here to send!</p>
+          <p class="small-text">(Files will be sent to your connected device)</p>
       </div>
   </div>
 
@@ -330,8 +327,8 @@
   </div>
 
   <div id="shibaContainer">
-    <img id="shibaImage" src="https://i.imgur.com/your_shiba_image.png" alt="8-bit Shiba Inu">
-    <div id="shibaText">Your other device is this Shiba Inu!</div>
+    <img id="shibaImage" src="shiba.gif" alt="8-bit Shiba Inu">
+    <div id="shibaText">This Shiba Inu is your other device!</div>
   </div>
 
   <div class="footer">
@@ -366,8 +363,8 @@
     const dropZoneOverlay = document.getElementById('dropZoneOverlay');
     const progressBarContainer = document.getElementById('progressBarContainer');
     const progressBar = document.getElementById('progressBar');
-    const shibaContainer = document.getElementById('shibaContainer'); // New
-    const shibaText = document.getElementById('shibaText'); // New
+    const shibaContainer = document.getElementById('shibaContainer');
+    const shibaText = document.getElementById('shibaText');
 
     roomCodeInput.setAttribute('maxlength', PEER_ID_EXPECTED_LENGTH);
 
@@ -409,7 +406,7 @@
         updateStatus(`Connected to ${conn.peer}!`, '#ffdd00');
         roomOverlay.style.display = 'none';
         shibaContainer.classList.add('active'); // Show Shiba
-        shibaText.textContent = `Your other device (${conn.peer.substring(0,8)}...) is this Shiba Inu!`; // Update Shiba text
+        shibaText.textContent = `This Shiba Inu is your other device (${conn.peer.substring(0,8)}...)!`; // Update Shiba text
       });
 
       peer.on('error', (err) => {
@@ -457,7 +454,7 @@
             updateStatus(`Connected to ${remoteId}!`, '#ffdd00');
             roomOverlay.style.display = 'none';
             shibaContainer.classList.add('active'); // Show Shiba
-            shibaText.textContent = `Your other device (${conn.peer.substring(0,8)}...) is this Shiba Inu!`; // Update Shiba text
+            shibaText.textContent = `This Shiba Inu is your other device (${conn.peer.substring(0,8)}...)!`; // Update Shiba text
         });
 
         conn.on('error', (err) => {
@@ -832,21 +829,15 @@
             for (let i = 0; i < e.dataTransfer.items.length; i++) {
                 const item = e.dataTransfer.items[i];
                 if (item.kind === 'file') {
-                    // Files (including files inside folders)
                     const file = item.getAsFile();
                     files.push(file);
                 }
-                // For directory structures, we rely on file.webkitRelativePath for consistency
-                // The DataTransferItemList doesn't provide direct access to folder structure,
-                // but the File objects within it retain webkitRelativePath when dropped from a folder.
             }
 
             if (files.length > 0) {
-                // Send to ALL connected peers.
                 for (const peerId in peerConnections) {
                     const conn = peerConnections[peerId];
                     if (conn && conn.open) {
-                        // Create a fresh copy of files array for each send if they can modify
                         await sendFilesToPeer(files, conn);
                     } else {
                         updateStatus(`Skipping ${peerId}: connection not open.`, '#f90');
