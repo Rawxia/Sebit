@@ -162,7 +162,7 @@
       margin: 20px auto;
       font-size: 11px;
       color: #77ffff;
-      text-shadow: 1px 1px #ff00ff;
+      text-shadow: 1px 1px #ff77ff;
       max-width: 450px;
       text-align: left;
       line-height: 1.6;
@@ -1707,6 +1707,16 @@
         // Generate QR code for the current ID
         generateQrCode(id);
 
+        // --- IMPORTANT CHANGE HERE ---
+        // After PeerJS is open, check for a peerId in the URL and connect if found
+        const peerIdFromUrl = getQueryParam('peerId');
+        if (peerIdFromUrl && peerIdFromUrl !== id) { // Ensure we don't try to connect to ourselves
+            hideSplashScreen(); // Hide splash screen regardless of peer.open state
+            updateStatus(`Found ID in URL: ${peerIdFromUrl}. Attempting to connect...`);
+            roomCodeInput.value = peerIdFromUrl; // Pre-fill the input
+            connectToPeer(peerIdFromUrl); // Attempt to connect directly
+        }
+        // --- END IMPORTANT CHANGE ---
       });
 
       // Event: Incoming connection from another peer
@@ -1730,8 +1740,8 @@
         if (peer && !peer.destroyed) {
             peer.destroy();
         }
-        // Try to reinitialize after a short delay
-        setTimeout(() => initializePeer(), 1000);
+        // No immediate reinitialization here to prevent loop on persistent errors.
+        // User should manually retry by generating new ID or refreshing.
       });
 
       // Event: PeerJS disconnected from signaling server
@@ -1752,8 +1762,10 @@
 
     // Function to connect to a remote peer
     function connectToPeer(remoteId) {
-        if (!peer || !peer.open) {
-            updateStatus('PeerJS not ready. Please wait or refresh.', '#f00');
+        // Now, we are sure peer is defined because this is called AFTER peer.on('open')
+        if (!peer.open) { // Still a good check, just in case, though less likely now
+            updateStatus('PeerJS is not yet open. Please wait a moment.', '#f00');
+            console.warn('connectToPeer called before peer.open event fired.');
             return;
         }
 
@@ -2403,25 +2415,29 @@
         loadTheme(); // Load saved theme first
         splashScreen.style.display = 'flex';
 
-        // Check for peerId in URL after a short delay to ensure PeerJS is ready
-        setTimeout(() => {
-            const peerIdFromUrl = getQueryParam('peerId');
-            if (peerIdFromUrl) {
-                // If an ID is found in the URL, hide splash screen and connect automatically
+        // --- IMPORTANT CHANGE HERE ---
+        // Always initialize PeerJS on window load.
+        // The peerId from URL will be handled *inside* peer.on('open').
+        initializePeer(); // This starts the PeerJS connection process
+
+        // The "Ready!" button listener only applies if there's NO peerId in the URL
+        // because auto-connect will bypass the splash screen.
+        const peerIdFromUrl = getQueryParam('peerId');
+        if (!peerIdFromUrl) {
+            readyButton.addEventListener('click', () => {
                 hideSplashScreen();
-                updateStatus(`Found ID in URL: ${peerIdFromUrl}. Attempting to connect...`);
-                roomCodeInput.value = peerIdFromUrl; // Pre-fill the input
-                connectToPeer(peerIdFromUrl); // Attempt to connect directly
-            } else {
-                // If no ID in URL, add the ready button listener for manual initialization
-                readyButton.addEventListener('click', () => {
-                    hideSplashScreen();
-                    setTimeout(() => {
-                        initializePeer();
-                    }, 500);
-                }, { once: true }); // Ensure this listener only runs once
-            }
-        }, 100); // Small delay to allow initial DOM rendering and splash screen setup
+                // If there's no peerId in the URL, the splash screen will be hidden
+                // and the user will proceed to the manual ID entry.
+                // PeerJS is already initializing in the background.
+            }, { once: true }); // Ensure this listener only runs once
+        } else {
+            // If there IS a peerId in the URL, the splash screen will be automatically
+            // hidden once peer.on('open') fires and the connection attempt is made.
+            // The Ready button is effectively bypassed for auto-connect.
+            // We can hide the button to avoid confusion, or let it stay but it won't be clicked.
+            readyButton.style.display = 'none'; // Optional: hide the ready button if auto-connecting
+        }
+        // --- END IMPORTANT CHANGE ---
     };
   </script>
 </body>
