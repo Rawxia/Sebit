@@ -6,6 +6,7 @@
   <title>Sebit Lan Share</title>
   <link rel="icon" type="image/gif" href="favicon.gif">
   <style>
+    /* Base Styles - Default (Vaporwave-inspired) */
     @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
     body, html {
       margin: 0; padding: 0; overflow: hidden;
@@ -195,6 +196,35 @@
         margin-top: 15px;
         font-style: italic;
         font-size: 10px;
+    }
+
+    /* Theme Selector styles */
+    .theme-selector-container {
+      margin-bottom: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+    }
+    .theme-selector-container label {
+      font-size: 12px;
+      color: #77ffff;
+      text-shadow: 1px 1px #ff77ff;
+    }
+    #themeSelect {
+      background: #333;
+      border: 2px solid #77ffff;
+      padding: 8px 12px;
+      font-family: 'Press Start 2P', monospace;
+      color: #ff77ff;
+      font-size: 12px;
+      outline: none;
+      box-shadow: 0 0 8px rgba(119, 255, 255, 0.5);
+      cursor: pointer;
+    }
+    #themeSelect option {
+      background: #333;
+      color: #ff77ff;
     }
 
 
@@ -515,10 +545,8 @@
         background: #ffc107; /* A distinct color for paste */
         border: 2px solid #e0a800;
         padding: 10px 20px;
-        margin: 5px;
-        font-family: 'Press Start 2P', monospace;
-        color: #333; /* Darker text for contrast */
         font-size: 14px;
+        color: #333; /* Darker text for contrast */
         cursor: pointer;
         box-shadow: 2px 2px #e0a800;
         transition: all 0.1s ease;
@@ -529,6 +557,305 @@
         background: #e0a800;
         box-shadow: 1px 1px #ffc107;
         transform: translateY(1px) translateX(1px);
+    }
+
+
+    /* --- THEME STYLES --- */
+
+    /* Theme: Computer Guy (Matrix) */
+    .theme-computer-guy body {
+      background: #000;
+      animation: none; /* Disable ocean animation */
+    }
+    .theme-computer-guy #splashScreen {
+      background: #000;
+      box-shadow: none;
+      border: none;
+    }
+    .theme-computer-guy .splash-text,
+    .theme-computer-guy .splash-subtext {
+      font-family: 'VT323', monospace; /* A more "Matrix" font */
+      color: #0f0; /* Green text */
+      text-shadow: 0 0 5px rgba(0, 255, 0, 0.7), 0 0 10px rgba(0, 255, 0, 0.5);
+      border-color: #0f0;
+      box-shadow: 0 0 15px rgba(0, 255, 0, 0.7);
+    }
+    .theme-computer-guy .how-to-use {
+      background: rgba(0, 0, 0, 0.9);
+      border: 2px solid #0f0;
+      color: #0f0;
+      text-shadow: 0 0 5px rgba(0, 255, 0, 0.5);
+      box-shadow: 0 0 20px rgba(0, 255, 0, 0.5);
+    }
+    .theme-computer-guy .how-to-use h3 {
+      color: #0f0;
+      text-shadow: 0 0 5px rgba(0, 255, 0, 0.7);
+    }
+    .theme-computer-guy .how-to-use li::before {
+      color: #0f0;
+    }
+    .theme-computer-guy #readyButton,
+    .theme-computer-guy #themeSelect,
+    .theme-computer-guy .theme-selector-container label {
+      background: #050;
+      border: 2px solid #0f0;
+      color: #0f0;
+      text-shadow: 0 0 5px rgba(0, 255, 0, 0.7);
+      box-shadow: 0 0 10px rgba(0, 255, 0, 0.7);
+    }
+    .theme-computer-guy #readyButton:hover,
+    .theme-computer-guy #themeSelect:hover {
+      background: #0f0;
+      color: #000;
+    }
+    /* Add Matrix rain effect */
+    .theme-computer-guy #splashScreen::after {
+        content: "";
+        position: absolute;
+        top: 0; left: 0; right: 0; bottom: 0;
+        background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100"><text x="0" y="15" font-family="monospace" font-size="16" fill="%230f0" opacity="0.8">010101</text><text x="0" y="35" font-family="monospace" font-size="16" fill="%230f0" opacity="0.8">101010</text><text x="0" y="55" font-family="monospace" font-size="16" fill="%230f0" opacity="0.8">001100</text><text x="0" y="75" font-family="monospace" font-size="16" fill="%230f0" opacity="0.8">110011</text><text x="0" y="95" font-family="monospace" font-size="16" fill="%230f0" opacity="0.8">010101</text></svg>') repeat;
+        animation: matrix-rain 5s linear infinite;
+        pointer-events: none;
+        z-index: 2; /* Below splash screen content but above background */
+    }
+    @keyframes matrix-rain {
+        from { background-position: 0 0; }
+        to { background-position: 0 100%; }
+    }
+
+
+    /* Theme: Gas (Steam Green 2004) */
+    .theme-gas body {
+      background-color: #171d25; /* Dark bluish-grey */
+      animation: none;
+    }
+    .theme-gas #splashScreen {
+      background-color: #1a202c;
+      border: 2px solid #66c0f4; /* Steam blue */
+      box-shadow: 0 0 20px rgba(102, 192, 244, 0.5);
+    }
+    .theme-gas .splash-text {
+      color: #66c0f4; /* Steam blue */
+      text-shadow: 2px 2px #000, 4px 4px #000;
+      border-color: #4a6c8d; /* Darker blue-grey */
+      box-shadow: 0 0 15px rgba(102, 192, 244, 0.7);
+    }
+    .theme-gas .splash-subtext {
+      color: #d1d1d1; /* Light grey */
+      text-shadow: 1px 1px #000;
+    }
+    .theme-gas .how-to-use {
+      background: #2a313c; /* Mid-dark blue-grey */
+      border: 2px solid #4a6c8d;
+      color: #d1d1d1;
+      text-shadow: 1px 1px #000;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+    }
+    .theme-gas .how-to-use h3 {
+      color: #66c0f4;
+      text-shadow: 1px 1px #000;
+    }
+    .theme-gas .how-to-use li::before {
+      color: #66c0f4;
+    }
+    .theme-gas #readyButton,
+    .theme-gas #themeSelect {
+      background: linear-gradient(to bottom, #417a9b 5%, #2b556c 100%); /* Blue gradient */
+      border: 2px solid #2a475e;
+      color: #fff;
+      box-shadow: 0 0 10px rgba(0,0,0,0.5);
+      text-shadow: 1px 1px #000;
+    }
+    .theme-gas #readyButton:hover,
+    .theme-gas #themeSelect:hover {
+      background: linear-gradient(to bottom, #2b556c 5%, #417a9b 100%);
+    }
+    .theme-gas .theme-selector-container label {
+      color: #d1d1d1;
+      text-shadow: 1px 1px #000;
+    }
+
+
+    /* Theme: Neon (Black and Orange) */
+    .theme-neon body {
+      background-color: #000;
+      animation: none;
+    }
+    .theme-neon #splashScreen {
+      background-color: #000;
+      box-shadow: inset 0 0 15px 5px rgba(255, 100, 0, 0.3);
+      border: 2px solid #ff6600;
+    }
+    .theme-neon .splash-text,
+    .theme-neon .splash-subtext {
+      color: #ff6600; /* Orange */
+      text-shadow: 0 0 5px #ff6600, 0 0 15px #ff6600;
+      border-color: #ff6600;
+      box-shadow: 0 0 20px rgba(255, 100, 0, 0.7);
+      animation: neon-glow 1.5s infinite alternate;
+    }
+    .theme-neon .how-to-use {
+      background: rgba(0, 0, 0, 0.9);
+      border: 2px solid #ff6600;
+      color: #ffaa00;
+      text-shadow: 0 0 5px rgba(255, 170, 0, 0.5);
+      box-shadow: 0 0 20px rgba(255, 100, 0, 0.5);
+    }
+    .theme-neon .how-to-use h3 {
+      color: #ff6600;
+      text-shadow: 0 0 5px #ff6600;
+    }
+    .theme-neon .how-to-use li::before {
+      color: #ff6600;
+    }
+    .theme-neon #readyButton,
+    .theme-neon #themeSelect,
+    .theme-neon .theme-selector-container label {
+      background: #331a00; /* Dark orange background */
+      border: 2px solid #ff6600;
+      color: #ff6600;
+      text-shadow: 0 0 5px #ff6600;
+      box-shadow: 0 0 10px rgba(255, 100, 0, 0.7);
+    }
+    .theme-neon #readyButton:hover,
+    .theme-neon #themeSelect:hover {
+      background: #ff6600;
+      color: #000;
+      box-shadow: 0 0 15px rgba(255, 100, 0, 1);
+    }
+    @keyframes neon-glow {
+      from { text-shadow: 0 0 5px #ff6600, 0 0 15px #ff6600, 0 0 25px #ff6600; }
+      to { text-shadow: 0 0 10px #ff6600, 0 0 20px #ff6600, 0 0 30px #ff6600; }
+    }
+
+
+    /* Theme: Nostalgia (Windows XP) */
+    .theme-nostalgia-xp body {
+      background: #3a6ea5; /* XP Blue */
+      animation: none;
+    }
+    .theme-nostalgia-xp #splashScreen {
+      background: linear-gradient(to bottom, #0a246a 0%, #1e5799 100%); /* XP Gradient */
+      border: 1px solid #003366;
+      box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.5);
+      color: #fff;
+    }
+    .theme-nostalgia-xp .splash-text {
+      color: #fff;
+      font-family: sans-serif; /* Cleaner font for XP feel */
+      text-shadow: 1px 1px #000;
+      border-color: #9ac2ff;
+      box-shadow: inset 0 0 5px rgba(255,255,255,0.3), 0 0 10px rgba(0, 51, 102, 0.5);
+      animation: none; /* No flicker for XP */
+    }
+    .theme-nostalgia-xp .splash-subtext {
+      color: #e0e0e0;
+      text-shadow: 1px 1px #000;
+      animation: none; /* No pulse for XP */
+    }
+    .theme-nostalgia-xp .how-to-use {
+      background: #e9e9e9; /* Light grey dialog */
+      border: 1px solid #7f9db9; /* Grey border */
+      color: #333; /* Dark text */
+      text-shadow: none;
+      box-shadow: 3px 3px 8px rgba(0,0,0,0.3);
+      color: #000; /* Darker text */
+    }
+    .theme-nostalgia-xp .how-to-use h3 {
+      color: #0a246a; /* XP Dark Blue */
+      text-shadow: none;
+    }
+    .theme-nostalgia-xp .how-to-use li::before {
+      color: #0a246a;
+    }
+    .theme-nostalgia-xp #readyButton {
+      background: linear-gradient(to bottom, #d6e8f8 0%, #a4c9e3 100%); /* XP Button gradient */
+      border: 1px solid #5a87b7;
+      color: #000;
+      box-shadow: 1px 1px 3px rgba(0,0,0,0.3);
+      font-family: sans-serif;
+    }
+    .theme-nostalgia-xp #readyButton:hover {
+      background: linear-gradient(to bottom, #a4c9e3 0%, #d6e8f8 100%);
+    }
+    .theme-nostalgia-xp #themeSelect {
+      background: #e0e0e0;
+      border: 1px solid #7f9db9;
+      color: #000;
+      box-shadow: inset 1px 1px 2px rgba(0,0,0,0.2);
+      font-family: sans-serif;
+    }
+    .theme-nostalgia-xp .theme-selector-container label {
+      color: #fff;
+      text-shadow: 1px 1px #000;
+      font-family: sans-serif;
+    }
+
+    /* Theme: Nostalgia (Windows Vista) */
+    .theme-nostalgia-vista body {
+      background: linear-gradient(to bottom, #0e2b4d 0%, #081a2f 100%); /* Vista background gradient */
+      animation: none;
+    }
+    .theme-nostalgia-vista #splashScreen {
+      background: radial-gradient(circle at center, rgba(30,39,52,0.9) 0%, rgba(10,13,17,0.95) 100%);
+      border: 1px solid rgba(255,255,255,0.1);
+      box-shadow: 0 0 30px rgba(0,0,0,0.7);
+      backdrop-filter: blur(5px); /* Aero Glass effect */
+      -webkit-backdrop-filter: blur(5px);
+    }
+    .theme-nostalgia-vista .splash-text {
+      color: #c0e0ff; /* Light blue */
+      text-shadow: 0 0 8px rgba(192, 224, 255, 0.5), 0 0 15px rgba(192, 224, 255, 0.3);
+      font-family: 'Segoe UI', sans-serif; /* Vista font */
+      border-color: rgba(192, 224, 255, 0.3);
+      box-shadow: inset 0 0 5px rgba(255,255,255,0.1), 0 0 20px rgba(192, 224, 255, 0.3);
+      animation: none;
+    }
+    .theme-nostalgia-vista .splash-subtext {
+      color: #a0c0ff;
+      text-shadow: 0 0 5px rgba(160, 192, 255, 0.5);
+      animation: none;
+    }
+    .theme-nostalgia-vista .how-to-use {
+      background: rgba(30, 39, 52, 0.7); /* Translucent dark background */
+      border: 1px solid rgba(192, 224, 255, 0.2);
+      color: #c0e0ff;
+      text-shadow: none;
+      box-shadow: 0 0 15px rgba(0,0,0,0.5);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+    }
+    .theme-nostalgia-vista .how-to-use h3 {
+      color: #c0e0ff;
+      text-shadow: 0 0 5px rgba(192, 224, 255, 0.5);
+    }
+    .theme-nostalgia-vista .how-to-use li::before {
+      color: #c0e0ff;
+    }
+    .theme-nostalgia-vista #readyButton {
+      background: linear-gradient(to bottom, #729fcf 0%, #4a75a7 100%); /* Vista Button Blue */
+      border: 1px solid #36577e;
+      color: #fff;
+      box-shadow: 0 0 10px rgba(0,0,0,0.5);
+      font-family: 'Segoe UI', sans-serif;
+      text-shadow: 1px 1px #000;
+    }
+    .theme-nostalgia-vista #readyButton:hover {
+      background: linear-gradient(to bottom, #4a75a7 0%, #729fcf 100%);
+    }
+    .theme-nostalgia-vista #themeSelect {
+      background: rgba(30, 39, 52, 0.7);
+      border: 1px solid rgba(192, 224, 255, 0.2);
+      color: #c0e0ff;
+      box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
+      font-family: 'Segoe UI', sans-serif;
+      backdrop-filter: blur(5px);
+      -webkit-backdrop-filter: blur(5px);
+    }
+    .theme-nostalgia-vista .theme-selector-container label {
+      color: #c0e0ff;
+      text-shadow: 0 0 5px rgba(192, 224, 255, 0.5);
+      font-family: 'Segoe UI', sans-serif;
     }
 
 
@@ -575,6 +902,13 @@
         font-size: 10px;
         padding: 6px 10px;
       }
+      .theme-selector-container label {
+        font-size: 10px;
+      }
+      #themeSelect {
+        font-size: 10px;
+        padding: 6px 10px;
+      }
     }
 
   </style>
@@ -600,6 +934,19 @@
         </ul>
         <p>(Connection status will be displayed below.)</p>
     </div>
+
+    <div class="theme-selector-container">
+      <label for="themeSelect">Choose your theme:</label>
+      <select id="themeSelect">
+        <option value="vaporwave" selected>Vaporwave (Default)</option>
+        <option value="computer-guy">Computer Guy (Matrix)</option>
+        <option value="gas">Gas (Steam 2004)</option>
+        <option value="neon">Neon (Black/Orange)</option>
+        <option value="nostalgia-xp">Nostalgia (Windows XP)</option>
+        <option value="nostalgia-vista">Nostalgia (Windows Vista)</option>
+      </select>
+    </div>
+
     <button id="readyButton">Ready!</button>
   </div>
 
@@ -677,7 +1024,7 @@
     const myPeerIdSpan = document.getElementById('myPeerId');
     const roomCodeInput = document.getElementById('roomCodeInput');
     const connectBtn = document.getElementById('connectBtn');
-    const pasteIdBtn = document.getElementById('pasteIdBtn'); // New paste button element
+    const pasteIdBtn = document.getElementById('pasteIdBtn');
     const newIdBtn = document.getElementById('newIdBtn');
     const roomOverlay = document.getElementById('roomOverlay');
     const statusMessage = document.getElementById('statusMessage');
@@ -697,6 +1044,11 @@
     const sendTextBtn = document.getElementById('sendTextBtn');
     const receivedTextDisplay = document.getElementById('receivedTextDisplay');
 
+    // New theme elements
+    const themeSelect = document.getElementById('themeSelect');
+    const body = document.body;
+    const THEMES = ['vaporwave', 'computer-guy', 'gas', 'neon', 'nostalgia-xp', 'nostalgia-vista']; // Ordered as in dropdown
+
     roomCodeInput.setAttribute('maxlength', PEER_ID_EXPECTED_LENGTH);
 
     function updateStatus(message, color = '#0f0') {
@@ -710,6 +1062,31 @@
             splashScreen.style.display = 'none';
         }, 2000);
     }
+
+    // Function to apply selected theme
+    function applyTheme(themeName) {
+        // Remove all theme classes
+        THEMES.forEach(theme => body.classList.remove(`theme-${theme}`));
+        // Add the selected theme class, unless it's the default 'vaporwave' which uses base styles
+        if (themeName && themeName !== 'vaporwave') {
+            body.classList.add(`theme-${themeName}`);
+        }
+        localStorage.setItem('selectedTheme', themeName); // Save preference
+    }
+
+    // Function to load theme on startup
+    function loadTheme() {
+        const savedTheme = localStorage.getItem('selectedTheme');
+        if (savedTheme && THEMES.includes(savedTheme)) {
+            themeSelect.value = savedTheme; // Set dropdown to saved theme
+            applyTheme(savedTheme);
+        } else {
+            // Default to vaporwave if no saved theme or invalid theme
+            themeSelect.value = 'vaporwave';
+            applyTheme('vaporwave');
+        }
+    }
+
 
     // Function to initialize PeerJS connection
     function initializePeer(id = null) {
@@ -1418,8 +1795,14 @@
         }
     });
 
+    // Theme selection change listener
+    themeSelect.addEventListener('change', (event) => {
+        applyTheme(event.target.value);
+    });
+
     // Initial load handler
     window.onload = () => {
+        loadTheme(); // Load saved theme first
         splashScreen.style.display = 'flex';
     };
   </script>
