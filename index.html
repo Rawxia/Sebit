@@ -79,6 +79,7 @@
       text-shadow: 1px 1px #77ffff, 2px 2px #ff00ff;
     }
 
+    /* Keep fileInput hidden */
     #fileInput { display: none; }
 
     .overlay {
@@ -87,8 +88,7 @@
       display: flex; justify-content: center; align-items: center;
       flex-direction: column;
       z-index: 20;
-      /* Ensure this is hidden by default, and only shown when ready */
-      display: none;
+      display: none; /* Ensure this is hidden by default */
     }
     .code-input, .message {
       background: #333; border: 2px solid #77ffff;
@@ -373,6 +373,58 @@
         box-shadow: 2px 2px #28a745;
         transform: translateY(1px) translateX(1px);
     }
+
+    /* Styles for the 8-bit paperclip button */
+    #paperclipButton {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        width: 64px; /* Adjust size as needed */
+        height: 64px; /* Adjust size as needed */
+        background: none;
+        border: none;
+        padding: 0;
+        cursor: pointer;
+        display: none; /* Hidden by default */
+        z-index: 50; /* Above most other elements */
+        transition: transform 0.1s ease;
+    }
+
+    #paperclipButton:hover {
+        transform: scale(1.1);
+    }
+
+    #paperclipButton img {
+        width: 100%;
+        height: 100%;
+        image-rendering: pixelated;
+        filter: drop-shadow(2px 2px 0px #000); /* Adds a little depth */
+    }
+
+    /* Media query for smaller screens */
+    @media (max-width: 768px) {
+      .title { font-size: 14px; }
+      .welcome { font-size: 10px; }
+      .code-input, .message { font-size: 14px; }
+      .btn { font-size: 12px; padding: 8px 15px; }
+      .status-message { top: 70px; font-size: 8px; }
+      .splash-text { font-size: 16px; }
+      .splash-subtext { font-size: 10px; }
+      .how-to-use { font-size: 9px; padding: 10px; }
+      #readyButton { padding: 10px 20px; font-size: 14px; }
+      #myPeerId { font-size: 14px; }
+      #shibaImage { width: 48px; height: 48px; }
+      #shibaText { font-size: 8px; }
+      .footer { font-size: 8px; }
+      .social-links a { font-size: 10px; }
+      #paperclipButton {
+        width: 50px;
+        height: 50px;
+        bottom: 15px;
+        right: 15px;
+      }
+    }
+
   </style>
 </head>
 <body>
@@ -391,6 +443,7 @@
             <li>**2.** One person shares their long "Unique ID".</li>
             <li>**3.** The other person enters that ID and clicks "Connect".</li>
             <li>**4.** Once connected, drag & drop files onto the page to send!</li>
+            <li>**5.** **Mobile Users:** Tap the 📎 icon to select files!</li>
         </ul>
         <p style="text-align: center; margin-top: 10px;">(Connection status will show below)</p>
     </div>
@@ -431,6 +484,10 @@
     <div id="shibaText">This Shiba Inu is your other device!</div>
   </div>
 
+  <button id="paperclipButton">
+    <img src="https://i.imgur.com/8bit-paperclip.png" alt="Paperclip Icon for File Upload">
+  </button>
+
   <div class="footer">
     Created by Rawxia - Privacy in mind
     <div class="social-links">
@@ -438,7 +495,7 @@
         <a href="https://www.youtube.com/@6_LN" target="_blank" rel="noopener noreferrer">YouTube</a>
     </div>
   </div>
-  <input type="file" id="fileInput" />
+  <input type="file" id="fileInput" multiple webkitdirectory directory />
 
   <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
 
@@ -467,6 +524,8 @@
     const shibaText = document.getElementById('shibaText');
     const copyIdBtn = document.getElementById('copyIdBtn');
     const readyButton = document.getElementById('readyButton');
+    const paperclipButton = document.getElementById('paperclipButton'); // Get the new button
+    const fileInput = document.getElementById('fileInput'); // Get the hidden file input
 
     roomCodeInput.setAttribute('maxlength', PEER_ID_EXPECTED_LENGTH);
 
@@ -479,12 +538,11 @@
         splashScreen.classList.add('fade-out');
         setTimeout(() => {
             splashScreen.style.display = 'none';
-        }, 2000); // Ensures the fade-out transition completes
+        }, 2000);
     }
 
     function initializePeer(id = null) {
       updateStatus("Connecting to signaling server...");
-      // Ensure PeerJS is only initialized once or properly destroyed/re-initialized
       if (peer && !peer.destroyed) {
           peer.destroy();
       }
@@ -498,7 +556,6 @@
       peer.on('open', (id) => {
         currentRoomId = id;
         myPeerIdSpan.textContent = id;
-        // IMPORTANT: Show the roomOverlay here, after PeerJS has an ID
         roomOverlay.style.display = 'flex';
         updateStatus(`Connected! Your ID: ${id}. Waiting for connection...`);
         console.log('My peer ID is: ' + id);
@@ -509,19 +566,18 @@
         setupDataChannel(conn, conn.peer);
         addBubble(conn.peer);
         updateStatus(`Connected to ${conn.peer}!`, '#ffdd00');
-        roomOverlay.style.display = 'none'; // Hide room overlay when connected
+        roomOverlay.style.display = 'none';
         shibaContainer.classList.add('active');
         shibaText.textContent = `This Shiba Inu is your other device (${conn.peer.substring(0,8)}...)!`;
+        paperclipButton.style.display = 'block'; // Show paperclip when connected
       });
 
       peer.on('error', (err) => {
         console.error('PeerJS error:', err);
         updateStatus(`Error: ${err.message}. Please refresh or try a new ID.`, '#f00');
-        // Handle error by re-initializing peer to allow a fresh start
         if (peer && !peer.destroyed) {
             peer.destroy();
         }
-        // Attempt to re-initialize after a short delay or user prompt
         setTimeout(() => initializePeer(), 1000);
       });
 
@@ -532,8 +588,8 @@
               peer.reconnect();
           }
           shibaContainer.classList.remove('active');
-          // If disconnected, show room overlay again to allow new connections
           roomOverlay.style.display = 'flex';
+          paperclipButton.style.display = 'none'; // Hide paperclip when disconnected
       });
     }
 
@@ -561,9 +617,10 @@
             setupDataChannel(conn, remoteId);
             addBubble(remoteId);
             updateStatus(`Connected to ${remoteId}!`, '#ffdd00');
-            roomOverlay.style.display = 'none'; // Hide room overlay when connected
+            roomOverlay.style.display = 'none';
             shibaContainer.classList.add('active');
             shibaText.textContent = `This Shiba Inu is your other device (${conn.peer.substring(0,8)}...)!`;
+            paperclipButton.style.display = 'block'; // Show paperclip when connected
         });
 
         conn.on('error', (err) => {
@@ -572,7 +629,8 @@
             delete peerConnections[remoteId];
             removeBubble(remoteId);
             shibaContainer.classList.remove('active');
-            roomOverlay.style.display = 'flex'; // Show room overlay on connection error
+            roomOverlay.style.display = 'flex';
+            paperclipButton.style.display = 'none'; // Hide paperclip on error
         });
 
         conn.on('close', () => {
@@ -581,7 +639,8 @@
             delete peerConnections[remoteId];
             removeBubble(remoteId);
             shibaContainer.classList.remove('active');
-            roomOverlay.style.display = 'flex'; // Show room overlay on disconnect
+            roomOverlay.style.display = 'flex';
+            paperclipButton.style.display = 'none'; // Hide paperclip on close
         });
     }
 
@@ -622,7 +681,7 @@
                     try {
                         const dirHandle = await getDownloadDirectoryHandle();
                         await saveFileToDirectory(dirHandle, currentReceivingFile.relativePath, blob);
-                        updateStatus(`📁 Received '${currentReceivingFile.relativePath}' to specified folder!`);
+                        updateStatus(`📁 Received '${currentReceReceivingFile.relativePath}' to specified folder!`);
                     } catch (e) {
                         console.error("Error saving file via File System Access API:", e);
                         downloadBlobAsFile(blob, currentReceivingFile.relativePath);
@@ -674,7 +733,11 @@
         hideProgressBar();
         isFileBeingSent = false;
         shibaContainer.classList.remove('active');
-        roomOverlay.style.display = 'flex'; // Show room overlay on close
+        roomOverlay.style.display = 'flex';
+        // Only hide paperclip if no other connections are active
+        if (Object.keys(peerConnections).length === 0) {
+            paperclipButton.style.display = 'none';
+        }
       });
       conn.on('error', (err) => {
         console.error('Data channel error for', remoteId, err);
@@ -682,7 +745,11 @@
         hideProgressBar();
         isFileBeingSent = false;
         shibaContainer.classList.remove('active');
-        roomOverlay.style.display = 'flex'; // Show room overlay on error
+        roomOverlay.style.display = 'flex';
+        // Only hide paperclip if no other connections are active
+        if (Object.keys(peerConnections).length === 0) {
+            paperclipButton.style.display = 'none';
+        }
       });
     }
 
@@ -866,9 +933,14 @@
 
     let dragCounter = 0;
 
+    // Use a flag to prevent drag/drop functionality on mobile if paperclip is used
+    let isMobileUploadActive = false;
+
     document.body.addEventListener('dragenter', (e) => {
         e.preventDefault();
         e.stopPropagation();
+        if (isMobileUploadActive) return; // Prevent drag/drop if mobile upload is ongoing
+
         dragCounter++;
         if (Object.keys(peerConnections).length > 0) {
             dropZoneOverlay.classList.add('active');
@@ -880,6 +952,8 @@
     document.body.addEventListener('dragleave', (e) => {
         e.preventDefault();
         e.stopPropagation();
+        if (isMobileUploadActive) return;
+
         dragCounter--;
         if (dragCounter === 0) {
             dropZoneOverlay.classList.remove('active');
@@ -889,6 +963,8 @@
     document.body.addEventListener('dragover', (e) => {
         e.preventDefault();
         e.stopPropagation();
+        if (isMobileUploadActive) return;
+
         e.dataTransfer.dropEffect = 'copy';
         if (!dropZoneOverlay.classList.contains('active') && Object.keys(peerConnections).length > 0) {
             dropZoneOverlay.classList.add('active');
@@ -898,6 +974,8 @@
     document.body.addEventListener('drop', async (e) => {
         e.preventDefault();
         e.stopPropagation();
+        if (isMobileUploadActive) return;
+
         dragCounter = 0;
         dropZoneOverlay.classList.remove('active');
 
@@ -906,44 +984,60 @@
             return;
         }
 
+        const files = [];
+        // Iterate over items to handle both files and directories
         if (e.dataTransfer.items) {
-            const files = [];
             for (let i = 0; i < e.dataTransfer.items.length; i++) {
                 const item = e.dataTransfer.items[i];
                 if (item.kind === 'file') {
-                    const file = item.getAsFile();
-                    files.push(file);
-                }
-            }
-
-            if (files.length > 0) {
-                for (const peerId in peerConnections) {
-                    const conn = peerConnections[peerId];
-                    if (conn && conn.open) {
-                        await sendFilesToPeer(files, conn);
-                    } else {
-                        updateStatus(`Skipping ${peerId}: connection not open.`, '#f90');
+                    const entry = item.webkitGetAsEntry();
+                    if (entry) {
+                        await getFilesFromEntry(entry, files);
                     }
                 }
-            } else {
-                updateStatus("No files were dropped.", '#f00');
             }
         } else {
-            const files = Array.from(e.dataTransfer.files);
-            if (files.length > 0) {
-                for (const peerId in peerConnections) {
-                    const conn = peerConnections[peerId];
-                    if (conn && conn.open) {
-                        await sendFilesToPeer(files, conn);
-                    } else {
-                        updateStatus(`Skipping ${peerId}: connection not open.`, '#f90');
-                    }
+            // Fallback for browsers not supporting DataTransferItem.webkitGetAsEntry
+            Array.from(e.dataTransfer.files).forEach(file => files.push(file));
+        }
+
+        if (files.length > 0) {
+            for (const peerId in peerConnections) {
+                const conn = peerConnections[peerId];
+                if (conn && conn.open) {
+                    await sendFilesToPeer(files, conn);
+                } else {
+                    updateStatus(`Skipping ${peerId}: connection not open.`, '#f90');
                 }
-            } else {
-                updateStatus("No files were dropped.", '#f00');
             }
+        } else {
+            updateStatus("No files were dropped.", '#f00');
         }
     });
+
+    // Helper function to recursively get files from a DataTransferItem entry (for folders)
+    async function getFilesFromEntry(entry, fileList, path = '') {
+        if (entry.isFile) {
+            await new Promise(resolve => {
+                entry.file(file => {
+                    file.webkitRelativePath = path + file.name; // Set relative path for files in folders
+                    fileList.push(file);
+                    resolve();
+                });
+            });
+        } else if (entry.isDirectory) {
+            const directoryReader = entry.createReader();
+            await new Promise(resolve => {
+                directoryReader.readEntries(async (entries) => {
+                    for (const subEntry of entries) {
+                        await getFilesFromEntry(subEntry, fileList, path + entry.name + '/');
+                    }
+                    resolve();
+                });
+            });
+        }
+    }
+
 
     connectBtn.addEventListener('click', () => {
       const remoteId = roomCodeInput.value.trim();
@@ -990,17 +1084,46 @@
     // Event listener for the "Ready!" button
     readyButton.addEventListener('click', () => {
         hideSplashScreen(); // Hide the splash screen
-        // Add a small delay before initializing PeerJS to ensure splash screen is hidden
-        // This is a common pattern to avoid race conditions with UI transitions.
         setTimeout(() => {
             initializePeer();
-        }, 500); // Wait 0.5 seconds after hiding splash before initializing PeerJS
+        }, 500);
     });
 
-    // Modified window.onload: Only make splash screen visible.
-    // PeerJS initialization now happens *only* after the Ready button is pressed.
+    // Event listener for the new paperclip button
+    paperclipButton.addEventListener('click', () => {
+        if (Object.keys(peerConnections).length > 0) {
+            isMobileUploadActive = true; // Set flag to disable drag/drop temporarily
+            fileInput.click(); // Programmatically click the hidden file input
+        } else {
+            updateStatus("Connect to a peer first to send files!", '#f00');
+        }
+    });
+
+    // Event listener for when files are selected via the hidden file input
+    fileInput.addEventListener('change', async (e) => {
+        isMobileUploadActive = false; // Reset flag
+        const selectedFiles = Array.from(e.target.files);
+
+        if (selectedFiles.length > 0) {
+            for (const peerId in peerConnections) {
+                const conn = peerConnections[peerId];
+                if (conn && conn.open) {
+                    // Send selected files to each connected peer
+                    await sendFilesToPeer(selectedFiles, conn);
+                } else {
+                    updateStatus(`Skipping ${peerId}: connection not open.`, '#f90');
+                }
+            }
+        } else {
+            updateStatus("No files selected.", '#f00');
+        }
+        // Clear the file input value so selecting the same file again triggers change event
+        fileInput.value = '';
+    });
+
+    // Initial load: Only make splash screen visible.
     window.onload = () => {
-        splashScreen.style.display = 'flex'; // Ensure splash screen is visible from the start
+        splashScreen.style.display = 'flex';
     };
   </script>
 </body>
