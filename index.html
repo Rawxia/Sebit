@@ -127,7 +127,7 @@
       display: flex; flex-direction: column; justify-content: center; align-items: center;
       z-index: 999;
       opacity: 1;
-      transition: opacity 2s ease-out; /* Match this duration with setTimeout in JS */
+      transition: opacity 2s ease-out;
       pointer-events: all;
       box-shadow: inset 0 0 10px 5px rgba(255, 255, 255, 0.1);
     }
@@ -150,23 +150,37 @@
       animation: pulse 2s infinite alternate;
       margin-bottom: 20px;
     }
+
+    /* Updated How-To Styles */
     .how-to-use {
-      background: rgba(0, 0, 0, 0.7);
+      background: rgba(0, 0, 0, 0.8); /* Slightly darker for better contrast */
       border: 2px solid #00ffff;
-      padding: 15px;
-      margin-top: 20px;
-      font-size: 10px;
+      padding: 20px; /* Increased padding */
+      margin: 20px auto; /* Centered with auto margins */
+      font-size: 11px; /* Slightly larger font */
       color: #77ffff;
       text-shadow: 1px 1px #ff00ff;
-      max-width: 80%;
+      max-width: 450px; /* Max width for readability */
       text-align: left;
-      line-height: 1.5;
-      margin-bottom: 20px;
+      line-height: 1.6;
+      box-shadow: 0 0 20px rgba(0, 255, 255, 0.5); /* Enhanced shadow */
+      border-radius: 8px; /* Slightly rounded corners */
+    }
+    .how-to-use h3 {
+      text-align: center;
+      color: #ff77ff;
+      text-shadow: 1px 1px #00ffff;
+      margin-top: 0;
+      margin-bottom: 15px;
+      font-size: 14px; /* Adjust heading size */
     }
     .how-to-use ul {
       list-style: none;
       padding: 0;
       margin: 0;
+    }
+    .how-to-use li {
+      margin-bottom: 10px; /* Space between list items */
     }
     .how-to-use li::before {
       content: "• ";
@@ -176,6 +190,14 @@
       width: 1em;
       margin-left: -1em;
     }
+    .how-to-use p {
+        text-align: center;
+        margin-top: 15px;
+        font-style: italic;
+        font-size: 10px;
+    }
+
+
     @keyframes text-flicker {
       0% { opacity: 1; text-shadow: 2px 2px #00ffff, 4px 4px #0000ff; }
       50% { opacity: 0.9; text-shadow: 2px 2px #00ffff, 3px 3px #0000ff; }
@@ -354,10 +376,10 @@
         transform: translateY(1px) translateX(1px);
     }
 
-    /* New style for the "Ready!" button */
+    /* Style for the "Ready!" button */
     #readyButton {
-        margin-top: 30px; /* Space from the how-to section */
-        background: #28a745; /* Green color */
+        margin-top: 30px;
+        background: #28a745;
         border: 2px solid #1e7e34;
         padding: 15px 30px;
         font-size: 18px;
@@ -374,34 +396,34 @@
         transform: translateY(1px) translateX(1px);
     }
 
-    /* Styles for the 8-bit paperclip button */
+    /* Styles for the emoji paperclip button - centered */
     #paperclipButton {
         position: fixed;
-        bottom: 20px;
-        right: 20px;
-        width: 64px; /* Adjust size as needed */
-        height: 64px; /* Adjust size as needed */
-        background: none;
-        border: none;
-        padding: 0;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: rgba(0, 0, 0, 0.7);
+        border: 2px solid #77ffff;
+        padding: 10px;
         cursor: pointer;
-        display: none; /* Hidden by default */
-        z-index: 50; /* Above most other elements */
-        transition: transform 0.1s ease;
+        display: none;
+        z-index: 50;
+        transition: transform 0.1s ease, box-shadow 0.1s ease;
+        box-shadow: 4px 4px #000;
+        border-radius: 5px;
+        color: #fff;
+        font-size: 48px;
+        line-height: 1;
+        user-select: none;
+        text-align: center;
     }
 
     #paperclipButton:hover {
-        transform: scale(1.1);
+        transform: translate(-50%, -50%) scale(1.1);
+        box-shadow: 2px 2px #000;
     }
 
-    #paperclipButton img {
-        width: 100%;
-        height: 100%;
-        image-rendering: pixelated;
-        filter: drop-shadow(2px 2px 0px #000); /* Adds a little depth */
-    }
-
-    /* Media query for smaller screens */
+    /* Media queries for responsiveness */
     @media (max-width: 768px) {
       .title { font-size: 14px; }
       .welcome { font-size: 10px; }
@@ -410,7 +432,10 @@
       .status-message { top: 70px; font-size: 8px; }
       .splash-text { font-size: 16px; }
       .splash-subtext { font-size: 10px; }
-      .how-to-use { font-size: 9px; padding: 10px; }
+      .how-to-use { font-size: 9px; padding: 15px; max-width: 300px; } /* Adjust max-width for smaller screens */
+      .how-to-use h3 { font-size: 12px; }
+      .how-to-use li { margin-bottom: 8px; }
+      .how-to-use p { font-size: 8px; }
       #readyButton { padding: 10px 20px; font-size: 14px; }
       #myPeerId { font-size: 14px; }
       #shibaImage { width: 48px; height: 48px; }
@@ -418,10 +443,8 @@
       .footer { font-size: 8px; }
       .social-links a { font-size: 10px; }
       #paperclipButton {
-        width: 50px;
-        height: 50px;
-        bottom: 15px;
-        right: 15px;
+        font-size: 36px;
+        padding: 8px;
       }
     }
 
@@ -439,13 +462,13 @@
     <div class="how-to-use">
         <h3>Quick How-To:</h3>
         <ul>
-            <li>**1.** Open on two devices.</li>
-            <li>**2.** One person shares their long "Unique ID".</li>
-            <li>**3.** The other person enters that ID and clicks "Connect".</li>
-            <li>**4.** Once connected, drag & drop files onto the page to send!</li>
-            <li>**5.** **Mobile Users:** Tap the 📎 icon to select files!</li>
+            <li>**1.** Open on **two devices** to begin.</li>
+            <li>**2.** One person **shares their Unique ID**.</li>
+            <li>**3.** The other person **enters that ID** and clicks "Connect".</li>
+            <li>**4.** Once connected, **drag & drop** files or folders anywhere on the page to send.</li>
+            <li>**5.** Or, **click the 📎 icon** to browse and attach files!</li>
         </ul>
-        <p style="text-align: center; margin-top: 10px;">(Connection status will show below)</p>
+        <p>(Connection status will be displayed below.)</p>
     </div>
     <button id="readyButton">Ready!</button>
   </div>
@@ -485,7 +508,7 @@
   </div>
 
   <button id="paperclipButton">
-    <img src="https://i.imgur.com/8bit-paperclip.png" alt="Paperclip Icon for File Upload">
+    📎
   </button>
 
   <div class="footer">
@@ -524,8 +547,8 @@
     const shibaText = document.getElementById('shibaText');
     const copyIdBtn = document.getElementById('copyIdBtn');
     const readyButton = document.getElementById('readyButton');
-    const paperclipButton = document.getElementById('paperclipButton'); // Get the new button
-    const fileInput = document.getElementById('fileInput'); // Get the hidden file input
+    const paperclipButton = document.getElementById('paperclipButton');
+    const fileInput = document.getElementById('fileInput');
 
     roomCodeInput.setAttribute('maxlength', PEER_ID_EXPECTED_LENGTH);
 
@@ -569,7 +592,7 @@
         roomOverlay.style.display = 'none';
         shibaContainer.classList.add('active');
         shibaText.textContent = `This Shiba Inu is your other device (${conn.peer.substring(0,8)}...)!`;
-        paperclipButton.style.display = 'block'; // Show paperclip when connected
+        paperclipButton.style.display = 'block';
       });
 
       peer.on('error', (err) => {
@@ -589,7 +612,7 @@
           }
           shibaContainer.classList.remove('active');
           roomOverlay.style.display = 'flex';
-          paperclipButton.style.display = 'none'; // Hide paperclip when disconnected
+          paperclipButton.style.display = 'none';
       });
     }
 
@@ -620,7 +643,7 @@
             roomOverlay.style.display = 'none';
             shibaContainer.classList.add('active');
             shibaText.textContent = `This Shiba Inu is your other device (${conn.peer.substring(0,8)}...)!`;
-            paperclipButton.style.display = 'block'; // Show paperclip when connected
+            paperclipButton.style.display = 'block';
         });
 
         conn.on('error', (err) => {
@@ -630,7 +653,7 @@
             removeBubble(remoteId);
             shibaContainer.classList.remove('active');
             roomOverlay.style.display = 'flex';
-            paperclipButton.style.display = 'none'; // Hide paperclip on error
+            paperclipButton.style.display = 'none';
         });
 
         conn.on('close', () => {
@@ -640,7 +663,20 @@
             removeBubble(remoteId);
             shibaContainer.classList.remove('active');
             roomOverlay.style.display = 'flex';
-            paperclipButton.style.display = 'none'; // Hide paperclip on close
+            if (Object.keys(peerConnections).length === 0) {
+                paperclipButton.style.display = 'none';
+            }
+        });
+        conn.on('error', (err) => {
+            console.error('Data channel error for', remoteId, err);
+            updateStatus(`Error with ${remoteId}'s connection.`, '#f00');
+            hideProgressBar();
+            isFileBeingSent = false;
+            shibaContainer.classList.remove('active');
+            roomOverlay.style.display = 'flex';
+            if (Object.keys(peerConnections).length === 0) {
+                paperclipButton.style.display = 'none';
+            }
         });
     }
 
@@ -681,7 +717,7 @@
                     try {
                         const dirHandle = await getDownloadDirectoryHandle();
                         await saveFileToDirectory(dirHandle, currentReceivingFile.relativePath, blob);
-                        updateStatus(`📁 Received '${currentReceReceivingFile.relativePath}' to specified folder!`);
+                        updateStatus(`📁 Received '${currentReceivingFile.relativePath}' to specified folder!`);
                     } catch (e) {
                         console.error("Error saving file via File System Access API:", e);
                         downloadBlobAsFile(blob, currentReceivingFile.relativePath);
@@ -734,7 +770,6 @@
         isFileBeingSent = false;
         shibaContainer.classList.remove('active');
         roomOverlay.style.display = 'flex';
-        // Only hide paperclip if no other connections are active
         if (Object.keys(peerConnections).length === 0) {
             paperclipButton.style.display = 'none';
         }
@@ -746,7 +781,6 @@
         isFileBeingSent = false;
         shibaContainer.classList.remove('active');
         roomOverlay.style.display = 'flex';
-        // Only hide paperclip if no other connections are active
         if (Object.keys(peerConnections).length === 0) {
             paperclipButton.style.display = 'none';
         }
@@ -933,13 +967,12 @@
 
     let dragCounter = 0;
 
-    // Use a flag to prevent drag/drop functionality on mobile if paperclip is used
     let isMobileUploadActive = false;
 
     document.body.addEventListener('dragenter', (e) => {
         e.preventDefault();
         e.stopPropagation();
-        if (isMobileUploadActive) return; // Prevent drag/drop if mobile upload is ongoing
+        if (isMobileUploadActive) return;
 
         dragCounter++;
         if (Object.keys(peerConnections).length > 0) {
@@ -985,7 +1018,6 @@
         }
 
         const files = [];
-        // Iterate over items to handle both files and directories
         if (e.dataTransfer.items) {
             for (let i = 0; i < e.dataTransfer.items.length; i++) {
                 const item = e.dataTransfer.items[i];
@@ -997,7 +1029,6 @@
                 }
             }
         } else {
-            // Fallback for browsers not supporting DataTransferItem.webkitGetAsEntry
             Array.from(e.dataTransfer.files).forEach(file => files.push(file));
         }
 
@@ -1015,12 +1046,11 @@
         }
     });
 
-    // Helper function to recursively get files from a DataTransferItem entry (for folders)
     async function getFilesFromEntry(entry, fileList, path = '') {
         if (entry.isFile) {
             await new Promise(resolve => {
                 entry.file(file => {
-                    file.webkitRelativePath = path + file.name; // Set relative path for files in folders
+                    file.webkitRelativePath = path + file.name;
                     fileList.push(file);
                     resolve();
                 });
@@ -1037,7 +1067,6 @@
             });
         }
     }
-
 
     connectBtn.addEventListener('click', () => {
       const remoteId = roomCodeInput.value.trim();
@@ -1081,34 +1110,30 @@
         }
     });
 
-    // Event listener for the "Ready!" button
     readyButton.addEventListener('click', () => {
-        hideSplashScreen(); // Hide the splash screen
+        hideSplashScreen();
         setTimeout(() => {
             initializePeer();
         }, 500);
     });
 
-    // Event listener for the new paperclip button
     paperclipButton.addEventListener('click', () => {
         if (Object.keys(peerConnections).length > 0) {
-            isMobileUploadActive = true; // Set flag to disable drag/drop temporarily
-            fileInput.click(); // Programmatically click the hidden file input
+            isMobileUploadActive = true;
+            fileInput.click();
         } else {
             updateStatus("Connect to a peer first to send files!", '#f00');
         }
     });
 
-    // Event listener for when files are selected via the hidden file input
     fileInput.addEventListener('change', async (e) => {
-        isMobileUploadActive = false; // Reset flag
+        isMobileUploadActive = false;
         const selectedFiles = Array.from(e.target.files);
 
         if (selectedFiles.length > 0) {
             for (const peerId in peerConnections) {
                 const conn = peerConnections[peerId];
                 if (conn && conn.open) {
-                    // Send selected files to each connected peer
                     await sendFilesToPeer(selectedFiles, conn);
                 } else {
                     updateStatus(`Skipping ${peerId}: connection not open.`, '#f90');
@@ -1117,11 +1142,9 @@
         } else {
             updateStatus("No files selected.", '#f00');
         }
-        // Clear the file input value so selecting the same file again triggers change event
         fileInput.value = '';
     });
 
-    // Initial load: Only make splash screen visible.
     window.onload = () => {
         splashScreen.style.display = 'flex';
     };
