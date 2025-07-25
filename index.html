@@ -159,6 +159,7 @@
       max-width: 80%;
       text-align: left;
       line-height: 1.5;
+      margin-bottom: 20px; /* Added margin below how-to */
     }
     .how-to-use ul {
       list-style: none;
@@ -350,6 +351,26 @@
         box-shadow: 1px 1px #00aaff;
         transform: translateY(1px) translateX(1px);
     }
+
+    /* New style for the "Ready!" button */
+    #readyButton {
+        margin-top: 30px; /* Space from the how-to section */
+        background: #28a745; /* Green color */
+        border: 2px solid #1e7e34;
+        padding: 15px 30px;
+        font-size: 18px;
+        color: #fff;
+        cursor: pointer;
+        box-shadow: 3px 3px #1e7e34;
+        transition: all 0.1s ease;
+        font-family: 'Press Start 2P', monospace;
+    }
+
+    #readyButton:hover {
+        background: #1e7e34;
+        box-shadow: 2px 2px #28a745;
+        transform: translateY(1px) translateX(1px);
+    }
   </style>
 </head>
 <body>
@@ -371,6 +392,7 @@
         </ul>
         <p style="text-align: center; margin-top: 10px;">(Connection status will show below)</p>
     </div>
+    <button id="readyButton">Ready!</button>
   </div>
 
   <div class="title">🌊 Sebit Lan Share 🌊</div>
@@ -442,6 +464,7 @@
     const shibaContainer = document.getElementById('shibaContainer');
     const shibaText = document.getElementById('shibaText');
     const copyIdBtn = document.getElementById('copyIdBtn');
+    const readyButton = document.getElementById('readyButton'); // Get the new Ready button
 
     roomCodeInput.setAttribute('maxlength', PEER_ID_EXPECTED_LENGTH);
 
@@ -450,14 +473,11 @@
         statusMessage.style.color = color;
     }
 
-    function showSplashScreen() {
-        splashScreen.style.display = 'flex';
-        setTimeout(() => {
-            splashScreen.classList.add('fade-out');
-            splashScreen.addEventListener('transitionend', () => {
-                splashScreen.style.display = 'none';
-            }, { once: true });
-        }, 3000);
+    function hideSplashScreen() {
+        splashScreen.classList.add('fade-out');
+        splashScreen.addEventListener('transitionend', () => {
+            splashScreen.style.display = 'none';
+        }, { once: true });
     }
 
     function initializePeer(id = null) {
@@ -589,15 +609,4 @@
                         const dirHandle = await getDownloadDirectoryHandle();
                         await saveFileToDirectory(dirHandle, currentReceivingFile.relativePath, blob);
                         updateStatus(`📁 Received '${currentReceivingFile.relativePath}' to specified folder!`);
-                    } catch (e) {
-                        console.error("Error saving file via File System Access API:", e);
-                        downloadBlobAsFile(blob, currentReceivingFile.relativePath);
-                        updateStatus(`📁 Received '${currentReceivingFile.relativePath}' via traditional download!`);
-                    }
-                } else {
-                    downloadBlobAsFile(blob, currentReceivingFile.relativePath);
-                    updateStatus(`📁 Received '${currentReceivingFile.relativePath}'!`);
-                }
-
-                console.log(`Successfully received and processed ${currentReceivingFile.relativePath}`);
-                to
+            
