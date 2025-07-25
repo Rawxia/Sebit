@@ -91,9 +91,89 @@
         font-size: 10px; color: #0f0; text-shadow: 1px 1px #000;
         z-index: 15; /* Above other elements */
     }
+
+    /* --- New Splash Screen Styles --- */
+    #splashScreen {
+      position: fixed; /* Fixed to cover the entire viewport */
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background-color: #000; /* Solid black background */
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      z-index: 999; /* Make sure it's on top of everything */
+      opacity: 1; /* Start fully opaque */
+      transition: opacity 2s ease-out; /* Smooth fade-out */
+      pointer-events: all; /* Allow clicks on it initially */
+      box-shadow: inset 0 0 10px 5px rgba(255, 255, 255, 0.1); /* Subtle inner glow */
+    }
+
+    #splashScreen.fade-out {
+      opacity: 0;
+      pointer-events: none; /* Disable interaction after fade-out starts */
+    }
+
+    .splash-text {
+      color: #ff00ff; /* Bright magenta for retro feel */
+      font-size: 20px;
+      text-align: center;
+      text-shadow: 2px 2px #00ffff, 4px 4px #0000ff; /* Multiple pixelated shadows */
+      margin-bottom: 20px;
+      animation: text-flicker 0.8s infinite alternate; /* Subtle flicker effect */
+      padding: 10px;
+      border: 2px dashed #ff77ff; /* Pixelated dashed border */
+      box-shadow: 0 0 15px rgba(255, 119, 255, 0.7); /* Glow around text */
+    }
+
+    .splash-subtext {
+      color: #00ffff; /* Cyan for contrast */
+      font-size: 12px;
+      text-align: center;
+      text-shadow: 1px 1px #ff00ff;
+      animation: pulse 2s infinite alternate; /* Gentle pulse for subtext */
+    }
+
+    /* Keyframes for splash screen effects */
+    @keyframes text-flicker {
+      0% { opacity: 1; text-shadow: 2px 2px #00ffff, 4px 4px #0000ff; }
+      50% { opacity: 0.9; text-shadow: 2px 2px #00ffff, 3px 3px #0000ff; }
+      100% { opacity: 1; text-shadow: 2px 2px #00ffff, 4px 4px #0000ff; }
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(1); opacity: 0.8; }
+      100% { transform: scale(1.03); opacity: 1; }
+    }
+
+    /* Optional: Scanline effect on top of splash screen for extra retro feel */
+    #splashScreen::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: repeating-linear-gradient(
+        #00000000 0px,
+        #00000000 1px,
+        rgba(0,0,0,0.1) 1px,
+        rgba(0,0,0,0.1) 2px
+      );
+      pointer-events: none; /* Make sure it doesn't block clicks */
+      z-index: 1; /* Above splash background, below text */
+    }
+
   </style>
 </head>
 <body>
+
+  <div id="splashScreen">
+    <div class="splash-text">
+      Welcome to Sebit P2P File Transfer!
+    </div>
+    <div class="splash-subtext">
+      This is still in Alpha and Work in Progress but focused with privacy in mind.
+    </div>
+  </div>
+
   <div class="title">🌊 Sebit Lan Share 🌊</div>
   <div class="welcome">Welcome to Seb P2P LAN sharer!</div>
   <div class="status-message" id="statusMessage">Connecting to signaling server...</div>
@@ -101,9 +181,9 @@
   <div class="overlay" id="roomOverlay">
     <div class="message">
         <p>Your unique ID: <span id="myPeerId"></span></p>
-        <p>Share this ID for others to connect, or enter an ID below to connect to someone else.</p>
+        <p>Share this long ID for others to connect, or enter an ID below to connect to someone else.</p>
     </div>
-    <input type="text" id="roomCodeInput" class="code-input" placeholder="Enter peer ID to connect" maxlength="5">
+    <input type="text" id="roomCodeInput" class="code-input" placeholder="Enter peer ID to connect" maxlength="36">
     <button id="connectBtn" class="btn">Connect</button>
     <button id="newIdBtn" class="btn">Generate New ID</button>
   </div>
@@ -114,6 +194,9 @@
   <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
 
   <script>
+    // --- Configuration Variable for ID Length ---
+    const PEER_ID_EXPECTED_LENGTH = 36; // Default PeerJS UUID length is 36 characters (including hyphens)
+
     let peer; // Our PeerJS object
     const peerConnections = {}; // Stores DataConnection objects (PeerJS handles RTCPeerConnection internally)
     let currentRoomId = ''; // To store the ID the user enters or creates
@@ -124,6 +207,11 @@
     const newIdBtn = document.getElementById('newIdBtn');
     const roomOverlay = document.getElementById('roomOverlay');
     const statusMessage = document.getElementById('statusMessage');
+    const splashScreen = document.getElementById('splashScreen'); // Get splash screen element
+
+    // --- Dynamically set maxlength in case HTML is accidentally wrong ---
+    roomCodeInput.setAttribute('maxlength', PEER_ID_EXPECTED_LENGTH);
+
 
     // --- Utility Functions ---
 
@@ -132,16 +220,25 @@
         statusMessage.style.color = color;
     }
 
+    // --- Splash Screen Logic ---
+    function showSplashScreen() {
+        splashScreen.style.display = 'flex'; // Ensure it's visible
+        // Delay before fading out
+        setTimeout(() => {
+            splashScreen.classList.add('fade-out'); // Start fade-out animation
+            // Remove from DOM after transition completes to ensure no lingering issues
+            splashScreen.addEventListener('transitionend', () => {
+                splashScreen.style.display = 'none';
+            }, { once: true }); // Only listen for one transition end event
+        }, 3000); // Display for 3 seconds (adjust as desired)
+    }
+
+
     // --- PeerJS Setup ---
 
     function initializePeer(id = null) {
       updateStatus("Connecting to signaling server...");
-      // For free cloud PeerJS server, omit host/port or use '0.peerjs.com' if 'peerjs.com' has issues.
-      // You can also add 'debug: 3' for more console output during development.
       peer = new Peer(id, {
-          // host: '0.peerjs.com', // Optional: specify PeerJS server
-          // port: 443, // Optional: specify PeerJS server port
-          // secure: true, // Optional: use WSS for secure connections
           config: {
               iceServers: [{ urls: 'stun:stun.l.google.com:19302' }]
           }
@@ -166,17 +263,15 @@
       peer.on('error', (err) => {
         console.error('PeerJS error:', err);
         updateStatus(`Error: ${err.message}. Please refresh or try a new ID.`, '#f00');
-        // If an error occurs, destroy current peer and allow re-initialization
         if (peer && !peer.destroyed) {
             peer.destroy();
         }
-        initializePeer(); // Attempt to re-initialize or let user try new ID
+        initializePeer();
       });
 
       peer.on('disconnected', () => {
           console.log('PeerJS disconnected from signaling server.');
           updateStatus('Disconnected. Trying to reconnect...', '#f90');
-          // Automatically try to reconnect
           if (!peer.destroyed) {
               peer.reconnect();
           }
@@ -192,6 +287,11 @@
             updateStatus('Cannot connect to yourself!', '#f00');
             return;
         }
+        if (remoteId.length !== PEER_ID_EXPECTED_LENGTH) {
+            updateStatus(`Please enter a valid Peer ID of ${PEER_ID_EXPECTED_LENGTH} characters.`, '#f00');
+            return;
+        }
+
 
         updateStatus(`Attempting to connect to ${remoteId}...`);
         console.log(`Attempting to connect to peer: ${remoteId}`);
@@ -246,7 +346,6 @@
             }
           } catch (e) {
             console.warn("Received non-JSON string or malformed JSON:", data);
-            // Could be a simple text message if you wanted to add chat
           }
         } else {
           // It's a file data chunk (ArrayBuffer or Blob)
@@ -265,7 +364,6 @@
             updateStatus(`📁 Received '${expectedFileName}' from ${remoteId}!`);
             console.log(`Successfully received and downloaded ${expectedFileName}`);
 
-            // Reset for next file
             receivedFileBuffer = [];
             expectedFileName = 'received_file';
             expectedFileSize = 0;
@@ -276,7 +374,7 @@
       conn.on('close', () => {
         console.log('Connection closed for:', remoteId);
         updateStatus(`Connection to ${remoteId} closed.`, '#f90');
-        removeBubble(remoteId); // Remove the bubble when connection closes
+        removeBubble(remoteId);
       });
       conn.on('error', (err) => {
         console.error('Data channel error for', remoteId, err);
@@ -289,17 +387,17 @@
     const activeBubbles = {}; // To keep track of bubble elements by peerId
 
     function addBubble(id) {
-      if (activeBubbles[id]) return; // Don't add if already exists
+      if (activeBubbles[id]) return;
 
       const b = document.createElement('div');
       b.className = 'bubble';
-      b.id = `bubble-${id}`; // Assign a unique ID to the bubble element
-      b.style.left = `${Math.random() * 80 + 10}%`; // More centered random position
-      b.style.animationDelay = `${Math.random() * 3}s`; // Stagger animation start
-      b.style.animationDuration = `${5 + Math.random() * 5}s`; // Vary animation speed
+      b.id = `bubble-${id}`;
+      b.style.left = `${Math.random() * 80 + 10}%`;
+      b.style.animationDelay = `${Math.random() * 3}s`;
+      b.style.animationDuration = `${5 + Math.random() * 5}s`;
 
       const idText = document.createElement('span');
-      idText.textContent = id;
+      idText.textContent = id.substring(0, 8) + '...';
       idText.style.position = 'absolute';
       idText.style.top = '100%';
       idText.style.left = '50%';
@@ -317,23 +415,19 @@
           inp.onchange = () => {
             if (inp.files.length) {
               const file = inp.files[0];
-              // 1. Send filename (as a JSON message)
               conn.send(JSON.stringify({ type: 'file-metadata', filename: file.name, fileSize: file.size }));
-
-              // 2. Send the file itself
-              // PeerJS data channels automatically handle chunking for Blobs/Files
               conn.send(file);
               updateStatus(`📁 Sent '${file.name}' to ${id}`);
             }
           };
-          inp.click(); // Trigger file input click
+          inp.click();
         } else {
           updateStatus(`Connection to ${id} is not open!`, '#f00');
           console.error(`Attempted to send file to ${id}, but connection is not open.`);
         }
       };
       document.body.appendChild(b);
-      activeBubbles[id] = b; // Store reference
+      activeBubbles[id] = b;
     }
 
     function removeBubble(id) {
@@ -356,13 +450,19 @@
 
     newIdBtn.addEventListener('click', () => {
         if (peer && !peer.destroyed) {
-            peer.destroy(); // Destroy existing peer to get a new ID
+            peer.destroy();
         }
-        initializePeer(); // Initialize with a new random ID
+        initializePeer();
     });
 
     // --- Initial Setup ---
-    initializePeer();
+    // Call showSplashScreen when the page loads
+    window.onload = () => {
+        showSplashScreen();
+        // Initialize PeerJS after a short delay so it starts while splash is visible
+        // This ensures the initial PeerJS connection message isn't hidden
+        setTimeout(initializePeer, 1000); // Start PeerJS after 1 second
+    };
   </script>
 </body>
 </html>
