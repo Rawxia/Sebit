@@ -125,7 +125,7 @@
       display: flex; flex-direction: column; justify-content: center; align-items: center;
       z-index: 999;
       opacity: 1;
-      transition: opacity 2s ease-out;
+      transition: opacity 2s ease-out; /* Match this duration with setTimeout in JS */
       pointer-events: all;
       box-shadow: inset 0 0 10px 5px rgba(255, 255, 255, 0.1);
     }
@@ -159,7 +159,7 @@
       max-width: 80%;
       text-align: left;
       line-height: 1.5;
-      margin-bottom: 20px; /* Added margin below how-to */
+      margin-bottom: 20px;
     }
     .how-to-use ul {
       list-style: none;
@@ -464,7 +464,7 @@
     const shibaContainer = document.getElementById('shibaContainer');
     const shibaText = document.getElementById('shibaText');
     const copyIdBtn = document.getElementById('copyIdBtn');
-    const readyButton = document.getElementById('readyButton'); // Get the new Ready button
+    const readyButton = document.getElementById('readyButton');
 
     roomCodeInput.setAttribute('maxlength', PEER_ID_EXPECTED_LENGTH);
 
@@ -475,9 +475,11 @@
 
     function hideSplashScreen() {
         splashScreen.classList.add('fade-out');
-        splashScreen.addEventListener('transitionend', () => {
+        // This timeout ensures the fade-out animation completes before display: none is applied.
+        // It should match the CSS transition duration (2s in this case).
+        setTimeout(() => {
             splashScreen.style.display = 'none';
-        }, { once: true });
+        }, 2000);
     }
 
     function initializePeer(id = null) {
@@ -608,5 +610,4 @@
                     try {
                         const dirHandle = await getDownloadDirectoryHandle();
                         await saveFileToDirectory(dirHandle, currentReceivingFile.relativePath, blob);
-                        updateStatus(`📁 Received '${currentReceivingFile.relativePath}' to specified folder!`);
-            
+           
