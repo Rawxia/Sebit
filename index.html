@@ -51,7 +51,29 @@
       position: absolute; bottom: 10px; width: 100%; text-align: center;
       font-size: 10px; color: #ccc; text-shadow: 0 0 4px #000;
       z-index: 10;
+      /* Added flexbox for better alignment of social links */
+      display: flex;
+      flex-direction: column; /* Stack text and links vertically */
+      align-items: center; /* Center horizontally */
+      gap: 5px; /* Space between items */
     }
+    .social-links {
+      display: flex;
+      gap: 15px; /* Space between social links */
+      margin-top: 5px; /* Space above social links */
+    }
+    .social-links a {
+      color: #77ffff; /* Link color matching your theme */
+      text-decoration: none; /* No underline */
+      font-size: 12px; /* Slightly larger for visibility */
+      text-shadow: 1px 1px #ff77ff;
+      transition: color 0.2s ease, text-shadow 0.2s ease;
+    }
+    .social-links a:hover {
+      color: #ff77ff; /* Hover color */
+      text-shadow: 1px 1px #77ffff, 2px 2px #ff00ff;
+    }
+
     #fileInput { display: none; }
 
     /* New UI for room codes */
@@ -92,7 +114,7 @@
         z-index: 15; /* Above other elements */
     }
 
-    /* --- New Splash Screen Styles --- */
+    /* --- Splash Screen Styles --- */
     #splashScreen {
       position: fixed; /* Fixed to cover the entire viewport */
       top: 0; left: 0;
@@ -188,7 +210,13 @@
     <button id="newIdBtn" class="btn">Generate New ID</button>
   </div>
 
-  <div class="footer">Created by Rawxia - Privacy in mind</div>
+  <div class="footer">
+    Created by Rawxia - Privacy in mind
+    <div class="social-links">
+        <a href="https://www.instagram.com/sebulique/" target="_blank" rel="noopener noreferrer">Instagram</a>
+        <a href="https://www.youtube.com/@6_LN" target="_blank" rel="noopener noreferrer">YouTube</a>
+    </div>
+  </div>
   <input type="file" id="fileInput" />
 
   <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
