@@ -5,7 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Sebit Lan Share</title>
   <link rel="icon" type="image/gif" href="favicon.gif">
-  <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet"> <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet"> <style>
+  <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs/qrcode.min.js"></script>
+  <style>
     /* Base Styles - Default (Vaporwave-inspired) */
     body, html {
       margin: 0; padding: 0; overflow: hidden;
@@ -559,6 +562,19 @@
         transform: translateY(1px) translateX(1px);
     }
 
+    /* QR Code specific styles */
+    #qrcode {
+      margin-top: 15px;
+      padding: 5px;
+      background: #fff; /* White background for better QR readability */
+      border: 2px solid #77ffff;
+      box-shadow: 0 0 10px rgba(119, 255, 255, 0.5);
+      display: none; /* Hidden by default */
+    }
+    #qrcode.active {
+      display: block;
+    }
+
 
     /* --- THEME STYLES --- */
 
@@ -674,3 +690,516 @@
         background: rgba(0, 50, 0, 0.5);
         color: #0f0;
         text-shadow: 1px 1px #000;
+    }
+    .theme-computer-guy #qrcode {
+      background: #fff;
+      border: 2px solid #0a0;
+      box-shadow: 0 0 10px rgba(0, 170, 0, 0.5);
+    }
+  </style>
+</head>
+<body>
+  <div id="splashScreen">
+    <div class="splash-text">S E B I T - L A N - S H A R E</div>
+    <div class="splash-subtext">...connecting to the matrix...</div>
+    <div class="how-to-use">
+      <h3>How To Use</h3>
+      <ul>
+        <li>**To Send:** Share your unique Peer ID or QR code with the receiver. Once connected, drag and drop files onto the window, or click the paperclip icon.</li>
+        <li>**To Receive:** Get the sender's Peer ID (or scan their QR code), enter it into the "Connect Code" box, and click "Connect."</li>
+        <li>**Chat:** Use the text area at the bottom to send and receive messages.</li>
+      </ul>
+      <p>Remember: Both users must be on this page to connect and transfer!</p>
+    </div>
+    <div class="theme-selector-container">
+      <label for="themeSelect">Choose Theme:</label>
+      <select id="themeSelect">
+        <option value="vaporwave">Vaporwave (Default)</option>
+        <option value="computer-guy">Computer Guy (Matrix)</option>
+      </select>
+    </div>
+    <button id="readyButton">I'M READY!</button>
+  </div>
+
+  <div class="title">S E B I T - L A N - S H A R E</div>
+  <div class="welcome">Welcome, User!</div>
+  <div class="status-message" id="statusMessage">Initializing...</div>
+
+  <div class="overlay" id="connectOverlay">
+    <div class="message" id="peerIdMessage">Your Peer ID: <span id="myPeerId"></span></div>
+    <button class="btn" id="copyIdBtn">Copy ID</button>
+    <div id="qrcode"></div> <input type="text" id="connectCodeInput" class="code-input" placeholder="Enter connect code...">
+    <div class="button-group">
+      <button class="btn" id="connectButton">Connect</button>
+      <button class="btn" id="pasteIdBtn">Paste ID</button>
+    </div>
+  </div>
+
+  <input type="file" id="fileInput" multiple />
+
+  <div id="dropZoneOverlay">
+    <div class="message">
+      Drop to Share!
+      <div class="small-text">(Files will be sent to connected peer)</div>
+    </div>
+  </div>
+
+  <div id="progressBarContainer">
+    <div id="progressBar"></div>
+  </div>
+
+  <div id="shibaContainer">
+    <img id="shibaImage" src="shiba.gif" alt="Shiba Inu" />
+    <div id="shibaText">Sending file...</div>
+  </div>
+
+  <div id="paperclipButtonContainer">
+    <button id="paperclipButton">📎</button>
+    <div id="paperclipText">Click or Drag Files</div>
+  </div>
+
+  <div id="textTransferContainer">
+    <textarea id="textInput" placeholder="Type your message here..."></textarea>
+    <button id="sendTextBtn">Send Message</button>
+    <div id="receivedTextDisplay"></div>
+  </div>
+
+  <div class="footer">
+    <div>&copy; 2025 Sebit Lan Share. All rights reserved.</div>
+    <div class="social-links">
+      <a href="https://github.com/yourprofile" target="_blank">GitHub</a>
+      <a href="https://twitter.com/yourprofile" target="_blank">Twitter</a>
+      <a href="https://linkedin.com/in/yourprofile" target="_blank">LinkedIn</a>
+    </div>
+  </div>
+
+  <script>
+    const splashScreen = document.getElementById('splashScreen');
+    const readyButton = document.getElementById('readyButton');
+    const connectOverlay = document.getElementById('connectOverlay');
+    const statusMessage = document.getElementById('statusMessage');
+    const myPeerId = document.getElementById('myPeerId');
+    const copyIdBtn = document.getElementById('copyIdBtn');
+    const connectCodeInput = document.getElementById('connectCodeInput');
+    const connectButton = document.getElementById('connectButton');
+    const fileInput = document.getElementById('fileInput');
+    const dropZoneOverlay = document.getElementById('dropZoneOverlay');
+    const progressBarContainer = document.getElementById('progressBarContainer');
+    const progressBar = document.getElementById('progressBar');
+    const shibaContainer = document.getElementById('shibaContainer');
+    const shibaText = document.getElementById('shibaText');
+    const paperclipButtonContainer = document.getElementById('paperclipButtonContainer');
+    const paperclipButton = document.getElementById('paperclipButton');
+    const textTransferContainer = document.getElementById('textTransferContainer');
+    const textInput = document.getElementById('textInput');
+    const sendTextBtn = document.getElementById('sendTextBtn');
+    const receivedTextDisplay = document.getElementById('receivedTextDisplay');
+    const pasteIdBtn = document.getElementById('pasteIdBtn');
+    const themeSelect = document.getElementById('themeSelect');
+    const qrcodeContainer = document.getElementById('qrcode');
+
+    let peer = null;
+    let conn = null;
+    let receivedChunks = [];
+    let receivedFileSize = 0;
+    let expectedFileSize = 0;
+    let receivedFileName = '';
+    let isReceivingFile = false;
+    let timeoutId;
+
+    // Helper to debounce status messages
+    function setStatus(message, duration = 3000) {
+      statusMessage.textContent = message;
+      clearTimeout(timeoutId);
+      timeoutId = setTimeout(() => {
+        statusMessage.textContent = '';
+      }, duration);
+    }
+
+    // Function to apply theme
+    function applyTheme(themeName) {
+      document.body.className = ''; // Clear existing themes
+      if (themeName !== 'vaporwave') { // Vaporwave is the default, no class needed
+        document.body.classList.add(`theme-${themeName}`);
+      }
+      localStorage.setItem('selectedTheme', themeName); // Save preference
+    }
+
+    // Load theme on startup
+    document.addEventListener('DOMContentLoaded', () => {
+      const savedTheme = localStorage.getItem('selectedTheme') || 'vaporwave';
+      themeSelect.value = savedTheme;
+      applyTheme(savedTheme);
+    });
+
+    themeSelect.addEventListener('change', (event) => {
+      applyTheme(event.target.value);
+    });
+
+    // Bubble animation
+    function createBubble() {
+      const bubble = document.createElement('div');
+      bubble.classList.add('bubble');
+      document.body.appendChild(bubble);
+
+      const size = Math.random() * 20 + 20; // Size between 20px and 40px
+      bubble.style.width = `${size}px`;
+      bubble.style.height = `${size}px`;
+      bubble.style.left = `${Math.random() * 100}vw`; // Random horizontal position
+      bubble.style.animationDuration = `${Math.random() * 6 + 4}s`; // 4-10 seconds
+      bubble.style.animationDelay = `-${Math.random() * 5}s`; // Start at different points
+
+      bubble.addEventListener('animationiteration', () => {
+        // Reset bubble position when animation loops
+        bubble.style.left = `${Math.random() * 100}vw`;
+        bubble.style.animationDuration = `${Math.random() * 6 + 4}s`;
+        bubble.style.animationDelay = `-${Math.random() * 5}s`;
+      });
+      return bubble;
+    }
+
+    // Create a few bubbles
+    for (let i = 0; i < 10; i++) {
+      createBubble();
+    }
+
+    // Initialize PeerJS
+    function initializePeer() {
+      setStatus('Connecting to PeerJS server...');
+      // Use a custom PeerServer if available, otherwise use default
+      // This is a placeholder for your actual PeerJS server configuration
+      peer = new Peer({
+        host: 'peerjs-server.herokuapp.com', // Replace with your PeerJS server
+        port: 443,
+        secure: true
+      });
+
+      peer.on('open', (id) => {
+        myPeerId.textContent = id;
+        setStatus('Ready! Your ID: ' + id, 5000);
+        connectOverlay.style.display = 'flex';
+        paperclipButtonContainer.style.display = 'flex';
+        textTransferContainer.style.display = 'flex';
+        generateQRCode(id); // Generate QR code on ID open
+      });
+
+      peer.on('connection', (connection) => {
+        conn = connection;
+        setStatus('Incoming connection from: ' + conn.peer);
+        setupConnectionEvents(conn);
+        connectOverlay.style.display = 'none'; // Hide overlay on incoming connection
+      });
+
+      peer.on('error', (err) => {
+        console.error('PeerJS error:', err);
+        setStatus('Error: ' + err.message + '. Please refresh.', 10000);
+      });
+
+      peer.on('disconnected', () => {
+          setStatus('Disconnected from PeerJS server. Attempting to reconnect...', 5000);
+          peer.reconnect();
+      });
+    }
+
+    function setupConnectionEvents(connection) {
+      connection.on('open', () => {
+        setStatus('Connected to: ' + connection.peer, 5000);
+        connectOverlay.style.display = 'none';
+        paperclipButtonContainer.style.display = 'flex';
+        textTransferContainer.style.display = 'flex';
+        // Hide QR code if it was shown for self ID
+        qrcodeContainer.classList.remove('active');
+      });
+
+      connection.on('data', (data) => {
+        if (data.type === 'file-start') {
+          handleFileStart(data);
+        } else if (data.type === 'file-chunk') {
+          handleFileChunk(data);
+        } else if (data.type === 'file-end') {
+          handleFileEnd();
+        } else if (data.type === 'text-message') {
+          handleTextMessage(data.message);
+        }
+      });
+
+      connection.on('close', () => {
+        setStatus('Disconnected from ' + connection.peer + '. Waiting for new connection or refresh.', 10000);
+        conn = null;
+        progressBarContainer.classList.remove('active');
+        shibaContainer.classList.remove('active');
+        // Re-show ID and QR code when connection closes
+        connectOverlay.style.display = 'flex';
+        if (myPeerId.textContent) {
+            generateQRCode(myPeerId.textContent);
+        }
+      });
+
+      connection.on('error', (err) => {
+        console.error('Connection error:', err);
+        setStatus('Connection error: ' + err.message, 10000);
+        progressBarContainer.classList.remove('active');
+        shibaContainer.classList.remove('active');
+      });
+    }
+
+    // QR Code Generation
+    let qr = null;
+    function generateQRCode(text) {
+      if (qr) {
+        qr.clear(); // Clear existing QR code if any
+      } else {
+        qr = new QRCode(qrcodeContainer, {
+          width: 128,
+          height: 128,
+          colorDark : "#000000",
+          colorLight : "#ffffff",
+          correctLevel : QRCode.CorrectLevel.H
+        });
+      }
+      qr.makeCode(text);
+      qrcodeContainer.classList.add('active');
+    }
+
+    // Event Listeners
+    readyButton.addEventListener('click', () => {
+      splashScreen.classList.add('fade-out');
+      setTimeout(() => {
+        splashScreen.style.display = 'none';
+        initializePeer();
+      }, 2000); // Wait for fade-out transition
+    });
+
+    copyIdBtn.addEventListener('click', () => {
+      navigator.clipboard.writeText(myPeerId.textContent)
+        .then(() => setStatus('Peer ID copied to clipboard!', 2000))
+        .catch(err => console.error('Failed to copy: ', err));
+    });
+
+    pasteIdBtn.addEventListener('click', async () => {
+        try {
+            const text = await navigator.clipboard.readText();
+            connectCodeInput.value = text;
+            setStatus('Pasted ID from clipboard!', 2000);
+        } catch (err) {
+            console.error('Failed to read clipboard contents: ', err);
+            setStatus('Failed to paste ID. Please paste manually.', 3000);
+        }
+    });
+
+    connectButton.addEventListener('click', () => {
+      const remoteId = connectCodeInput.value.trim();
+      if (remoteId && peer) {
+        setStatus('Connecting to ' + remoteId + '...');
+        conn = peer.connect(remoteId, { reliable: true });
+        setupConnectionEvents(conn);
+      } else {
+        setStatus('Please enter a valid Peer ID.', 3000);
+      }
+    });
+
+    paperclipButton.addEventListener('click', () => {
+      fileInput.click(); // Programmatically click the hidden file input
+    });
+
+    fileInput.addEventListener('change', (event) => {
+      const files = event.target.files;
+      if (files.length > 0) {
+        if (conn && conn.open) {
+          Array.from(files).forEach(file => sendFile(file));
+        } else {
+          setStatus('Not connected to a peer. Please connect first.', 3000);
+        }
+      }
+    });
+
+    // Drag and Drop functionality
+    document.body.addEventListener('dragenter', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      if (conn && conn.open) {
+        dropZoneOverlay.classList.add('active');
+      }
+    });
+
+    document.body.addEventListener('dragleave', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      // Only hide if leaving the active dropzone, not just any element
+      if (!e.relatedTarget || !dropZoneOverlay.contains(e.relatedTarget)) {
+        dropZoneOverlay.classList.remove('active');
+      }
+    });
+
+    dropZoneOverlay.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      e.dataTransfer.dropEffect = 'copy';
+    });
+
+    dropZoneOverlay.addEventListener('drop', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      dropZoneOverlay.classList.remove('active');
+
+      if (conn && conn.open) {
+        const files = e.dataTransfer.files;
+        Array.from(files).forEach(file => sendFile(file));
+      } else {
+        setStatus('Not connected to a peer. Please connect first.', 3000);
+      }
+    });
+
+    // File Transfer Logic
+    async function sendFile(file) {
+      if (!conn || !conn.open) {
+        setStatus('Not connected to a peer. Cannot send file.', 3000);
+        return;
+      }
+
+      setStatus(`Sending "${file.name}"...`);
+      shibaText.textContent = `Sending "${file.name}"...`;
+      shibaContainer.classList.add('active');
+      progressBarContainer.classList.add('active');
+      progressBar.style.width = '0%';
+      progressBar.textContent = '0%';
+
+      const chunkSize = 16 * 1024; // 16KB chunks
+      let offset = 0;
+
+      conn.send({
+        type: 'file-start',
+        name: file.name,
+        size: file.size,
+        fileType: file.type
+      });
+
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const chunk = e.target.result;
+        conn.send({
+          type: 'file-chunk',
+          chunk: chunk,
+          offset: offset,
+          fileName: file.name
+        });
+        offset += chunk.byteLength;
+        const progress = Math.min(100, (offset / file.size) * 100);
+        progressBar.style.width = `${progress}%`;
+        progressBar.textContent = `${Math.round(progress)}%`;
+
+        if (offset < file.size) {
+          readNextChunk();
+        } else {
+          conn.send({ type: 'file-end', fileName: file.name });
+          setStatus(`"${file.name}" sent successfully!`, 5000);
+          shibaContainer.classList.remove('active');
+          progressBarContainer.classList.remove('active');
+          triggerConfetti(200);
+        }
+      };
+
+      reader.onerror = (err) => {
+        console.error('File reading error:', err);
+        setStatus('Error reading file: ' + err.message, 5000);
+        shibaContainer.classList.remove('active');
+        progressBarContainer.classList.remove('active');
+      };
+
+      function readNextChunk() {
+        const slice = file.slice(offset, offset + chunkSize);
+        reader.readAsArrayBuffer(slice);
+      }
+
+      readNextChunk();
+    }
+
+    function handleFileStart(data) {
+      setStatus(`Receiving "${data.name}" (${(data.size / (1024 * 1024)).toFixed(2)} MB)...`);
+      shibaText.textContent = `Receiving "${data.name}"...`;
+      shibaContainer.classList.add('active');
+      progressBarContainer.classList.add('active');
+      progressBar.style.width = '0%';
+      progressBar.textContent = '0%';
+      receivedChunks = [];
+      receivedFileSize = 0;
+      expectedFileSize = data.size;
+      receivedFileName = data.name;
+      isReceivingFile = true;
+    }
+
+    function handleFileChunk(data) {
+      if (!isReceivingFile) return; // Ignore chunks if not in receiving state
+      receivedChunks.push(data.chunk);
+      receivedFileSize += data.chunk.byteLength;
+      const progress = Math.min(100, (receivedFileSize / expectedFileSize) * 100);
+      progressBar.style.width = `${progress}%`;
+      progressBar.textContent = `${Math.round(progress)}%`;
+      if (shibaContainer.classList.contains('active')) {
+          shibaImage.src = 'shiba-receiving.gif'; // Change Shiba image for receiving
+      }
+    }
+
+    function handleFileEnd() {
+      if (!isReceivingFile) return;
+      isReceivingFile = false;
+
+      const blob = new Blob(receivedChunks);
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = receivedFileName;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url); // Clean up memory
+
+      setStatus(`"${receivedFileName}" received and downloaded!`, 5000);
+      shibaContainer.classList.remove('active');
+      progressBarContainer.classList.remove('active');
+      shibaImage.src = 'shiba.gif'; // Reset Shiba image
+      triggerConfetti(200);
+    }
+
+    // Text Transfer Logic
+    sendTextBtn.addEventListener('click', () => {
+      const message = textInput.value.trim();
+      if (message) {
+        if (conn && conn.open) {
+          conn.send({ type: 'text-message', message: message });
+          receivedTextDisplay.style.display = 'block';
+          receivedTextDisplay.innerHTML += `<b>You:</b> ${message}<br>`;
+          receivedTextDisplay.scrollTop = receivedTextDisplay.scrollHeight; // Scroll to bottom
+          textInput.value = '';
+        } else {
+          setStatus('Not connected to a peer. Cannot send message.', 3000);
+        }
+      }
+    });
+
+    function handleTextMessage(message) {
+      receivedTextDisplay.style.display = 'block';
+      receivedTextDisplay.innerHTML += `<b>Peer:</b> ${message}<br>`;
+      receivedTextDisplay.scrollTop = receivedTextDisplay.scrollHeight; // Scroll to bottom
+      setStatus('New message received!', 2000);
+    }
+
+    // Confetti effect
+    function triggerConfetti(count) {
+      for (let i = 0; i < count; i++) {
+        const confetti = document.createElement('div');
+        confetti.classList.add('confetti');
+        confetti.style.setProperty('--x', `${Math.random() * 100}vw`);
+        confetti.style.setProperty('--y', `${Math.random() * -20}vh`); // Start above viewport
+        confetti.style.left = `${Math.random() * 100}vw`;
+        confetti.style.top = `${Math.random() * 100}vh`;
+        confetti.style.animationDelay = `${Math.random() * 0.5}s`;
+        document.body.appendChild(confetti);
+        confetti.addEventListener('animationend', () => {
+          confetti.remove();
+        });
+      }
+    }
+  </script>
+</body>
+</html>
