@@ -12,18 +12,17 @@
       font-family: 'Press Start 2P', monospace; color: #fff;
       image-rendering: pixelated; /* Force pixelated rendering */
       height: 100%; /* Ensure body takes full height for background */
+      position: relative; /* Needed for confetti positioning */
     }
     body {
-      /* Uses a sprite strip image with 4 frames */
       background: url('sebit background.gif');
-      /* Set the size to one frame's width (assuming your gif is 1150px wide for one frame) */
       background-size: 1150px auto;
-      background-repeat: repeat-x; /* Allow it to repeat horizontally */
-      animation: ocean 8s linear infinite; /* Apply the animation directly here */
+      background-repeat: repeat-x;
+      animation: ocean 8s linear infinite;
     }
     @keyframes ocean {
       0% { background-position: 0 0; }
-      100% { background-position: -1150px 0; } /* Animate full width of your sprite */
+      100% { background-position: -1150px 0; }
     }
     .title {
       position: absolute; top: 20px; width: 100%; text-align: center;
@@ -41,7 +40,7 @@
       image-rendering: pixelated;
       animation: floatUp 8s linear infinite;
       cursor: pointer;
-      z-index: 5; /* Bubbles should be behind UI, but above background */
+      z-index: 5;
     }
     @keyframes floatUp {
       0% { transform: translateY(100vh) scale(1); opacity: 0.8; }
@@ -51,26 +50,25 @@
       position: absolute; bottom: 10px; width: 100%; text-align: center;
       font-size: 10px; color: #ccc; text-shadow: 0 0 4px #000;
       z-index: 10;
-      /* Added flexbox for better alignment of social links */
       display: flex;
-      flex-direction: column; /* Stack text and links vertically */
-      align-items: center; /* Center horizontally */
-      gap: 5px; /* Space between items */
+      flex-direction: column;
+      align-items: center;
+      gap: 5px;
     }
     .social-links {
       display: flex;
-      gap: 15px; /* Space between social links */
-      margin-top: 5px; /* Space above social links */
+      gap: 15px;
+      margin-top: 5px;
     }
     .social-links a {
-      color: #77ffff; /* Link color matching your theme */
-      text-decoration: none; /* No underline */
-      font-size: 12px; /* Slightly larger for visibility */
+      color: #77ffff;
+      text-decoration: none;
+      font-size: 12px;
       text-shadow: 1px 1px #ff77ff;
       transition: color 0.2s ease, text-shadow 0.2s ease;
     }
     .social-links a:hover {
-      color: #ff77ff; /* Hover color */
+      color: #ff77ff;
       text-shadow: 1px 1px #77ffff, 2px 2px #ff00ff;
     }
 
@@ -82,7 +80,7 @@
       background: rgba(0, 0, 0, 0.7);
       display: flex; justify-content: center; align-items: center;
       flex-direction: column;
-      z-index: 20; /* On top of everything */
+      z-index: 20;
     }
     .code-input, .message {
       background: #333; border: 2px solid #77ffff;
@@ -101,7 +99,7 @@
       font-size: 14px; cursor: pointer;
       box-shadow: 2px 2px #0056b3;
       transition: all 0.1s ease;
-      text-decoration: none; /* For link-like button */
+      text-decoration: none;
     }
     .btn:hover {
       background: #0056b3;
@@ -111,78 +109,134 @@
     .status-message {
         position: absolute; top: 100px; width: 100%; text-align: center;
         font-size: 10px; color: #0f0; text-shadow: 1px 1px #000;
-        z-index: 15; /* Above other elements */
+        z-index: 15;
     }
 
     /* --- Splash Screen Styles --- */
     #splashScreen {
-      position: fixed; /* Fixed to cover the entire viewport */
-      top: 0; left: 0;
+      position: fixed; top: 0; left: 0;
       width: 100%; height: 100%;
-      background-color: #000; /* Solid black background */
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      z-index: 999; /* Make sure it's on top of everything */
-      opacity: 1; /* Start fully opaque */
-      transition: opacity 2s ease-out; /* Smooth fade-out */
-      pointer-events: all; /* Allow clicks on it initially */
-      box-shadow: inset 0 0 10px 5px rgba(255, 255, 255, 0.1); /* Subtle inner glow */
+      background-color: #000;
+      display: flex; flex-direction: column; justify-content: center; align-items: center;
+      z-index: 999;
+      opacity: 1;
+      transition: opacity 2s ease-out;
+      pointer-events: all;
+      box-shadow: inset 0 0 10px 5px rgba(255, 255, 255, 0.1);
     }
-
     #splashScreen.fade-out {
       opacity: 0;
-      pointer-events: none; /* Disable interaction after fade-out starts */
+      pointer-events: none;
     }
-
     .splash-text {
-      color: #ff00ff; /* Bright magenta for retro feel */
-      font-size: 20px;
-      text-align: center;
-      text-shadow: 2px 2px #00ffff, 4px 4px #0000ff; /* Multiple pixelated shadows */
+      color: #ff00ff; font-size: 20px; text-align: center;
+      text-shadow: 2px 2px #00ffff, 4px 4px #0000ff;
       margin-bottom: 20px;
-      animation: text-flicker 0.8s infinite alternate; /* Subtle flicker effect */
+      animation: text-flicker 0.8s infinite alternate;
       padding: 10px;
-      border: 2px dashed #ff77ff; /* Pixelated dashed border */
-      box-shadow: 0 0 15px rgba(255, 119, 255, 0.7); /* Glow around text */
+      border: 2px dashed #ff77ff;
+      box-shadow: 0 0 15px rgba(255, 119, 255, 0.7);
     }
-
     .splash-subtext {
-      color: #00ffff; /* Cyan for contrast */
-      font-size: 12px;
-      text-align: center;
+      color: #00ffff; font-size: 12px; text-align: center;
       text-shadow: 1px 1px #ff00ff;
-      animation: pulse 2s infinite alternate; /* Gentle pulse for subtext */
+      animation: pulse 2s infinite alternate;
     }
-
-    /* Keyframes for splash screen effects */
     @keyframes text-flicker {
       0% { opacity: 1; text-shadow: 2px 2px #00ffff, 4px 4px #0000ff; }
       50% { opacity: 0.9; text-shadow: 2px 2px #00ffff, 3px 3px #0000ff; }
       100% { opacity: 1; text-shadow: 2px 2px #00ffff, 4px 4px #0000ff; }
     }
-
     @keyframes pulse {
       0% { transform: scale(1); opacity: 0.8; }
       100% { transform: scale(1.03); opacity: 1; }
     }
-
-    /* Optional: Scanline effect on top of splash screen for extra retro feel */
     #splashScreen::before {
       content: '';
-      position: absolute;
-      top: 0; left: 0; right: 0; bottom: 0;
+      position: absolute; top: 0; left: 0; right: 0; bottom: 0;
       background: repeating-linear-gradient(
-        #00000000 0px,
-        #00000000 1px,
-        rgba(0,0,0,0.1) 1px,
-        rgba(0,0,0,0.1) 2px
+        #00000000 0px, #00000000 1px, rgba(0,0,0,0.1) 1px, rgba(0,0,0,0.1) 2px
       );
-      pointer-events: none; /* Make sure it doesn't block clicks */
-      z-index: 1; /* Above splash background, below text */
+      pointer-events: none;
+      z-index: 1;
     }
 
+    /* --- Drag and Drop Area Styles --- */
+    #dropZoneOverlay {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0, 100, 200, 0.5); /* Blueish transparent overlay */
+      border: 4px dashed #77ffff; /* Dashed border */
+      display: none; /* Hidden by default */
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      color: #fff;
+      font-size: 24px;
+      text-shadow: 2px 2px #000;
+      z-index: 998; /* Below splash screen, above other content */
+      pointer-events: none; /* Allows clicks to pass through when not active */
+    }
+    #dropZoneOverlay.active {
+      display: flex; /* Show when active */
+      pointer-events: all; /* Block clicks when active */
+    }
+    #dropZoneOverlay .message {
+      font-size: 18px;
+      border: none; /* Override .message style */
+      background: none;
+      box-shadow: none;
+      margin: 0; padding: 0;
+    }
+
+    /* --- Progress Bar Styles --- */
+    #progressBarContainer {
+      position: absolute;
+      bottom: 80px; /* Above the footer */
+      left: 50%;
+      transform: translateX(-50%);
+      width: 80%;
+      max-width: 400px;
+      background: #333;
+      border: 2px solid #77ffff;
+      box-shadow: 0 0 10px rgba(119, 255, 255, 0.5);
+      display: none; /* Hidden by default */
+      overflow: hidden; /* To keep progress bar inside rounded corners */
+      z-index: 10;
+    }
+    #progressBar {
+      height: 20px;
+      width: 0%;
+      background: linear-gradient(90deg, #0f0, #00a000); /* Green gradient */
+      transition: width 0.1s linear; /* Smooth progress update */
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 10px;
+      color: #000;
+      text-shadow: 1px 1px #0f0;
+    }
+    #progressBarContainer.active {
+        display: block;
+    }
+
+    /* --- Confetti Styles --- */
+    .confetti {
+      position: absolute;
+      width: 10px; height: 10px;
+      background-color: #ffeb3b; /* Yellow */
+      opacity: 0;
+      animation: confetti-fall 3s ease-out forwards;
+      pointer-events: none;
+      z-index: 100;
+    }
+    .confetti:nth-child(2n) { background-color: #ff4081; /* Pink */ }
+    .confetti:nth-child(3n) { background-color: #00e5ff; /* Cyan */ }
+    .confetti:nth-child(4n) { background-color: #7c4dff; /* Purple */ }
+    @keyframes confetti-fall {
+      0% { transform: translate(var(--x), var(--y)) rotate(0deg); opacity: 1; }
+      100% { transform: translate(var(--x), 100vh) rotate(720deg); opacity: 0; }
+    }
   </style>
 </head>
 <body>
@@ -210,11 +264,22 @@
     <button id="newIdBtn" class="btn">Generate New ID</button>
   </div>
 
+  <div id="dropZoneOverlay">
+      <div class="message">
+          <p>Drop file anywhere to send</p>
+          <p class="small-text">(To active peer connection)</p>
+      </div>
+  </div>
+
+  <div id="progressBarContainer">
+      <div id="progressBar">0%</div>
+  </div>
+
   <div class="footer">
     Created by Rawxia - Privacy in mind
     <div class="social-links">
         <a href="https://www.instagram.com/sebulique/" target="_blank" rel="noopener noreferrer">Instagram</a>
-        <a href="https://www.youtube.com/@6_LN" target="_blank" rel="noopener noreferrer">YouTube</a>
+        <a href="https://www.youtube.com/@sebit.studios" target="_blank" rel="noopener noreferrer">YouTube</a>
     </div>
   </div>
   <input type="file" id="fileInput" />
@@ -222,12 +287,13 @@
   <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
 
   <script>
-    // --- Configuration Variable for ID Length ---
-    const PEER_ID_EXPECTED_LENGTH = 36; // Default PeerJS UUID length is 36 characters (including hyphens)
+    const PEER_ID_EXPECTED_LENGTH = 36;
+    const CHUNK_SIZE = 16 * 1024; // 16 KB chunks for sending files
 
-    let peer; // Our PeerJS object
-    const peerConnections = {}; // Stores DataConnection objects (PeerJS handles RTCPeerConnection internally)
-    let currentRoomId = ''; // To store the ID the user enters or creates
+    let peer;
+    const peerConnections = {};
+    let currentRoomId = '';
+    let isFileBeingSent = false; // Flag to prevent multiple sends simultaneously
 
     const myPeerIdSpan = document.getElementById('myPeerId');
     const roomCodeInput = document.getElementById('roomCodeInput');
@@ -235,34 +301,27 @@
     const newIdBtn = document.getElementById('newIdBtn');
     const roomOverlay = document.getElementById('roomOverlay');
     const statusMessage = document.getElementById('statusMessage');
-    const splashScreen = document.getElementById('splashScreen'); // Get splash screen element
+    const splashScreen = document.getElementById('splashScreen');
+    const dropZoneOverlay = document.getElementById('dropZoneOverlay'); // New
+    const progressBarContainer = document.getElementById('progressBarContainer'); // New
+    const progressBar = document.getElementById('progressBar'); // New
 
-    // --- Dynamically set maxlength in case HTML is accidentally wrong ---
     roomCodeInput.setAttribute('maxlength', PEER_ID_EXPECTED_LENGTH);
-
-
-    // --- Utility Functions ---
 
     function updateStatus(message, color = '#0f0') {
         statusMessage.textContent = message;
         statusMessage.style.color = color;
     }
 
-    // --- Splash Screen Logic ---
     function showSplashScreen() {
-        splashScreen.style.display = 'flex'; // Ensure it's visible
-        // Delay before fading out
+        splashScreen.style.display = 'flex';
         setTimeout(() => {
-            splashScreen.classList.add('fade-out'); // Start fade-out animation
-            // Remove from DOM after transition completes to ensure no lingering issues
+            splashScreen.classList.add('fade-out');
             splashScreen.addEventListener('transitionend', () => {
                 splashScreen.style.display = 'none';
-            }, { once: true }); // Only listen for one transition end event
-        }, 3000); // Display for 3 seconds (adjust as desired)
+            }, { once: true });
+        }, 3000);
     }
-
-
-    // --- PeerJS Setup ---
 
     function initializePeer(id = null) {
       updateStatus("Connecting to signaling server...");
@@ -275,17 +334,17 @@
       peer.on('open', (id) => {
         currentRoomId = id;
         myPeerIdSpan.textContent = id;
-        roomOverlay.style.display = 'flex'; // Show the room input overlay
+        roomOverlay.style.display = 'flex';
         updateStatus(`Connected! Your ID: ${id}. Waiting for connection...`);
         console.log('My peer ID is: ' + id);
       });
 
       peer.on('connection', (conn) => {
         console.log(`Incoming connection from: ${conn.peer}`);
-        setupDataChannel(conn, conn.peer); // Setup for incoming connection
-        addBubble(conn.peer); // Add a bubble for the new peer
+        setupDataChannel(conn, conn.peer);
+        addBubble(conn.peer);
         updateStatus(`Connected to ${conn.peer}!`, '#ffdd00');
-        roomOverlay.style.display = 'none'; // Hide overlay once connected
+        roomOverlay.style.display = 'none';
       });
 
       peer.on('error', (err) => {
@@ -320,95 +379,163 @@
             return;
         }
 
-
         updateStatus(`Attempting to connect to ${remoteId}...`);
         console.log(`Attempting to connect to peer: ${remoteId}`);
-        const conn = peer.connect(remoteId); // Initiate connection
+        const conn = peer.connect(remoteId);
         peerConnections[remoteId] = conn;
 
         conn.on('open', () => {
             console.log(`DataChannel opened with ${remoteId}`);
-            setupDataChannel(conn, remoteId); // Setup for outgoing connection
-            addBubble(remoteId); // Add a bubble for the new peer
+            setupDataChannel(conn, remoteId);
+            addBubble(remoteId);
             updateStatus(`Connected to ${remoteId}!`, '#ffdd00');
-            roomOverlay.style.display = 'none'; // Hide overlay once connected
+            roomOverlay.style.display = 'none';
         });
 
         conn.on('error', (err) => {
             console.error(`Connection error with ${remoteId}:`, err);
             updateStatus(`Failed to connect to ${remoteId}: ${err.message}`, '#f00');
             delete peerConnections[remoteId];
-            removeBubble(remoteId); // Remove bubble if connection fails
+            removeBubble(remoteId);
         });
 
         conn.on('close', () => {
             console.log(`Connection to ${remoteId} closed.`);
             updateStatus(`Disconnected from ${remoteId}.`, '#f90');
             delete peerConnections[remoteId];
-            removeBubble(remoteId); // Remove bubble when connection closes
+            removeBubble(remoteId);
         });
     }
 
     // --- Data Channel and File Transfer ---
 
     function setupDataChannel(conn, remoteId) {
-      peerConnections[remoteId] = conn; // Store the connection object
+      peerConnections[remoteId] = conn;
 
       let receivedFileBuffer = [];
       let expectedFileName = 'received_file';
       let expectedFileSize = 0;
       let receivedSize = 0;
+      let transferStartTime = 0;
 
       conn.on('data', (data) => {
         if (typeof data === 'string') {
-          // It's a metadata message
           try {
             const msg = JSON.parse(data);
             if (msg.type === 'file-metadata') {
               expectedFileName = msg.filename;
               expectedFileSize = msg.fileSize;
-              receivedFileBuffer = []; // Reset buffer for new file
+              receivedFileBuffer = [];
               receivedSize = 0;
-              updateStatus(`Receiving '${expectedFileName}' from ${remoteId}...`);
+              transferStartTime = Date.now(); // Start time for receiver
+              updateProgressBar(0, `Receiving '${expectedFileName}'...`);
               console.log(`Receiving file: ${expectedFileName} (${expectedFileSize} bytes)`);
+            } else if (msg.type === 'file-chunk-complete') {
+              // This is the signal that all chunks are sent
+              if (receivedSize >= expectedFileSize && expectedFileSize > 0) {
+                const blob = new Blob(receivedFileBuffer);
+                const a = document.createElement('a');
+                a.href = URL.createObjectURL(blob);
+                a.download = expectedFileName;
+                a.click();
+                URL.revokeObjectURL(a.href);
+                updateStatus(`📁 Received '${expectedFileName}' from ${remoteId}!`);
+                console.log(`Successfully received and downloaded ${expectedFileName}`);
+                hideProgressBar();
+                triggerConfetti(); // Trigger confetti on complete
+                updateStatus('Transfer complete safe and sound!', '#00ffcc'); // Final success message
+
+                receivedFileBuffer = [];
+                expectedFileName = 'received_file';
+                expectedFileSize = 0;
+                receivedSize = 0;
+                isFileBeingSent = false; // Reset flag
+              }
             }
           } catch (e) {
             console.warn("Received non-JSON string or malformed JSON:", data);
           }
         } else {
-          // It's a file data chunk (ArrayBuffer or Blob)
           receivedFileBuffer.push(data);
-          receivedSize += data.byteLength || data.size; // Add bytes received
+          receivedSize += data.byteLength || data.size;
 
-          updateStatus(`Receiving '${expectedFileName}' from ${remoteId}: ${((receivedSize / expectedFileSize) * 100).toFixed(0)}%`);
-
-          if (receivedSize >= expectedFileSize && expectedFileSize > 0) {
-            const blob = new Blob(receivedFileBuffer);
-            const a = document.createElement('a');
-            a.href = URL.createObjectURL(blob);
-            a.download = expectedFileName;
-            a.click();
-            URL.revokeObjectURL(a.href);
-            updateStatus(`📁 Received '${expectedFileName}' from ${remoteId}!`);
-            console.log(`Successfully received and downloaded ${expectedFileName}`);
-
-            receivedFileBuffer = [];
-            expectedFileName = 'received_file';
-            expectedFileSize = 0;
-            receivedSize = 0;
-          }
+          const percentage = (receivedSize / expectedFileSize) * 100;
+          updateProgressBar(percentage, `Receiving '${expectedFileName}': ${percentage.toFixed(0)}%`);
         }
       });
       conn.on('close', () => {
         console.log('Connection closed for:', remoteId);
-        updateStatus(`Connection to ${remoteId} closed.`, '#f90');
+        updateStatus(`Disconnected from ${remoteId}.`, '#f90');
         removeBubble(remoteId);
+        hideProgressBar(); // Hide progress bar if connection closes
+        isFileBeingSent = false; // Reset flag
       });
       conn.on('error', (err) => {
         console.error('Data channel error for', remoteId, err);
         updateStatus(`Error with ${remoteId}'s connection.`, '#f00');
+        hideProgressBar(); // Hide progress bar on error
+        isFileBeingSent = false; // Reset flag
       });
     }
+
+    // --- File Sending Logic (Updated to use Drag-and-Drop) ---
+
+    // Function to handle sending a file to a specific peer connection
+    async function sendFileToPeer(file, conn) {
+        if (!conn || !conn.open) {
+            updateStatus(`Connection to ${conn.peer} is not open! Cannot send file.`, '#f00');
+            console.error(`Attempted to send file to ${conn.peer}, but connection is not open.`);
+            return;
+        }
+        if (isFileBeingSent) {
+            updateStatus('A file is already being sent. Please wait.', '#f00');
+            return;
+        }
+
+        isFileBeingSent = true; // Set flag
+        updateStatus(`Preparing to send '${file.name}' to ${conn.peer}...`);
+        updateProgressBar(0, `Sending '${file.name}': 0%`);
+
+        try {
+            // 1. Send file metadata
+            conn.send(JSON.stringify({ type: 'file-metadata', filename: file.name, fileSize: file.size }));
+
+            // 2. Send file in chunks
+            const reader = file.stream().getReader();
+            let offset = 0;
+
+            while (true) {
+                const { done, value } = await reader.read();
+                if (done) {
+                    break;
+                }
+                conn.send(value); // Send the chunk
+                offset += value.length;
+
+                const percentage = (offset / file.size) * 100;
+                updateProgressBar(percentage, `Sending '${file.name}': ${percentage.toFixed(0)}%`);
+
+                // Add a small delay if needed for flow control (not usually necessary with WebRTC DataChannels)
+                // await new Promise(resolve => setTimeout(resolve, 1));
+            }
+
+            // 3. Send a 'transfer complete' signal
+            conn.send(JSON.stringify({ type: 'file-chunk-complete' }));
+            updateStatus(`📁 Sent '${file.name}' to ${conn.peer}!`);
+            console.log(`Successfully sent ${file.name}`);
+            hideProgressBar();
+            triggerConfetti(); // Trigger confetti on sender side
+            updateStatus('Transfer complete safe and sound!', '#00ffcc'); // Final success message
+
+        } catch (error) {
+            console.error("Error sending file:", error);
+            updateStatus(`Error sending file '${file.name}': ${error.message}`, '#f00');
+            hideProgressBar();
+        } finally {
+            isFileBeingSent = false; // Reset flag
+        }
+    }
+
 
     // --- UI (Bubbles) ---
 
@@ -437,22 +564,11 @@
       b.appendChild(idText);
 
       b.onclick = () => {
-        const conn = peerConnections[id];
-        if (conn && conn.open) {
-          const inp = document.getElementById('fileInput');
-          inp.onchange = () => {
-            if (inp.files.length) {
-              const file = inp.files[0];
-              conn.send(JSON.stringify({ type: 'file-metadata', filename: file.name, fileSize: file.size }));
-              conn.send(file);
-              updateStatus(`📁 Sent '${file.name}' to ${id}`);
-            }
-          };
-          inp.click();
-        } else {
-          updateStatus(`Connection to ${id} is not open!`, '#f00');
-          console.error(`Attempted to send file to ${id}, but connection is not open.`);
-        }
+        // No longer triggers file input directly, drag and drop is primary
+        // This bubble now just indicates a connected peer.
+        // If you want a click to open file input, re-enable it here:
+        // document.getElementById('fileInput').click();
+        updateStatus(`Connected to ${id}. Drag & Drop a file anywhere to send it.`);
       };
       document.body.appendChild(b);
       activeBubbles[id] = b;
@@ -464,6 +580,101 @@
             delete activeBubbles[id];
         }
     }
+
+    // --- Progress Bar Functions ---
+    function updateProgressBar(percentage, text) {
+        progressBarContainer.classList.add('active'); // Show container
+        progressBar.style.width = `${percentage}%`;
+        progressBar.textContent = text;
+    }
+
+    function hideProgressBar() {
+        progressBarContainer.classList.remove('active'); // Hide container
+        progressBar.style.width = '0%';
+        progressBar.textContent = '0%';
+    }
+
+    // --- Confetti Animation ---
+    function triggerConfetti() {
+        const numConfetti = 50;
+        for (let i = 0; i < numConfetti; i++) {
+            const confetti = document.createElement('div');
+            confetti.className = 'confetti';
+            confetti.style.left = `${Math.random() * 100}vw`;
+            confetti.style.setProperty('--x', `${Math.random() * 200 - 100}px`); // Random horizontal movement
+            confetti.style.setProperty('--y', `${Math.random() * -100}px`); // Start above viewport
+            confetti.style.backgroundColor = `hsl(${Math.random() * 360}, 100%, 50%)`; // Random color
+            document.body.appendChild(confetti);
+
+            confetti.addEventListener('animationend', () => {
+                confetti.remove();
+            });
+        }
+    }
+
+
+    // --- Drag and Drop Event Listeners ---
+    let dragCounter = 0; // To track entering/leaving child elements
+
+    document.body.addEventListener('dragenter', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        dragCounter++;
+        if (Object.keys(peerConnections).length > 0) { // Only show if at least one peer is connected
+            dropZoneOverlay.classList.add('active');
+        } else {
+            updateStatus("Connect to a peer first to drag and drop files!", '#f00');
+        }
+    });
+
+    document.body.addEventListener('dragleave', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        dragCounter--;
+        if (dragCounter === 0) { // Only hide if truly leaving the body
+            dropZoneOverlay.classList.remove('active');
+        }
+    });
+
+    document.body.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        e.dataTransfer.dropEffect = 'copy'; // Visual feedback for copy
+        if (!dropZoneOverlay.classList.contains('active') && Object.keys(peerConnections).length > 0) {
+            dropZoneOverlay.classList.add('active');
+        }
+    });
+
+    document.body.addEventListener('drop', async (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        dragCounter = 0; // Reset counter
+        dropZoneOverlay.classList.remove('active');
+
+        if (Object.keys(peerConnections).length === 0) {
+            updateStatus("No active connections to send files to. Connect to a peer first!", '#f00');
+            return;
+        }
+
+        if (e.dataTransfer.files.length > 0) {
+            const file = e.dataTransfer.files[0]; // Get the first dropped file
+            console.log("File dropped:", file.name, file.size);
+
+            // Send to ALL connected peers.
+            // If you want to send to a specific peer, you'd need a UI for selection.
+            for (const peerId in peerConnections) {
+                const conn = peerConnections[peerId];
+                if (conn && conn.open) {
+                    await sendFileToPeer(file, conn); // Send sequentially or in parallel
+                } else {
+                    updateStatus(`Skipping ${peerId}: connection not open.`, '#f90');
+                }
+            }
+        } else {
+            updateStatus("No files were dropped.", '#f00');
+        }
+    });
+
 
     // --- Event Listeners for Room Code UI ---
 
@@ -484,12 +695,9 @@
     });
 
     // --- Initial Setup ---
-    // Call showSplashScreen when the page loads
     window.onload = () => {
         showSplashScreen();
-        // Initialize PeerJS after a short delay so it starts while splash is visible
-        // This ensures the initial PeerJS connection message isn't hidden
-        setTimeout(initializePeer, 1000); // Start PeerJS after 1 second
+        setTimeout(initializePeer, 1000);
     };
   </script>
 </body>
