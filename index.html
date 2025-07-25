@@ -559,6 +559,27 @@
         transform: translateY(1px) translateX(1px);
     }
 
+    /* QR Code specific styles */
+    #qrCodeContainer {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 5px;
+        margin-top: 10px;
+        margin-bottom: 20px; /* Space below QR code */
+    }
+    #qrCodeCanvas {
+        border: 4px solid #77ffff; /* Match existing border styles */
+        box-shadow: 0 0 15px rgba(119, 255, 255, 0.7); /* Match existing shadow styles */
+        background-color: #fff; /* QR codes usually need a white background */
+    }
+    #qrCodeText {
+        font-size: 10px;
+        color: #77ffff;
+        text-shadow: 1px 1px #ff77ff;
+        text-align: center;
+    }
+
 
     /* --- THEME STYLES --- */
 
@@ -691,6 +712,16 @@
         to { background-position: 0 100%; }
     }
 
+    /* QR Code styles for Computer Guy theme */
+    .theme-computer-guy #qrCodeCanvas {
+        border-color: #0a0;
+        box-shadow: 0 0 15px rgba(0, 170, 0, 0.7);
+    }
+    .theme-computer-guy #qrCodeText {
+        color: #0f0;
+        text-shadow: 0 0 5px rgba(0, 255, 0, 0.7);
+    }
+
 
     /* Theme: Gas (Steam Green) */
     .theme-gas body {
@@ -802,6 +833,16 @@
         border-color: #66c0f4;
         background: rgba(26, 32, 44, 0.7);
         color: #66c0f4;
+        text-shadow: 1px 1px #000;
+    }
+
+    /* QR Code styles for Gas theme */
+    .theme-gas #qrCodeCanvas {
+        border-color: #4a6c8d;
+        box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+    }
+    .theme-gas #qrCodeText {
+        color: #d1d1d1;
         text-shadow: 1px 1px #000;
     }
 
@@ -919,6 +960,17 @@
         color: #ff6600;
         text-shadow: 1px 1px #000;
     }
+
+    /* QR Code styles for Neon theme */
+    .theme-neon #qrCodeCanvas {
+        border-color: #ff6600;
+        box-shadow: 0 0 15px rgba(255, 100, 0, 0.7);
+    }
+    .theme-neon #qrCodeText {
+        color: #ff6600;
+        text-shadow: 0 0 5px #ff6600;
+    }
+
 
     /* Theme: Nostalgia (Windows XP) */
     .theme-nostalgia-xp body {
@@ -1047,6 +1099,16 @@
         background: rgba(58, 110, 165, 0.7);
         color: #fff;
         text-shadow: 1px 1px #000;
+    }
+
+    /* QR Code styles for XP theme */
+    .theme-nostalgia-xp #qrCodeCanvas {
+        border-color: #7f9db9;
+        box-shadow: 3px 3px 8px rgba(0,0,0,0.3);
+    }
+    .theme-nostalgia-xp #qrCodeText {
+        color: #000;
+        text-shadow: none;
     }
 
 
@@ -1196,6 +1258,18 @@
         -webkit-backdrop-filter: blur(8px);
     }
 
+    /* QR Code styles for Vista theme */
+    .theme-nostalgia-vista #qrCodeCanvas {
+        border-color: rgba(192, 224, 255, 0.2);
+        box-shadow: 0 0 15px rgba(0,0,0,0.5);
+        background: rgba(255,255,255,0.9); /* Slightly translucent white background */
+    }
+    .theme-nostalgia-vista #qrCodeText {
+        color: #c0e0ff;
+        text-shadow: 0 0 5px rgba(192, 224, 255, 0.5);
+    }
+
+
     /* Theme: A Box 720 (Xbox 360) */
     .theme-a-box-720 body {
       background: radial-gradient(circle at center, #1C4600 0%, #080D00 100%); /* Dark green to black */
@@ -1330,6 +1404,16 @@
         text-shadow: 0 0 5px rgba(146, 255, 31, 0.7);
     }
 
+    /* QR Code styles for Xbox theme */
+    .theme-a-box-720 #qrCodeCanvas {
+        border-color: #92FF1F;
+        box-shadow: 0 0 15px rgba(146, 255, 31, 0.7);
+    }
+    .theme-a-box-720 #qrCodeText {
+        color: #92FF1F;
+        text-shadow: 0 0 5px rgba(146, 255, 31, 0.7);
+    }
+
 
     /* Media queries for responsiveness */
     @media (max-width: 768px) {
@@ -1380,6 +1464,14 @@
       #themeSelect {
         font-size: 10px;
         padding: 6px 10px;
+      }
+      /* QR Code adjustments for mobile */
+      #qrCodeCanvas {
+        width: 100px !important; /* Smaller size on mobile */
+        height: 100px !important;
+      }
+      #qrCodeText {
+        font-size: 8px;
       }
     }
 
@@ -1434,6 +1526,10 @@
             <span id="myPeerId"></span>
             <button id="copyIdBtn" class="btn">Copy ID</button>
         </div>
+        <div id="qrCodeContainer">
+            <canvas id="qrCodeCanvas"></canvas>
+            <div id="qrCodeText">Scan this QR to connect!</div>
+        </div>
         <p>Share this ID for others to connect, or enter an ID below:</p>
     </div>
     <input type="text" id="roomCodeInput" class="code-input" placeholder="Enter peer ID to connect" maxlength="36">
@@ -1483,8 +1579,7 @@
   <input type="file" id="fileInput" multiple webkitdirectory directory />
 
   <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
-
-  <script>
+  <script src="https://unpkg.com/qrious@4.0.2/dist/qrious.min.js"></script> <script>
     const PEER_ID_EXPECTED_LENGTH = 36;
     const CHUNK_SIZE = 16 * 1024;
 
@@ -1517,6 +1612,7 @@
     const textInput = document.getElementById('textInput');
     const sendTextBtn = document.getElementById('sendTextBtn');
     const receivedTextDisplay = document.getElementById('receivedTextDisplay');
+    const qrCodeCanvas = document.getElementById('qrCodeCanvas'); // Get the canvas element
 
     // New theme elements
     const themeSelect = document.getElementById('themeSelect');
@@ -1561,6 +1657,22 @@
         }
     }
 
+    // Function to generate and display the QR code
+    function generateQrCode(text) {
+        // Clear previous QR code if any
+        qrCodeCanvas.getContext('2d').clearRect(0, 0, qrCodeCanvas.width, qrCodeCanvas.height);
+
+        // Create a new QRious instance
+        new QRious({
+            element: qrCodeCanvas,
+            value: text,
+            size: 150, // Size of the QR code in pixels (e.g., 150x150)
+            padding: 10, // Padding around the QR code
+            background: 'white', // Background color of the QR code
+            foreground: 'black' // Foreground color of the QR code
+        });
+    }
+
 
     // Function to initialize PeerJS connection
     function initializePeer(id = null) {
@@ -1584,6 +1696,13 @@
         roomOverlay.style.display = 'flex';
         updateStatus(`Connected! Your ID: ${id}. Waiting for connection...`);
         console.log('My peer ID is: ' + id);
+
+        // Generate QR code for the current ID
+        // It's a good idea to embed a URL that could potentially connect directly or pre-fill the ID
+        // For example: `https://your-app.com/connect?id=${id}`
+        // For simplicity, we'll just encode the ID itself. The user can then paste it.
+        generateQrCode(id);
+
       });
 
       // Event: Incoming connection from another peer
@@ -1783,7 +1902,7 @@
                 currentReceivingFile.receivedSize += data.byteLength || data.size;
                 receivedBytesForCurrentFile += data.byteLength || data.size;
 
-                const percentage = (receivedBytesForCurrentFile / currentReceivingFile.fileSize) * 100;
+                const percentage = (receivedBytesForCurrentFile / currentRecetainingFile.fileSize) * 100;
                 updateProgressBar(percentage, `Receiving '${currentReceivingFile.relativePath}': ${percentage.toFixed(0)}%`);
             }
           }
