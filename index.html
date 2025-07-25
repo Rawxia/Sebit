@@ -396,18 +396,23 @@
         transform: translateY(1px) translateX(1px);
     }
 
-    /* Styles for the emoji paperclip button - centered */
-    #paperclipButton {
+    /* Styles for the emoji paperclip button - moved up and refined */
+    #paperclipButtonContainer {
         position: fixed;
-        top: 50%;
+        top: 35%; /* Adjusted to be higher up */
         left: 50%;
         transform: translate(-50%, -50%);
+        display: none; /* Hidden by default */
+        flex-direction: column;
+        align-items: center;
+        z-index: 50;
+    }
+
+    #paperclipButton {
         background: rgba(0, 0, 0, 0.7);
         border: 2px solid #77ffff;
         padding: 10px;
         cursor: pointer;
-        display: none;
-        z-index: 50;
         transition: transform 0.1s ease, box-shadow 0.1s ease;
         box-shadow: 4px 4px #000;
         border-radius: 5px;
@@ -416,12 +421,32 @@
         line-height: 1;
         user-select: none;
         text-align: center;
+        display: flex; /* Use flexbox for vertical alignment of emoji */
+        justify-content: center;
+        align-items: center;
+        width: 68px; /* Fixed width to make it square */
+        height: 68px; /* Fixed height to make it square */
+        margin-bottom: 8px; /* Space between button and text */
+        filter: drop-shadow(2px 2px 0px rgba(0, 0, 0, 0.5)); /* Cleaner shadow for the emoji */
     }
 
     #paperclipButton:hover {
-        transform: translate(-50%, -50%) scale(1.1);
+        transform: scale(1.1); /* Only scale, no translate here */
         box-shadow: 2px 2px #000;
     }
+
+    #paperclipText {
+        font-size: 10px;
+        color: #77ffff;
+        text-shadow: 1px 1px #ff00ff;
+        text-align: center;
+        background: rgba(0, 0, 0, 0.6);
+        padding: 4px 8px;
+        border-radius: 3px;
+        white-space: nowrap;
+        border: 1px solid #77ffff;
+    }
+
 
     /* Media queries for responsiveness */
     @media (max-width: 768px) {
@@ -445,6 +470,14 @@
       #paperclipButton {
         font-size: 36px;
         padding: 8px;
+        width: 52px; /* Adjusted for smaller screens */
+        height: 52px; /* Adjusted for smaller screens */
+      }
+      #paperclipText {
+        font-size: 8px;
+      }
+      #paperclipButtonContainer {
+        top: 30%; /* Slightly higher on mobile */
       }
     }
 
@@ -507,9 +540,12 @@
     <div id="shibaText">This Shiba Inu is your other device!</div>
   </div>
 
-  <button id="paperclipButton">
-    📎
-  </button>
+  <div id="paperclipButtonContainer">
+    <button id="paperclipButton">
+      📎
+    </button>
+    <div id="paperclipText">Drag & drop files or click to attach</div>
+  </div>
 
   <div class="footer">
     Created by Rawxia - Privacy in mind
@@ -547,6 +583,7 @@
     const shibaText = document.getElementById('shibaText');
     const copyIdBtn = document.getElementById('copyIdBtn');
     const readyButton = document.getElementById('readyButton');
+    const paperclipButtonContainer = document.getElementById('paperclipButtonContainer'); // New
     const paperclipButton = document.getElementById('paperclipButton');
     const fileInput = document.getElementById('fileInput');
 
@@ -592,7 +629,7 @@
         roomOverlay.style.display = 'none';
         shibaContainer.classList.add('active');
         shibaText.textContent = `This Shiba Inu is your other device (${conn.peer.substring(0,8)}...)!`;
-        paperclipButton.style.display = 'block';
+        paperclipButtonContainer.style.display = 'flex'; // Show the container
       });
 
       peer.on('error', (err) => {
@@ -612,7 +649,7 @@
           }
           shibaContainer.classList.remove('active');
           roomOverlay.style.display = 'flex';
-          paperclipButton.style.display = 'none';
+          paperclipButtonContainer.style.display = 'none'; // Hide the container
       });
     }
 
@@ -643,7 +680,7 @@
             roomOverlay.style.display = 'none';
             shibaContainer.classList.add('active');
             shibaText.textContent = `This Shiba Inu is your other device (${conn.peer.substring(0,8)}...)!`;
-            paperclipButton.style.display = 'block';
+            paperclipButtonContainer.style.display = 'flex'; // Show the container
         });
 
         conn.on('error', (err) => {
@@ -653,7 +690,7 @@
             removeBubble(remoteId);
             shibaContainer.classList.remove('active');
             roomOverlay.style.display = 'flex';
-            paperclipButton.style.display = 'none';
+            paperclipButtonContainer.style.display = 'none'; // Hide the container
         });
 
         conn.on('close', () => {
@@ -664,7 +701,7 @@
             shibaContainer.classList.remove('active');
             roomOverlay.style.display = 'flex';
             if (Object.keys(peerConnections).length === 0) {
-                paperclipButton.style.display = 'none';
+                paperclipButtonContainer.style.display = 'none'; // Hide the container
             }
         });
         conn.on('error', (err) => {
@@ -675,7 +712,7 @@
             shibaContainer.classList.remove('active');
             roomOverlay.style.display = 'flex';
             if (Object.keys(peerConnections).length === 0) {
-                paperclipButton.style.display = 'none';
+                paperclipButtonContainer.style.display = 'none'; // Hide the container
             }
         });
     }
@@ -771,7 +808,7 @@
         shibaContainer.classList.remove('active');
         roomOverlay.style.display = 'flex';
         if (Object.keys(peerConnections).length === 0) {
-            paperclipButton.style.display = 'none';
+            paperclipButtonContainer.style.display = 'none'; // Hide the container
         }
       });
       conn.on('error', (err) => {
@@ -782,7 +819,7 @@
         shibaContainer.classList.remove('active');
         roomOverlay.style.display = 'flex';
         if (Object.keys(peerConnections).length === 0) {
-            paperclipButton.style.display = 'none';
+            paperclipButtonContainer.style.display = 'none'; // Hide the container
         }
       });
     }
