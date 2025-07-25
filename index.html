@@ -10,19 +10,26 @@
     body, html {
       margin: 0; padding: 0; overflow: hidden;
       font-family: 'Press Start 2P', monospace; color: #fff;
-      image-rendering: pixelated; /* Force pixelated rendering */
-      height: 100%; /* Ensure body takes full height for background */
-      position: relative; /* Needed for confetti positioning */
+      image-rendering: pixelated;
+      height: 100%;
+      position: relative;
     }
     body {
-      background: url('sebit background.gif');
-      background-size: 1150px auto;
-      background-repeat: repeat-x;
+      background: url('sebit background.gif') no-repeat center center;
+      background-size: cover;
       animation: ocean 8s linear infinite;
     }
+
+    @media (max-width: 768px) {
+      body {
+        background: url('sebit background.gif') no-repeat center center;
+        background-size: cover;
+      }
+    }
+
     @keyframes ocean {
-      0% { background-position: 0 0; }
-      100% { background-position: -1150px 0; }
+      0% { background-position: 0% 0; }
+      100% { background-position: 100% 0; }
     }
     .title {
       position: absolute; top: 20px; width: 100%; text-align: center;
@@ -74,7 +81,6 @@
 
     #fileInput { display: none; }
 
-    /* New UI for room codes */
     .overlay {
       position: absolute; top: 0; left: 0; width: 100%; height: 100%;
       background: rgba(0, 0, 0, 0.7);
@@ -112,7 +118,6 @@
         z-index: 15;
     }
 
-    /* --- Splash Screen Styles --- */
     #splashScreen {
       position: fixed; top: 0; left: 0;
       width: 100%; height: 100%;
@@ -141,6 +146,32 @@
       color: #00ffff; font-size: 12px; text-align: center;
       text-shadow: 1px 1px #ff00ff;
       animation: pulse 2s infinite alternate;
+      margin-bottom: 20px;
+    }
+    .how-to-use {
+      background: rgba(0, 0, 0, 0.7);
+      border: 2px solid #00ffff;
+      padding: 15px;
+      margin-top: 20px;
+      font-size: 10px;
+      color: #77ffff;
+      text-shadow: 1px 1px #ff00ff;
+      max-width: 80%;
+      text-align: left;
+      line-height: 1.5;
+    }
+    .how-to-use ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+    .how-to-use li::before {
+      content: "• ";
+      color: #ff77ff;
+      font-weight: bold;
+      display: inline-block;
+      width: 1em;
+      margin-left: -1em;
     }
     @keyframes text-flicker {
       0% { opacity: 1; text-shadow: 2px 2px #00ffff, 4px 4px #0000ff; }
@@ -161,38 +192,41 @@
       z-index: 1;
     }
 
-    /* --- Drag and Drop Area Styles --- */
     #dropZoneOverlay {
       position: fixed;
       top: 0; left: 0; right: 0; bottom: 0;
-      background: rgba(0, 100, 200, 0.5); /* Blueish transparent overlay */
-      border: 4px dashed #77ffff; /* Dashed border */
-      display: none; /* Hidden by default */
+      background: rgba(0, 100, 200, 0.5);
+      border: 4px dashed #77ffff;
+      display: none;
       flex-direction: column;
       justify-content: center;
       align-items: center;
       color: #fff;
       font-size: 24px;
       text-shadow: 2px 2px #000;
-      z-index: 998; /* Below splash screen, above other content */
-      pointer-events: none; /* Allows clicks to pass through when not active */
+      z-index: 998;
+      pointer-events: none;
     }
     #dropZoneOverlay.active {
-      display: flex; /* Show when active */
-      pointer-events: all; /* Block clicks when active */
+      display: flex;
+      pointer-events: all;
     }
     #dropZoneOverlay .message {
       font-size: 18px;
-      border: none; /* Override .message style */
+      border: none;
       background: none;
       box-shadow: none;
       margin: 0; padding: 0;
     }
 
-    /* --- Progress Bar Styles --- */
+    #dropZoneOverlay .message .small-text {
+        font-size: 14px;
+        margin-top: 10px;
+    }
+
     #progressBarContainer {
       position: absolute;
-      bottom: 80px; /* Above the footer */
+      bottom: 80px;
       left: 50%;
       transform: translateX(-50%);
       width: 80%;
@@ -200,15 +234,15 @@
       background: #333;
       border: 2px solid #77ffff;
       box-shadow: 0 0 10px rgba(119, 255, 255, 0.5);
-      display: none; /* Hidden by default */
-      overflow: hidden; /* To keep progress bar inside rounded corners */
+      display: none;
+      overflow: hidden;
       z-index: 10;
     }
     #progressBar {
       height: 20px;
       width: 0%;
-      background: linear-gradient(90deg, #0f0, #00a000); /* Green gradient */
-      transition: width 0.1s linear; /* Smooth progress update */
+      background: linear-gradient(90deg, #0f0, #00a000);
+      transition: width 0.1s linear;
       display: flex;
       justify-content: center;
       align-items: center;
@@ -220,47 +254,45 @@
         display: block;
     }
 
-    /* --- Confetti Styles --- */
     .confetti {
       position: absolute;
       width: 10px; height: 10px;
-      background-color: #ffeb3b; /* Yellow */
+      background-color: #ffeb3b;
       opacity: 0;
       animation: confetti-fall 3s ease-out forwards;
       pointer-events: none;
       z-index: 100;
     }
-    .confetti:nth-child(2n) { background-color: #ff4081; /* Pink */ }
-    .confetti:nth-child(3n) { background-color: #00e5ff; /* Cyan */ }
-    .confetti:nth-child(4n) { background-color: #7c4dff; /* Purple */ }
+    .confetti:nth-child(2n) { background-color: #ff4081; }
+    .confetti:nth-child(3n) { background-color: #00e5ff; }
+    .confetti:nth-child(4n) { background-color: #7c4dff; }
     @keyframes confetti-fall {
       0% { transform: translate(var(--x), var(--y)) rotate(0deg); opacity: 1; }
       100% { transform: translate(var(--x), 100vh) rotate(720deg); opacity: 0; }
     }
 
-    /* --- Shiba Inu Styles --- */
     #shibaContainer {
       position: absolute;
-      top: 50%; /* Start vertically centered */
-      left: 0; /* Start from left edge */
-      transform: translateY(-50%); /* Adjust for vertical centering */
-      display: none; /* Hidden until connected */
+      top: 50%;
+      left: 0;
+      transform: translateY(-50%);
+      display: none;
       flex-direction: column;
       align-items: center;
-      z-index: 8; /* Below bubbles, above background */
-      animation: shiba-float 10s ease-in-out infinite alternate; /* Gentle float animation */
-      padding: 10px; /* Padding to prevent text from touching edges */
+      z-index: 8;
+      animation: shiba-float 10s ease-in-out infinite alternate;
+      padding: 10px;
     }
     #shibaContainer.active {
       display: flex;
     }
 
     #shibaImage {
-      width: 64px; /* Pixelated image size */
+      width: 64px;
       height: 64px;
       image-rendering: pixelated;
-      margin-bottom: 5px; /* Space between shiba and text */
-      filter: drop-shadow(2px 2px 0px #000); /* Pixelated shadow for depth */
+      margin-bottom: 5px;
+      filter: drop-shadow(2px 2px 0px #000);
     }
 
     #shibaText {
@@ -270,8 +302,8 @@
       font-size: 10px;
       color: #77ffff;
       text-shadow: 1px 1px #ff00ff;
-      white-space: nowrap; /* Keep text on one line */
-      animation: text-flicker 1s infinite alternate; /* Subtle flicker */
+      white-space: nowrap;
+      animation: text-flicker 1s infinite alternate;
     }
 
     @keyframes shiba-float {
@@ -281,16 +313,43 @@
       75% { transform: translate(10vw, -55%); }
       100% { transform: translate(0, -50%); }
     }
-    /* You can add more complex shiba floating if desired, like horizontal movement across screen */
-    /* For instance, to make it float across the screen: */
-    /*
-    @keyframes shiba-float {
-        0% { transform: translate(-10%, -50%); }
-        100% { transform: translate(110%, -50%); }
-    }
-    and then use 'linear' and remove 'alternate' for continuous movement.
-    */
 
+    .id-display {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      margin-bottom: 10px;
+      flex-wrap: wrap;
+    }
+
+    #myPeerId {
+      font-size: 18px;
+      color: #00ffcc;
+      text-shadow: 1px 1px #000;
+      background: rgba(0, 0, 0, 0.5);
+      padding: 5px 10px;
+      border: 1px solid #00ffcc;
+      word-break: break-all;
+    }
+
+    #copyIdBtn {
+        background: #00aaff;
+        border: 2px solid #0077cc;
+        padding: 8px 15px;
+        font-size: 12px;
+        color: #fff;
+        cursor: pointer;
+        box-shadow: 2px 2px #0077cc;
+        transition: all 0.1s ease;
+        white-space: nowrap;
+    }
+
+    #copyIdBtn:hover {
+        background: #0077cc;
+        box-shadow: 1px 1px #00aaff;
+        transform: translateY(1px) translateX(1px);
+    }
   </style>
 </head>
 <body>
@@ -302,6 +361,16 @@
     <div class="splash-subtext">
       This is still in Alpha and Work in Progress but focused with privacy in mind.
     </div>
+    <div class="how-to-use">
+        <h3>Quick How-To:</h3>
+        <ul>
+            <li>**1.** Open on two devices.</li>
+            <li>**2.** One person shares their long "Unique ID".</li>
+            <li>**3.** The other person enters that ID and clicks "Connect".</li>
+            <li>**4.** Once connected, drag & drop files onto the page to send!</li>
+        </ul>
+        <p style="text-align: center; margin-top: 10px;">(Connection status will show below)</p>
+    </div>
   </div>
 
   <div class="title">🌊 Sebit Lan Share 🌊</div>
@@ -310,8 +379,12 @@
 
   <div class="overlay" id="roomOverlay">
     <div class="message">
-        <p>Your unique ID: <span id="myPeerId"></span></p>
-        <p>Share this long ID for others to connect, or enter an ID below to connect to someone else.</p>
+        <p>Your unique ID:</p>
+        <div class="id-display">
+            <span id="myPeerId"></span>
+            <button id="copyIdBtn" class="btn">Copy ID</button>
+        </div>
+        <p>Share this ID for others to connect, or enter an ID below:</p>
     </div>
     <input type="text" id="roomCodeInput" class="code-input" placeholder="Enter peer ID to connect" maxlength="36">
     <button id="connectBtn" class="btn">Connect</button>
@@ -320,8 +393,8 @@
 
   <div id="dropZoneOverlay">
       <div class="message">
-          <p>Drop file(s) or folder(s) anywhere to send</p>
-          <p class="small-text">(To active peer connection)</p>
+          <p>Drag and drop your files or folders here to send!</p>
+          <p class="small-text">(Files will be sent to your connected device)</p>
       </div>
   </div>
 
@@ -330,8 +403,8 @@
   </div>
 
   <div id="shibaContainer">
-    <img id="shibaImage" src="https://i.imgur.com/your_shiba_image.png" alt="8-bit Shiba Inu">
-    <div id="shibaText">Your other device is this Shiba Inu!</div>
+    <img id="shibaImage" src="shiba.gif" alt="8-bit Shiba Inu">
+    <div id="shibaText">This Shiba Inu is your other device!</div>
   </div>
 
   <div class="footer">
@@ -347,14 +420,14 @@
 
   <script>
     const PEER_ID_EXPECTED_LENGTH = 36;
-    const CHUNK_SIZE = 16 * 1024; // 16 KB chunks for sending files
+    const CHUNK_SIZE = 16 * 1024;
 
     let peer;
     const peerConnections = {};
     let currentRoomId = '';
     let isFileBeingSent = false;
-    let totalFilesToSend = 0; // New: for tracking multiple files
-    let sentFilesCount = 0; // New: for tracking multiple files
+    let totalFilesToSend = 0;
+    let sentFilesCount = 0;
 
     const myPeerIdSpan = document.getElementById('myPeerId');
     const roomCodeInput = document.getElementById('roomCodeInput');
@@ -366,8 +439,9 @@
     const dropZoneOverlay = document.getElementById('dropZoneOverlay');
     const progressBarContainer = document.getElementById('progressBarContainer');
     const progressBar = document.getElementById('progressBar');
-    const shibaContainer = document.getElementById('shibaContainer'); // New
-    const shibaText = document.getElementById('shibaText'); // New
+    const shibaContainer = document.getElementById('shibaContainer');
+    const shibaText = document.getElementById('shibaText');
+    const copyIdBtn = document.getElementById('copyIdBtn');
 
     roomCodeInput.setAttribute('maxlength', PEER_ID_EXPECTED_LENGTH);
 
@@ -408,8 +482,8 @@
         addBubble(conn.peer);
         updateStatus(`Connected to ${conn.peer}!`, '#ffdd00');
         roomOverlay.style.display = 'none';
-        shibaContainer.classList.add('active'); // Show Shiba
-        shibaText.textContent = `Your other device (${conn.peer.substring(0,8)}...) is this Shiba Inu!`; // Update Shiba text
+        shibaContainer.classList.add('active');
+        shibaText.textContent = `This Shiba Inu is your other device (${conn.peer.substring(0,8)}...)!`;
       });
 
       peer.on('error', (err) => {
@@ -427,7 +501,7 @@
           if (!peer.destroyed) {
               peer.reconnect();
           }
-          shibaContainer.classList.remove('active'); // Hide Shiba on disconnect
+          shibaContainer.classList.remove('active');
       });
     }
 
@@ -456,8 +530,8 @@
             addBubble(remoteId);
             updateStatus(`Connected to ${remoteId}!`, '#ffdd00');
             roomOverlay.style.display = 'none';
-            shibaContainer.classList.add('active'); // Show Shiba
-            shibaText.textContent = `Your other device (${conn.peer.substring(0,8)}...) is this Shiba Inu!`; // Update Shiba text
+            shibaContainer.classList.add('active');
+            shibaText.textContent = `This Shiba Inu is your other device (${conn.peer.substring(0,8)}...)!`;
         });
 
         conn.on('error', (err) => {
@@ -465,7 +539,7 @@
             updateStatus(`Failed to connect to ${remoteId}: ${err.message}`, '#f00');
             delete peerConnections[remoteId];
             removeBubble(remoteId);
-            shibaContainer.classList.remove('active'); // Hide Shiba on error
+            shibaContainer.classList.remove('active');
         });
 
         conn.on('close', () => {
@@ -473,17 +547,14 @@
             updateStatus(`Disconnected from ${remoteId}.`, '#f90');
             delete peerConnections[remoteId];
             removeBubble(remoteId);
-            shibaContainer.classList.remove('active'); // Hide Shiba on close
+            shibaContainer.classList.remove('active');
         });
     }
-
-    // --- Data Channel and File Transfer ---
 
     function setupDataChannel(conn, remoteId) {
       peerConnections[remoteId] = conn;
 
-      // Variables for receiving multiple files
-      let receivingQueue = []; // Queue for incoming files
+      let receivingQueue = [];
       let currentReceivingFile = null;
       let receivedBufferChunks = [];
       let receivedBytesForCurrentFile = 0;
@@ -494,19 +565,17 @@
           try {
             const msg = JSON.parse(data);
             if (msg.type === 'file-metadata') {
-                // Add new file to receiving queue
                 receivingQueue.push({
                     filename: msg.filename,
                     fileSize: msg.fileSize,
-                    relativePath: msg.relativePath || msg.filename, // Use relativePath if available
+                    relativePath: msg.relativePath || msg.filename,
                     buffer: [],
                     receivedSize: 0,
                     status: 'receiving'
                 });
                 if (!currentReceivingFile) {
-                    // If no file is currently being received, start with this one
                     currentReceivingFile = receivingQueue.shift();
-                    receivedBufferChunks = []; // Reset for new file
+                    receivedBufferChunks = [];
                     receivedBytesForCurrentFile = 0;
                     updateProgressBar(0, `Receiving '${currentReceivingFile.relativePath}'...`);
                     console.log(`Receiving file: ${currentReceivingFile.relativePath} (${currentReceivingFile.fileSize} bytes)`);
@@ -515,388 +584,20 @@
               if (currentReceivingFile && receivedBytesForCurrentFile >= currentReceivingFile.fileSize) {
                 const blob = new Blob(receivedBufferChunks);
 
-                // --- Handle saving to file or recreating folder structure ---
-                // If using the new File System Access API (requires user permission)
                 if (window.showDirectoryPicker) {
                     try {
-                        const dirHandle = await getDownloadDirectoryHandle(); // Custom function to get dir
+                        const dirHandle = await getDownloadDirectoryHandle();
                         await saveFileToDirectory(dirHandle, currentReceivingFile.relativePath, blob);
                         updateStatus(`📁 Received '${currentReceivingFile.relativePath}' to specified folder!`);
                     } catch (e) {
                         console.error("Error saving file via File System Access API:", e);
-                        // Fallback to traditional download if API fails or denied
                         downloadBlobAsFile(blob, currentReceivingFile.relativePath);
                         updateStatus(`📁 Received '${currentReceivingFile.relativePath}' via traditional download!`);
                     }
                 } else {
-                    // Traditional download for browsers without File System Access API
                     downloadBlobAsFile(blob, currentReceivingFile.relativePath);
                     updateStatus(`📁 Received '${currentReceivingFile.relativePath}'!`);
                 }
 
                 console.log(`Successfully received and processed ${currentReceivingFile.relativePath}`);
-                totalReceivedFiles++;
-
-                if (receivingQueue.length > 0) {
-                    // Start receiving next file in queue
-                    currentReceivingFile = receivingQueue.shift();
-                    receivedBufferChunks = [];
-                    receivedBytesForCurrentFile = 0;
-                    updateProgressBar(0, `Receiving '${currentReceivingFile.relativePath}'...`);
-                    console.log(`Starting next file: ${currentReceivingFile.relativePath}`);
-                } else {
-                    // All files received
-                    currentReceivingFile = null;
-                    hideProgressBar();
-                    triggerConfetti();
-                    updateStatus(`Transfer complete safe and sound! Received ${totalReceivedFiles} files.`, '#00ffcc');
-                    console.log(`All ${totalReceivedFiles} files received.`);
-                    totalReceivedFiles = 0; // Reset
-                }
-              }
-            }
-          } catch (e) {
-            console.warn("Received non-JSON string or malformed JSON:", data);
-          }
-        } else {
-          // It's a file data chunk
-          if (currentReceivingFile) {
-            currentReceivingFile.buffer.push(data);
-            receivedBufferChunks.push(data); // Also push to direct buffer for current file
-            currentReceivingFile.receivedSize += data.byteLength || data.size;
-            receivedBytesForCurrentFile += data.byteLength || data.size;
-
-            const percentage = (receivedBytesForCurrentFile / currentReceivingFile.fileSize) * 100;
-            updateProgressBar(percentage, `Receiving '${currentReceivingFile.relativePath}': ${percentage.toFixed(0)}%`);
-          }
-        }
-      });
-      conn.on('close', () => {
-        console.log('Connection closed for:', remoteId);
-        updateStatus(`Disconnected from ${remoteId}.`, '#f90');
-        removeBubble(remoteId);
-        hideProgressBar();
-        isFileBeingSent = false;
-        shibaContainer.classList.remove('active'); // Hide Shiba on close
-      });
-      conn.on('error', (err) => {
-        console.error('Data channel error for', remoteId, err);
-        updateStatus(`Error with ${remoteId}'s connection.`, '#f00');
-        hideProgressBar();
-        isFileBeingSent = false;
-        shibaContainer.classList.remove('active'); // Hide Shiba on error
-      });
-    }
-
-    // Helper to download blob (traditional method)
-    function downloadBlobAsFile(blob, filename) {
-        const a = document.createElement('a');
-        a.href = URL.createObjectURL(blob);
-        a.download = filename;
-        a.click();
-        URL.revokeObjectURL(a.href);
-    }
-
-    // --- File System Access API (for folders) ---
-    let downloadDirectoryHandle = null;
-
-    async function getDownloadDirectoryHandle() {
-        if (downloadDirectoryHandle) {
-            return downloadDirectoryHandle;
-        }
-        try {
-            downloadDirectoryHandle = await window.showDirectoryPicker();
-            updateStatus('Download directory selected. Files will be saved there.', '#0f0');
-            return downloadDirectoryHandle;
-        } catch (err) {
-            console.error('User cancelled or error getting directory handle:', err);
-            updateStatus('Directory selection cancelled. Files will download normally.', '#f90');
-            throw err; // Re-throw to indicate failure
-        }
-    }
-
-    async function saveFileToDirectory(dirHandle, fullPath, blob) {
-        const pathParts = fullPath.split('/');
-        let currentHandle = dirHandle;
-
-        // Traverse or create subdirectories
-        for (let i = 0; i < pathParts.length - 1; i++) {
-            const dirName = pathParts[i];
-            currentHandle = await currentHandle.getDirectoryHandle(dirName, { create: true });
-        }
-
-        const fileName = pathParts[pathParts.length - 1];
-        const fileHandle = await currentHandle.getFileHandle(fileName, { create: true });
-        const writable = await fileHandle.createWritable();
-        await writable.write(blob);
-        await writable.close();
-    }
-
-
-    // --- File Sending Logic (Updated for multiple files/folders) ---
-
-    // Function to handle sending an array of File objects to a specific peer connection
-    async function sendFilesToPeer(files, conn) {
-        if (!conn || !conn.open) {
-            updateStatus(`Connection to ${conn.peer} is not open! Cannot send files.`, '#f00');
-            console.error(`Attempted to send files to ${conn.peer}, but connection is not open.`);
-            return;
-        }
-        if (isFileBeingSent) {
-            updateStatus('A file transfer is already in progress. Please wait.', '#f00');
-            return;
-        }
-
-        isFileBeingSent = true;
-        totalFilesToSend = files.length;
-        sentFilesCount = 0;
-        let totalBytesSent = 0;
-        let totalSize = files.reduce((sum, f) => sum + f.size, 0);
-
-        updateStatus(`Preparing to send ${totalFilesToSend} file(s) to ${conn.peer}...`);
-        updateProgressBar(0, `Sending file 1 of ${totalFilesToSend}...`);
-
-        try {
-            for (let i = 0; i < files.length; i++) {
-                const file = files[i];
-                sentFilesCount = i + 1; // Update count for display
-
-                // 1. Send file metadata (including relative path for folders)
-                conn.send(JSON.stringify({
-                    type: 'file-metadata',
-                    filename: file.name,
-                    fileSize: file.size,
-                    relativePath: file.webkitRelativePath || file.name // For folders
-                }));
-
-                // 2. Send file in chunks
-                const reader = file.stream().getReader();
-                let fileOffset = 0;
-
-                while (true) {
-                    const { done, value } = await reader.read();
-                    if (done) {
-                        break;
-                    }
-                    conn.send(value);
-                    fileOffset += value.length;
-                    totalBytesSent += value.length;
-
-                    // Calculate overall progress for all files
-                    const overallPercentage = (totalBytesSent / totalSize) * 100;
-                    updateProgressBar(overallPercentage,
-                        `Sending file ${sentFilesCount} of ${totalFilesToSend}: ${file.name} - ${((fileOffset / file.size) * 100).toFixed(0)}%`);
-                }
-
-                // Small delay to ensure chunk completion is processed before next file metadata
-                await new Promise(resolve => setTimeout(resolve, 50));
-            }
-
-            // 3. Send a 'transfer complete' signal for the whole batch
-            conn.send(JSON.stringify({ type: 'file-chunk-complete' }));
-            updateStatus(`📁 Sent ${totalFilesToSend} file(s) to ${conn.peer}!`);
-            console.log(`Successfully sent ${totalFilesToSend} file(s).`);
-            hideProgressBar();
-            triggerConfetti();
-            updateStatus('Transfer complete safe and sound!', '#00ffcc');
-
-        } catch (error) {
-            console.error("Error sending files:", error);
-            updateStatus(`Error sending files: ${error.message}`, '#f00');
-            hideProgressBar();
-        } finally {
-            isFileBeingSent = false;
-            totalFilesToSend = 0;
-            sentFilesCount = 0;
-        }
-    }
-
-
-    // --- UI (Bubbles) ---
-
-    const activeBubbles = {};
-
-    function addBubble(id) {
-      if (activeBubbles[id]) return;
-
-      const b = document.createElement('div');
-      b.className = 'bubble';
-      b.id = `bubble-${id}`;
-      b.style.left = `${Math.random() * 80 + 10}%`;
-      b.style.animationDelay = `${Math.random() * 3}s`;
-      b.style.animationDuration = `${5 + Math.random() * 5}s`;
-
-      const idText = document.createElement('span');
-      idText.textContent = id.substring(0, 8) + '...';
-      idText.style.position = 'absolute';
-      idText.style.top = '100%';
-      idText.style.left = '50%';
-      idText.style.transform = 'translateX(-50%)';
-      idText.style.fontSize = '8px';
-      idText.style.color = '#fff';
-      idText.style.textShadow = '1px 1px #000';
-      idText.style.whiteSpace = 'nowrap';
-      b.appendChild(idText);
-
-      b.onclick = () => {
-        updateStatus(`Connected to ${id}. Drag & Drop file(s) or folder(s) anywhere to send.`);
-      };
-      document.body.appendChild(b);
-      activeBubbles[id] = b;
-    }
-
-    function removeBubble(id) {
-        if (activeBubbles[id]) {
-            activeBubbles[id].remove();
-            delete activeBubbles[id];
-        }
-    }
-
-    // --- Progress Bar Functions ---
-    function updateProgressBar(percentage, text) {
-        progressBarContainer.classList.add('active');
-        progressBar.style.width = `${percentage}%`;
-        progressBar.textContent = text;
-    }
-
-    function hideProgressBar() {
-        progressBarContainer.classList.remove('active');
-        progressBar.style.width = '0%';
-        progressBar.textContent = '0%';
-    }
-
-    // --- Confetti Animation ---
-    function triggerConfetti() {
-        const numConfetti = 50;
-        for (let i = 0; i < numConfetti; i++) {
-            const confetti = document.createElement('div');
-            confetti.className = 'confetti';
-            confetti.style.left = `${Math.random() * 100}vw`;
-            confetti.style.setProperty('--x', `${Math.random() * 200 - 100}px`);
-            confetti.style.setProperty('--y', `${Math.random() * -100}px`);
-            confetti.style.backgroundColor = `hsl(${Math.random() * 360}, 100%, 50%)`;
-            document.body.appendChild(confetti);
-
-            confetti.addEventListener('animationend', () => {
-                confetti.remove();
-            });
-        }
-    }
-
-
-    // --- Drag and Drop Event Listeners ---
-    let dragCounter = 0;
-
-    document.body.addEventListener('dragenter', (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        dragCounter++;
-        if (Object.keys(peerConnections).length > 0) {
-            dropZoneOverlay.classList.add('active');
-        } else {
-            updateStatus("Connect to a peer first to drag and drop files!", '#f00');
-        }
-    });
-
-    document.body.addEventListener('dragleave', (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        dragCounter--;
-        if (dragCounter === 0) {
-            dropZoneOverlay.classList.remove('active');
-        }
-    });
-
-    document.body.addEventListener('dragover', (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        e.dataTransfer.dropEffect = 'copy';
-        if (!dropZoneOverlay.classList.contains('active') && Object.keys(peerConnections).length > 0) {
-            dropZoneOverlay.classList.add('active');
-        }
-    });
-
-    document.body.addEventListener('drop', async (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        dragCounter = 0;
-        dropZoneOverlay.classList.remove('active');
-
-        if (Object.keys(peerConnections).length === 0) {
-            updateStatus("No active connections to send files to. Connect to a peer first!", '#f00');
-            return;
-        }
-
-        if (e.dataTransfer.items) {
-            const files = [];
-            for (let i = 0; i < e.dataTransfer.items.length; i++) {
-                const item = e.dataTransfer.items[i];
-                if (item.kind === 'file') {
-                    // Files (including files inside folders)
-                    const file = item.getAsFile();
-                    files.push(file);
-                }
-                // For directory structures, we rely on file.webkitRelativePath for consistency
-                // The DataTransferItemList doesn't provide direct access to folder structure,
-                // but the File objects within it retain webkitRelativePath when dropped from a folder.
-            }
-
-            if (files.length > 0) {
-                // Send to ALL connected peers.
-                for (const peerId in peerConnections) {
-                    const conn = peerConnections[peerId];
-                    if (conn && conn.open) {
-                        // Create a fresh copy of files array for each send if they can modify
-                        await sendFilesToPeer(files, conn);
-                    } else {
-                        updateStatus(`Skipping ${peerId}: connection not open.`, '#f90');
-                    }
-                }
-            } else {
-                updateStatus("No files were dropped.", '#f00');
-            }
-        } else {
-             // Fallback for older browsers: process files from e.dataTransfer.files
-            const files = Array.from(e.dataTransfer.files);
-            if (files.length > 0) {
-                for (const peerId in peerConnections) {
-                    const conn = peerConnections[peerId];
-                    if (conn && conn.open) {
-                        await sendFilesToPeer(files, conn);
-                    } else {
-                        updateStatus(`Skipping ${peerId}: connection not open.`, '#f90');
-                    }
-                }
-            } else {
-                updateStatus("No files were dropped.", '#f00');
-            }
-        }
-    });
-
-
-    // --- Event Listeners for Room Code UI ---
-
-    connectBtn.addEventListener('click', () => {
-      const remoteId = roomCodeInput.value.trim();
-      if (remoteId) {
-        connectToPeer(remoteId);
-      } else {
-        updateStatus('Please enter a peer ID.', '#f00');
-      }
-    });
-
-    newIdBtn.addEventListener('click', () => {
-        if (peer && !peer.destroyed) {
-            peer.destroy();
-        }
-        initializePeer();
-    });
-
-    // --- Initial Setup ---
-    window.onload = () => {
-        showSplashScreen();
-        setTimeout(initializePeer, 1000);
-    };
-  </script>
-</body>
-</html>
+                to
