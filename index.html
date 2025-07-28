@@ -1721,7 +1721,12 @@
 
       // Event: Incoming connection from another peer
       peer.on('connection', (conn) => {
+        // --- START FIX ---
+        // Immediately update status on the receiving device
+        updateStatus(`Incoming connection attempt from ${conn.peer.substring(0,8)}...`, '#ffdd00');
         console.log(`Incoming connection from: ${conn.peer}`);
+        // --- END FIX ---
+
         setupDataChannel(conn, conn.peer);
         addBubble(conn.peer);
         updateStatus(`Connected to ${conn.peer}!`, '#ffdd00');
@@ -1930,7 +1935,7 @@
             currentReceivingFile.receivedSize += data.byteLength || data.size;
             receivedBytesForCurrentFile += data.byteLength || data.size;
 
-            const percentage = (receivedBytesForCurrentFile / currentReceivingFile.fileSize) * 100;
+            const percentage = (receivedBytesForCurrentFile / currentRecevingFile.fileSize) * 100;
             updateProgressBar(percentage, `Receiving '${currentReceivingFile.relativePath}': ${percentage.toFixed(0)}%`);
           }
         }
