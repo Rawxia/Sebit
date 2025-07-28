@@ -1481,6 +1481,10 @@
 </head>
 <body>
 
+  <div class="title">🌊 Sebit Lan Share 🌊</div>
+  <div class="welcome">Welcome to Seb P2P LAN sharer!</div>
+  <div class="status-message" id="statusMessage">Connecting to signaling server...</div>
+
   <div id="splashScreen">
     <div class="splash-text">
       Welcome to Sebit P2P File Transfer!
@@ -1516,10 +1520,6 @@
 
     <button id="readyButton">Ready!</button>
   </div>
-
-  <div class="title">🌊 Sebit Lan Share 🌊</div>
-  <div class="welcome">Welcome to Seb P2P LAN sharer!</div>
-  <div class="status-message" id="statusMessage">Connecting to signaling server...</div>
 
   <div class="overlay" id="roomOverlay">
     <div class="message">
@@ -1707,57 +1707,42 @@
         // Generate QR code for the current ID
         generateQrCode(id);
 
-        // --- IMPORTANT CHANGE HERE ---
-        // After PeerJS is open, check for a peerId in the URL and connect if found
         const peerIdFromUrl = getQueryParam('peerId');
         if (peerIdFromUrl && peerIdFromUrl !== id) { // Ensure we don't try to connect to ourselves
-            hideSplashScreen(); // Hide splash screen regardless of peer.open state
+            hideSplashScreen();
             updateStatus(`Found ID in URL: ${peerIdFromUrl}. Attempting to connect...`);
-            roomCodeInput.value = peerIdFromUrl; // Pre-fill the input
-            connectToPeer(peerIdFromUrl); // Attempt to connect directly
+            roomCodeInput.value = peerIdFromUrl;
+            // Initiate connection, and crucially, handle UI updates within setupDataChannel
+            connectToPeer(peerIdFromUrl);
         }
-        // --- END IMPORTANT CHANGE ---
       });
 
       // Event: Incoming connection from another peer
       peer.on('connection', (conn) => {
-        // --- START FIX ---
-        // Immediately update status on the receiving device
-        updateStatus(`Incoming connection attempt from ${conn.peer.substring(0,8)}...`, '#ffdd00');
+        // This fires on the *receiving* side
+        updateStatus(`Incoming connection from ${conn.peer.substring(0,8)}...`, '#ffdd00');
         console.log(`Incoming connection from: ${conn.peer}`);
-        // --- END FIX ---
 
-        setupDataChannel(conn, conn.peer);
-        addBubble(conn.peer);
-        updateStatus(`Connected to ${conn.peer}!`, '#ffdd00');
-        roomOverlay.style.display = 'none'; // Hide the ID input overlay
-        shibaContainer.classList.add('active'); // Show Shiba
-        shibaText.textContent = `This Shiba Inu is your other device (${conn.peer.substring(0,8)}...)!`;
-        paperclipButtonContainer.style.display = 'flex'; // Show the file transfer button
-        textTransferContainer.style.display = 'flex'; // Show text transfer container
+        setupDataChannel(conn, conn.peer); // Pass the connection and peer ID
+        // The UI updates for "connected" state now happen inside setupDataChannel's conn.on('open')
       });
 
       // Event: PeerJS error
       peer.on('error', (err) => {
         console.error('PeerJS error:', err);
         updateStatus(`Error: ${err.message}. Please refresh or try a new ID.`, '#f00');
-        // Attempt to destroy peer only if not already destroyed to prevent errors
         if (peer && !peer.destroyed) {
             peer.destroy();
         }
-        // No immediate reinitialization here to prevent loop on persistent errors.
-        // User should manually retry by generating new ID or refreshing.
       });
 
       // Event: PeerJS disconnected from signaling server
       peer.on('disconnected', () => {
           console.log('PeerJS disconnected from signaling server.');
           updateStatus('Disconnected. Trying to reconnect...', '#f90');
-          // Only attempt reconnect if peer is not destroyed
           if (!peer.destroyed) {
               peer.reconnect();
           }
-          // Hide connected UI elements
           shibaContainer.classList.remove('active');
           roomOverlay.style.display = 'flex';
           paperclipButtonContainer.style.display = 'none';
@@ -1767,72 +1752,30 @@
 
     // Function to connect to a remote peer
     function connectToPeer(remoteId) {
-        // Now, we are sure peer is defined because this is called AFTER peer.on('open')
-        if (!peer.open) { // Still a good check, just in case, though less likely now
+        if (!peer.open) {
             updateStatus('PeerJS is not yet open. Please wait a moment.', '#f00');
             console.warn('connectToPeer called before peer.open event fired.');
             return;
         }
 
-        // Special condition for "testtestseb" to allow self-connection
         if (remoteId === currentRoomId && remoteId !== "testtestseb") {
             updateStatus('Cannot connect to yourself!', '#f00');
             return;
         }
-        // Validate ID length unless it's the special test ID
         if (remoteId.length !== PEER_ID_EXPECTED_LENGTH && remoteId !== "testtestseb") {
             updateStatus(`Please enter a valid Peer ID of ${PEER_ID_EXPECTED_LENGTH} characters.`, '#f00');
             return;
         }
 
-        updateStatus(`Attempting to connect to ${remoteId}...`);
+        updateStatus(`Attempting to connect to ${remoteId.substring(0,8)}...`); // Indicate attempt on initiator
         console.log(`Attempting to connect to peer: ${remoteId}`);
 
-        // Create a new data connection
         const conn = peer.connect(remoteId);
-        // Store the connection for later use
-        peerConnections[remoteId] = conn;
+        // Do NOT put general UI updates here that indicate "connected",
+        // as this only means the connection *process* has started.
+        // The actual connection success feedback should be in conn.on('open').
 
-        // Event: DataChannel opened (connection established)
-        conn.on('open', () => {
-            console.log(`DataChannel opened with ${remoteId}`);
-            setupDataChannel(conn, remoteId); // Setup handlers for this specific connection
-            addBubble(remoteId); // Add a visual bubble for the connected peer
-            updateStatus(`Connected to ${remoteId}!`, '#ffdd00');
-            roomOverlay.style.display = 'none'; // Hide the ID input overlay
-            shibaContainer.classList.add('active'); // Show Shiba
-            shibaText.textContent = `This Shiba Inu is your other device (${conn.peer.substring(0,8)}...)!`;
-            paperclipButtonContainer.style.display = 'flex'; // Show the file transfer button
-            textTransferContainer.style.display = 'flex'; // Show text transfer container
-        });
-
-        // Event: Connection error
-        conn.on('error', (err) => {
-            console.error(`Connection error with ${remoteId}:`, err);
-            updateStatus(`Failed to connect to ${remoteId}: ${err.message}. Please check ID and try again.`, '#f00');
-            delete peerConnections[remoteId]; // Remove connection from our list
-            removeBubble(remoteId); // Remove the visual bubble
-            // Restore UI for entering ID
-            shibaContainer.classList.remove('active');
-            roomOverlay.style.display = 'flex';
-            paperclipButtonContainer.style.display = 'none';
-            textTransferContainer.style.display = 'none';
-        });
-
-        // Event: Connection closed
-        conn.on('close', () => {
-            console.log(`Connection to ${remoteId} closed.`);
-            updateStatus(`Disconnected from ${remoteId}.`, '#f90');
-            delete peerConnections[remoteId];
-            removeBubble(remoteId);
-            shibaContainer.classList.remove('active');
-            roomOverlay.style.display = 'flex';
-            // If no active connections, hide transfer buttons
-            if (Object.keys(peerConnections).length === 0) {
-                paperclipButtonContainer.style.display = 'none';
-                textTransferContainer.style.display = 'none';
-            }
-        });
+        setupDataChannel(conn, remoteId); // Crucial: setup handlers here for the initiating connection
     }
 
     // Function to set up data channel event listeners
@@ -1844,6 +1787,22 @@
       let receivedBufferChunks = [];
       let receivedBytesForCurrentFile = 0;
       let totalReceivedFiles = 0;
+
+      // *** THIS IS THE KEY CHANGE ***
+      // Both initiating and receiving sides will call setupDataChannel.
+      // The conn.on('open') event reliably fires when the data channel is ready.
+      conn.on('open', () => {
+          console.log(`DataChannel opened with ${remoteId}`);
+          updateStatus(`Connected to ${remoteId.substring(0,8)}...!`, '#ffdd00');
+          roomOverlay.style.display = 'none'; // Hide the ID input overlay
+          shibaContainer.classList.add('active'); // Show Shiba
+          shibaText.textContent = `This Shiba Inu is your other device (${remoteId.substring(0,8)}...)!`;
+          paperclipButtonContainer.style.display = 'flex'; // Show the file transfer button
+          textTransferContainer.style.display = 'flex'; // Show text transfer container
+          addBubble(remoteId); // Add a visual bubble for the connected peer
+      });
+      // *** END OF KEY CHANGE ***
+
 
       conn.on('data', async (data) => {
         if (typeof data === 'string') {
@@ -1895,7 +1854,7 @@
                     currentReceivingFile = receivingQueue.shift();
                     receivedBufferChunks = [];
                     receivedBytesForCurrentFile = 0;
-                    updateProgressBar(0, `Receiving '${currentReceivingFile.relativePath}'...`);
+                    updateProgressBar(0, `Receiving '${currentRecetainingFile.relativePath}'...`);
                     console.log(`Starting next file: ${currentReceivingFile.relativePath}`);
                 } else {
                     // All files received, reset state
@@ -1935,7 +1894,7 @@
             currentReceivingFile.receivedSize += data.byteLength || data.size;
             receivedBytesForCurrentFile += data.byteLength || data.size;
 
-            const percentage = (receivedBytesForCurrentFile / currentRecevingFile.fileSize) * 100;
+            const percentage = (receivedBytesForCurrentFile / currentReceivingFile.fileSize) * 100;
             updateProgressBar(percentage, `Receiving '${currentReceivingFile.relativePath}': ${percentage.toFixed(0)}%`);
           }
         }
@@ -1943,7 +1902,7 @@
       // Connection closed event for the specific data channel
       conn.on('close', () => {
         console.log('Connection closed for:', remoteId);
-        updateStatus(`Disconnected from ${remoteId}.`, '#f90');
+        updateStatus(`Disconnected from ${remoteId.substring(0,8)}.`, '#f90');
         removeBubble(remoteId);
         hideProgressBar();
         isFileBeingSent = false;
@@ -1959,7 +1918,7 @@
       // Error event for the specific data channel
       conn.on('error', (err) => {
         console.error('Data channel error for', remoteId, err);
-        updateStatus(`Error with ${remoteId}'s connection.`, '#f00');
+        updateStatus(`Error with ${remoteId.substring(0,8)}'s connection.`, '#f00');
         hideProgressBar();
         isFileBeingSent = false;
         shibaContainer.classList.remove('active');
@@ -2020,7 +1979,7 @@
     // Function to send files to a connected peer
     async function sendFilesToPeer(files, conn) {
         if (!conn || !conn.open) {
-            updateStatus(`Connection to ${conn.peer} is not open! Cannot send files.`, '#f00');
+            updateStatus(`Connection to ${conn.peer.substring(0,8)} is not open! Cannot send files.`, '#f00');
             console.error(`Attempted to send files to ${conn.peer}, but connection is not open.`);
             return;
         }
@@ -2035,7 +1994,7 @@
         let totalBytesSent = 0;
         let totalSize = files.reduce((sum, f) => sum + f.size, 0);
 
-        updateStatus(`Preparing to send ${totalFilesToSend} file(s) to ${conn.peer}...`);
+        updateStatus(`Preparing to send ${totalFilesToSend} file(s) to ${conn.peer.substring(0,8)}...`);
         updateProgressBar(0, `Sending file 1 of ${totalFilesToSend}...`);
 
         try {
@@ -2075,7 +2034,7 @@
 
             // Signal end of file transfer
             conn.send(JSON.stringify({ type: 'file-chunk-complete' }));
-            updateStatus(`📁 Sent ${totalFilesToSend} file(s) to ${conn.peer}!`);
+            updateStatus(`📁 Sent ${totalFilesToSend} file(s) to ${conn.peer.substring(0,8)}!`);
             console.log(`Successfully sent ${totalFilesToSend} file(s).`);
             hideProgressBar();
             triggerConfetti();
@@ -2119,7 +2078,7 @@
       b.appendChild(idText);
 
       b.onclick = () => {
-        updateStatus(`Connected to ${id}. Drag & Drop file(s) or folder(s) anywhere to send.`);
+        updateStatus(`Connected to ${id.substring(0,8)}. Drag & Drop file(s) or folder(s) anywhere to send.`);
       };
       document.body.appendChild(b);
       activeBubbles[id] = b;
@@ -2240,7 +2199,7 @@
                 if (conn && conn.open) {
                     await sendFilesToPeer(files, conn);
                 } else {
-                    updateStatus(`Skipping ${peerId}: connection not open.`, '#f90');
+                    updateStatus(`Skipping ${peerId.substring(0,8)}: connection not open.`, '#f90');
                 }
             }
         } else {
@@ -2365,7 +2324,7 @@
                     updateStatus(`Failed to send text to ${peerId.substring(0, 8)}: ${error.message}`, '#f00');
                 }
             } else {
-                updateStatus(`Skipping ${peerId}: connection not open.`, '#f90');
+                updateStatus(`Skipping ${peerId.substring(0,8)}: connection not open.`, '#f90');
             }
         }
     });
@@ -2405,7 +2364,7 @@
                 if (conn && conn.open) {
                     await sendFilesToPeer(selectedFiles, conn);
                 } else {
-                    updateStatus(`Skipping ${peerId}: connection not open.`, '#f90');
+                    updateStatus(`Skipping ${peerId.substring(0,8)}: connection not open.`, '#f90');
                 }
             }
         } else {
@@ -2417,32 +2376,22 @@
 
     // Initial load handler
     window.onload = () => {
-        loadTheme(); // Load saved theme first
+        loadTheme();
         splashScreen.style.display = 'flex';
 
-        // --- IMPORTANT CHANGE HERE ---
-        // Always initialize PeerJS on window load.
-        // The peerId from URL will be handled *inside* peer.on('open').
-        initializePeer(); // This starts the PeerJS connection process
+        initializePeer();
 
-        // The "Ready!" button listener only applies if there's NO peerId in the URL
-        // because auto-connect will bypass the splash screen.
         const peerIdFromUrl = getQueryParam('peerId');
         if (!peerIdFromUrl) {
             readyButton.addEventListener('click', () => {
                 hideSplashScreen();
-                // If there's no peerId in the URL, the splash screen will be hidden
-                // and the user will proceed to the manual ID entry.
-                // PeerJS is already initializing in the background.
-            }, { once: true }); // Ensure this listener only runs once
+            }, { once: true });
         } else {
-            // If there IS a peerId in the URL, the splash screen will be automatically
-            // hidden once peer.on('open') fires and the connection attempt is made.
-            // The Ready button is effectively bypassed for auto-connect.
-            // We can hide the button to avoid confusion, or let it stay but it won't be clicked.
-            readyButton.style.display = 'none'; // Optional: hide the ready button if auto-connecting
+            readyButton.style.display = 'none';
+            // If auto-connecting via QR, hide splash screen immediately
+            // because the connection attempt might take time, but the user has already "started".
+            hideSplashScreen();
         }
-        // --- END IMPORTANT CHANGE ---
     };
   </script>
 </body>
